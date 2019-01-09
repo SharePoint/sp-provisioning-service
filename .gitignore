@@ -173,9 +173,10 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 
-# App.Config files
+# App.Config files and Web.Config files
 [Aa]pp.[Cc]onfig
 [Aa]pp-*.[Cc]onfig
+[Ww]eb.[Cc]onfig
 Web.*.[Cc]onfig
 
 # Visual Studio 2015 cache/options directory
