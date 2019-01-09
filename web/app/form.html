@@ -17,6 +17,7 @@
 
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+    <link href="node_modules/c-p/color-picker.min.css" rel="stylesheet">
     <!-- endbuild -->
 
 </head>
@@ -166,7 +167,9 @@
                                             <label for="ThemePrimaryColor">Primary Theme Color</label>
                                         </th>
                                         <td>
-                                            <input type="text" class="pnp-tb" name="ThemePrimaryColor" id="ThemePrimaryColor">
+                                            <span class="pnp-colorpreview" rel="ThemeColorPrimary">
+                                            </span>
+                                            <input type="text" class="pnp-tb" name="ThemeColorPrimary" id="ThemeColorPrimary">
                                         </td>
                                     </tr>
                                     <tr>
@@ -174,7 +177,9 @@
                                             <label for="ThemeBodyTextColor">Body Text Color</label>
                                         </th>
                                         <td>
-                                            <input type="text" class="pnp-tb" name="ThemeBodyTextColor" id="ThemeBodyTextColor">
+                                            <span class="pnp-colorpreview" rel="ThemeColorBodyText">
+                                            </span>
+                                            <input type="text" class="pnp-tb" name="ThemeColorBodyText" id="ThemeColorBodyText">
                                         </td>
                                     </tr>
                                     <tr>
@@ -182,7 +187,9 @@
                                             <label for="ThemeBodyBackgroundColor">Body Background Color</label>
                                         </th>
                                         <td>
-                                            <input type="text" class="pnp-tb" name="ThemeBodyBackgroundColor" id="ThemeBodyBackgroundColor">
+                                            <span class="pnp-colorpreview" rel="ThemeColorBodyBackground">
+                                            </span>
+                                            <input type="text" class="pnp-tb" name="ThemeColorBodyBackground" id="ThemeColorBodyBackground">
                                         </td>
                                     </tr>
                                     <tr>
@@ -223,6 +230,7 @@
         <!-- endbuild -->
 
         <!-- build:js scripts/main.js -->
+        <script src="node_modules/c-p/color-picker.min.js"></script>
         <script src="scripts/main.js"></script>
         <!-- endbuild -->
 
