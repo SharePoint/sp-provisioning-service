@@ -1,0 +1,103 @@
+﻿@model SharePointPnP.ProvisioningApp.WebSite.Models.IndexViewModel
+
+@functions{
+
+    String StripHtml(String content)
+    {
+        var regex = new System.Text.RegularExpressions.Regex("\\<[^\\>]*\\>");
+        return(regex.Replace(content, String.Empty));
+    }
+
+}
+
+<section class="header-img">
+    <div class="header-img-inner"></div>
+</section>
+<section class="pnp-hero">
+    <div class="pnp-hero-inner">
+        <div class="pnp-hero-title">
+            <h1 class="pnp-hero-head">Provisioning<br>Service</h1>
+            <div class="pnp-hero-subtl">
+                See the possibilities<br>
+                Deploy &gt; Test
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Inner Content Wrapper -->
+<div class="wrapper">
+    <div class="wrapper-inner">
+        <div class="pnp-svcteaser">
+            <div class="pnp-svcteaser-inner">
+                @(Html.Raw(Model.ServiceDescription))
+                <a href="/home/contentPage?contentPageId=ServiceDescriptionLong" class="read-more">Read more</a>
+            </div>
+        </div>
+        @*<div class="pnp-filter">
+            <div class="pnp-search">
+                <input type="text" class="pnp-search-input">
+                <button class="pnp-search-button"></button>
+            </div>
+            <div class="pnp-filter-btn">
+                <button class="pnp-filter-toggle active">Filter</button>
+            </div>
+        </div>*@
+        <div class="pnp-hightlight-sm">
+            @foreach (var package in Model.Packages.Where(p => p.Promoted))
+            {
+                <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
+                    <div class="pnp-img">
+                        <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
+                        @if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
+                        {
+                            <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
+                        }
+                        else
+                        {
+                            <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
+                        }
+                    </div>
+                    <div class="pnp-item-desc">
+                        <div class="pnp-item-title">@package.DisplayName</div>
+                        <div class="pnp-item-content">
+                            <p>@(StripHtml(Html.Raw(package.Description).ToString()))</p>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+        <div class="pnp-hightlight-reg">
+            @foreach (var package in Model.Packages.Where(p => !p.Promoted))
+            {
+                <a href="/home/details?packageId=@package.Id" class="pnp-item">
+                    <div class="pnp-img">
+                        <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
+                        @if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
+                        {
+                            <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
+                        }
+                        else
+                        {
+                            <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
+                        }
+                    </div>
+                    <div class="pnp-item-desc">
+                        <div class="pnp-item-title">@package.DisplayName</div>
+                        <div class="pnp-item-content">
+                            <p>@(StripHtml(Html.Raw(package.Description).ToString()))</p>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<img src="https://telemetry.sharepointpnp.com/provisioning-service/welcome-page" />
+
+@section scripts
+{
+    <!-- build:js scripts/main.js -->
+    <script src="/app/scripts/main.js"></script>
+    <!-- endbuild -->
+}

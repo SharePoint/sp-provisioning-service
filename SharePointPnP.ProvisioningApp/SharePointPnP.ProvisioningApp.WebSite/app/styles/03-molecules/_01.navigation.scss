@@ -1,0 +1,143 @@
+
+.nav-main {
+    display: flex;
+    // background: blue;
+
+    flex-flow: row wrap;
+    justify-content: flex-end;
+}
+
+.nav-burger {
+    display: inline-block;
+    display: none;
+    // background: maroon;
+
+    align-self: center;
+    flex: 0 1;
+    justify-self: stretch;
+
+    button {
+        font-size: 20px;
+
+        width: 54px;
+        height: 54px;
+
+        border: none;
+        background-color: white;
+
+        cursor: pointer;
+
+        &:before {
+            font-family: "FW-MDL2";
+            font-size: 20px;
+
+            content: "";
+
+            color: black;
+            background-color: white;
+        }
+    }
+
+
+
+    @media #{$base-tablet} {
+        display: inline-block;
+
+        // align-content: stretch;
+        justify-self: end;
+    }
+}
+
+.nav-main {
+    display: flex;
+    // background-color: lightblue;
+
+    align-content: flex-end;
+    align-self: stretch;
+    flex-basis: 100%;
+
+    @media #{$base-tablet} {
+        max-width: 100px;
+        // background: green;
+
+        justify-self: flex-end;
+    }
+}
+
+.nav-list {
+    display: inline-block;
+
+    padding: 0;
+
+    list-style: none;
+
+    justify-self: center;
+    padding-right: 1em;
+    margin-top: 23px;
+
+
+
+    @media #{$base-tablet} {
+        position: absolute;
+        z-index: 10;
+        box-sizing: border-box;
+        top: 54px;
+        left: 0;
+
+        width: 100%;
+        margin-top: 0;
+        padding: 1em;
+
+        background-color: white;
+        display: none;
+
+        &.show {
+            display: block;
+            border-bottom: 1px $ms-form-border solid;
+        }
+    }
+}
+
+.nav-list-item {
+    display: inline-block;
+
+    box-sizing: border-box;
+    margin: 0 0.5em;
+    padding: 0;
+
+    @media #{$base-tablet} {
+        line-height: 1em;
+
+        display: block;
+
+        padding: .5em;
+
+        &:hover {
+            // background-color: lime;
+        }
+    }
+}
+
+.nav-list-link {
+    font-size: 1em;
+
+    display: inline-block;
+
+    transition: border .125s ease-in-out;
+    text-decoration: none;
+
+    color: $ms-grey;
+    border-bottom: 2px transparent solid;
+
+    &:hover {
+        border-bottom: 2px $ms-grey solid;
+    }
+
+    @media #{$base-tablet} {
+        border-bottom: 1px transparent solid;
+
+        &:hover {
+            border-bottom: 1px $ms-grey solid;
+        }
+    }
+}

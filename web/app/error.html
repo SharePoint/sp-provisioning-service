@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>web</title>
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+
+</head>
+
+<body>
+    <header class="pnp-header">
+        <div class="pnp-header-inner">
+            <div class="pnp-logo">
+                <a href="/"><img src="images/pnp-provision-300.png" alt="" class="pnp-logo-img"></a>
+            </div>
+            <div class="pnp-title">Office Showcase</div>
+            <nav class="nav-main">
+                <div class="nav-burger">
+                    <button id="pnp-btn-burger" class="pnp-burger"></button>
+                </div>
+                <ul class="nav-list">
+                    <li class="nav-list-item">
+                        <a href="" class="nav-list-link">First Nav List Entry</a>
+                    </li>
+                    <li class="nav-list-item">
+                        <a href="" class="nav-list-link">Second Nav List Entry</a>
+                    </li>
+                    <li class="nav-list-item">
+                        <a href="" class="nav-list-link">Third Nav List Entry</a>
+                    </li>
+                </ul>
+            </nav>
+    </header>
+    <section class="header-img">
+        <div class="header-img-inner"></div>
+    </section>
+    <section class="pnp-hero">
+        <div class="pnp-hero-inner">
+            <div class="pnp-hero-title">
+                <h1 class="pnp-hero-head">Office 365<br>Showcase</h1>
+                <div class="pnp-hero-subtl">
+                    See the possibilites<br>
+                    Deploy &gt; Test
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Inner Content Wrapper -->
+    <div class="wrapper">
+        <div class="wrapper-inner">
+            <article class="pnp-error">
+                <h1>Sorry, something went wrong</h1>
+                <div class="errorMessage">Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).</div>
+                <div class="showErrorLink"><a href="#">Click here to see more details</a></div>
+                <div class="errorStack" style="display: none;">
+                    <hr>
+                    <div>   at System.Data.Entity.Core.Objects.ELinq.QueryParameterExpression.EvaluateParameter(Object[] arguments)
+       at System.Data.Entity.Core.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+       at System.Data.Entity.Core.Objects.ObjectQuery`1.&lt;&gt;c__DisplayClass7.&lt;GetResults&gt;b__6()
+       at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+       at System.Data.Entity.Core.Objects.ObjectQuery`1.&lt;&gt;c__DisplayClass7.&lt;GetResults&gt;b__5()
+       at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+       at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+       at System.Data.Entity.Core.Objects.ObjectQuery`1.&lt;System.Collections.Generic.IEnumerable&lt;T&gt;.GetEnumerator&gt;b__0()
+       at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+       at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+       at System.Data.Entity.Core.Objects.ELinq.ObjectQueryProvider.&lt;GetElementFunction&gt;b__1[TResult](IEnumerable`1 sequence)
+       at System.Data.Entity.Core.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+       at System.Data.Entity.Core.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[TResult](Expression expression)
+       at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+       at System.Linq.Queryable.FirstOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+       at SharePointPnP.ProvisioningApp.WebSite.Controllers.HomeController.Details(String packageId) in C:\github\sp-dev-templates-gallery\SharePointPnP.ProvisioningApp\SharePointPnP.ProvisioningApp.WebSite\Controllers\HomeController.cs:line 29
+       at lambda_method(Closure , ControllerBase , Object[] )
+       at System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+       at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+       at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+       at System.Web.Mvc.Async.AsyncControllerActionInvoker.&lt;&gt;c.&lt;BeginInvokeSynchronousActionMethod&gt;b__9_0(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+       at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+       at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+       at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+       at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.&lt;InvokeActionMethodFilterAsynchronouslyRecursive&gt;b__11_0()
+       at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.&lt;&gt;c__DisplayClass11_1.&lt;InvokeActionMethodFilterAsynchronouslyRecursive&gt;b__2()
+       at System.Web.Mvc.Async.AsyncControllerActionInvoker.&lt;&gt;c__DisplayClass7_0.&lt;BeginInvokeActionMethodWithFilters&gt;b__1(IAsyncResult asyncResult)
+       at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+       at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+       at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+       at System.Web.Mvc.Async.AsyncControllerActionInvoker.&lt;&gt;c__DisplayClass3_6.&lt;BeginInvokeAction&gt;b__3()
+       at System.Web.Mvc.Async.AsyncControllerActionInvoker.&lt;&gt;c__DisplayClass3_1.&lt;BeginInvokeAction&gt;b__5(IAsyncResult asyncResult)</div>
+                </div>
+            </article>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-info">
+                <ul class="footer-menu">
+                    <li class="footer-menu-item"><a href="http://" class="footer-menu-link" title="Contact us" class="footer-menu-link">Contact
+                            us</a></li>
+                    <li class="footer-menu-item"><a href="http://" class="footer-menu-link" title="Privacy & cookies">Privacy
+                            & cookies</a></li>
+                    <li class="footer-menu-item"><a href="http://" class="footer-menu-link" title="Terms of user">Terms
+                            of
+                            use</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                this is where the social media icons will be
+            </div>
+        </div>
+    </footer>
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js scripts/main.js -->
+    <script src="scripts/main.js"></script>
+    <!-- endbuild -->
+
+    <div class="pnp-stage" style="display: none;">
+        <div class="pnp-stage-content">
+            <img src="https://via.placeholder.com/1600x900?text=16:9">
+        </div>
+        <div class="pnp-stage-selector">
+            <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+            <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+            <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+            <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+            <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+        </div>
+    </div>
+</body>
+</body>
+
+</html>

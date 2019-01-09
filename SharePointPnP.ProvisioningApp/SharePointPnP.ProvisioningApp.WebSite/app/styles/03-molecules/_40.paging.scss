@@ -1,0 +1,78 @@
+.pnp-paging{
+	text-align: center;
+}
+
+.pnp-page-selector{
+    display: inline-block;
+    display: flex;
+    justify-content: center;
+
+	margin: 0 auto;
+	padding: 0;
+
+	list-style: none;
+}
+
+.pnp-page-item{
+	display: inline-block;
+	// padding: .5em 1em;
+	&.hidden{
+		visibility: hidden;
+	}
+}
+.page-index{
+    margin-top: -3em;
+}
+.page-next,
+.page-prev{
+    .page-button{
+        padding-top: 0.1em;
+    }
+}
+
+
+.page-button{
+	width: 2em;
+	height: 2em;
+    margin: 0;
+    padding: 0;
+
+	text-align: center;
+
+	color: $ms-grey;
+	border: none;
+    background-color: transparent;
+    transition: none;
+
+	&:hover{
+		cursor: pointer;
+    }
+    &:active{
+        color: $ms-grey;
+    }
+    svg{
+        path{
+            fill: $ms-grey;
+        }
+    }
+    &:hover{
+        color: $ms-sharepoint;
+        background-color: transparent;
+        svg{
+            path{
+                fill: $ms-sharepoint;
+            }
+        }
+    }
+    &:active,
+    &:disabled,
+    &.selected{
+        background-color: $ms-sharepoint;
+        color: white;
+        svg{
+            path{
+                fill: white;
+            }
+        }
+    }
+}

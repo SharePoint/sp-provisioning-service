@@ -1,0 +1,127 @@
+﻿@model SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ProvisioningActionModel
+
+<section class="header-img">
+    <div class="header-img-inner"></div>
+</section>
+<section class="pnp-hero">
+    <div class="pnp-hero-inner">
+        <div class="pnp-hero-title">
+            <h1 class="pnp-hero-head">Provisioning<br>Service</h1>
+            <div class="pnp-hero-subtl">
+                See the possibilities<br>
+                Deploy &gt; Test
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Inner Content Wrapper -->
+<div class="wrapper">
+    <div class="wrapper-inner">
+        <div class="wrapper-inner">
+            <div class="pnp-svcteaser">
+                <div class="pnp-svcteaser-inner">
+                    @(Html.Raw(Model.ProvisionDescription))
+                </div>
+            </div>
+            <div class="pnp-form">
+                <div class="pnp-svcteaser-inner">
+                    @using (Html.BeginForm("Provision", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.HiddenFor(m => m.PackageId)
+                        @Html.HiddenFor(m => m.TenantId)
+                        @Html.HiddenFor(m => m.UserPrincipalName)
+                        @Html.HiddenFor(m => m.ActionType)
+                        @Html.HiddenFor(m => m.DisplayName)
+
+                        <table>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.NotificationEmail)
+                                    <div class="pnp-field-description">Provide an email address to get notifications about the provisioning process</div>
+                                </th>
+                                <td>
+                                    @Html.TextBoxFor(m => m.NotificationEmail, new { @class = "pnp-tb" })
+                                </td>
+                            </tr>
+                            @{
+                                int i = 0;
+                                foreach (var parameter in Model.PackageProperties)
+                                {
+                                    <tr>
+                                        <th>
+                                            <input type="hidden" name="PackageProperties[@i].Key" value="@parameter.Key" />
+                                            <label class="ms-Label pnp-field-label" for="PackageProperties[@i].Key">@(Model.MetadataProperties[parameter.Key].Caption)</label>
+                                            <div class="pnp-field-description">@(Model.MetadataProperties[parameter.Key].Description)</div>
+                                        </th>
+                                        <td>
+                                            <input name="PackageProperties[@i].Value" value="@parameter.Value" class="pnp-tb" />
+                                        </td>
+                                    </tr>
+
+                                    i++;
+                                }
+                                    }
+
+                                    @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
+                                    {
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemeName)
+                                    </th>
+                                    <td>
+                                        <input type="text" name="@Html.IdFor(m => m.ThemeName)" class="pnp-tb" />
+                                        @*@Html.EditorFor(m => m.ThemeName, new { @class = "pnp-tb" })*@
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemePrimaryColor)
+                                    </th>
+                                    <td>
+                                        <input type="text" class="pnp-tb" name="@Html.IdFor(m => m.ThemePrimaryColor)" id="@Html.IdFor(m => m.ThemePrimaryColor)" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemeBodyTextColor)
+                                    </th>
+                                    <td>
+                                        <input type="text" class="pnp-tb" name="@Html.IdFor(m => m.ThemeBodyTextColor)" id="@Html.IdFor(m => m.ThemeBodyTextColor)" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
+                                    </th>
+                                    <td>
+                                        <input type="text" class="pnp-tb" name="@Html.IdFor(m => m.ThemeBodyBackgroundColor)" id="@Html.IdFor(m => m.ThemeBodyBackgroundColor)" />
+                                    </td>
+                                </tr>
+                                @*
+                                    <tr>
+                                        <th>
+                                            <label for="CustomLogoFile">Logo</label>
+                                        </th>
+                                        <td>
+                                            <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
+                                        </td>
+                                    </tr>
+                                *@
+                            }
+
+                        </table>
+
+                        <button class="pnp-btn-provision">Provision</button>
+                    }
+                    </
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />
+

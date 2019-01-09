@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>web</title>
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+
+</head>
+
+<body>
+    <header class="pnp-header">
+        <div class="pnp-header-inner">
+            <div class="pnp-logo">
+                <a href="/"><img src="images/pnp-provision-300.png" alt="" class="pnp-logo-img"></a>
+            </div>
+            <div class="pnp-title">Office Showcase</div>
+            <nav class="nav-main">
+                <div class="nav-burger">
+                    <button id="pnp-btn-burger" class="pnp-burger"></button>
+                </div>
+                <ul class="nav-list">
+                    <li class="nav-list-item">
+                        <a href="" class="nav-list-link">First Nav List Entry</a>
+                    </li>
+                    <li class="nav-list-item">
+                        <a href="" class="nav-list-link">Second Nav List Entry</a>
+                    </li>
+                    <li class="nav-list-item">
+                        <a href="" class="nav-list-link">Third Nav List Entry</a>
+                    </li>
+                </ul>
+            </nav>
+    </header>
+    <section class="header-img">
+        <div class="header-img-inner"></div>
+    </section>
+    <section class="pnp-hero">
+        <div class="pnp-hero-inner">
+            <div class="pnp-hero-title">
+                <h1 class="pnp-hero-head">Office 365<br>Showcase</h1>
+                <div class="pnp-hero-subtl">
+                    See the possibilites<br>
+                    Deploy &gt; Test
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Inner Content Wrapper -->
+    <div class="wrapper">
+        <div class="wrapper-inner">
+            <div class="wrapper-inner">
+                <div class="pnp-svcteaser">
+                    <div class="pnp-svcteaser-inner">
+                        <h1>
+                            <a id="user-content-provisioning" class="anchor" href="#provisioning" aria-hidden="true"><span
+                                    aria-hidden="true" class="octicon octicon-link"></span></a>Provisioning</h1>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a magna nisi. Cras
+                            ultrices mi orci, ut cursus est sollicitudin in. Cras pretium leo sit amet lorem
+                            tincidunt vulputate. Maecenas id pretium mauris, iaculis consequat lectus. Curabitur
+                            turpis turpis, congue vitae mi ut, elementum dapibus magna. Ut scelerisque suscipit
+                            quam quis luctus. Mauris ornare id enim eu condimentum. Aenean facilisis, turpis sit
+                            amet iaculis tempus, leo enim pharetra justo, ut tristique ante lacus in ante. Maecenas
+                            velit elit, imperdiet non consectetur non, laoreet et nunc. Cras malesuada sollicitudin
+                            consequat. Phasellus vestibulum aliquam ipsum quis luctus.</p>
+
+                    </div>
+                </div>
+                <div class="pnp-form">
+                    <div class="pnp-svcteaser-inner">
+                        <form action="/tenant/Home/Provision" enctype="multipart/form-data" method="post"><input name="__RequestVerificationToken"
+                                type="hidden" value="KY4Yu6sYoGdyHgEy6LZVgQUJiw05gNKi5i5obALP0jDi3lPb2V577UgV-KfOEB136T-sykm3P_ybm9QAJ9ARuF758vk8TEjAgaXhUt3JbbvFVhK7BMo9oKsfVHt-xLzM0pVpyP9vR-aZRU3V1SgRfQ2"><input
+                                id="PackageId" name="PackageId" type="hidden" value="5c3f13eb-e7c0-4d71-8154-d33dee71356d"><input
+                                id="TenantId" name="TenantId" type="hidden" value="ea89fc13-29cd-4f3a-8346-206eab54feff"><input
+                                id="UserPrincipalName" name="UserPrincipalName" type="hidden" value="stfbauer@n8dtest.onmicrosoft.com"><input
+                                data-val="true" data-val-required="The Action Type field is required." id="ActionType"
+                                name="ActionType" type="hidden" value="Tenant">
+                            <div>
+                            </div>
+                            <div>
+                            </div>
+                            <div>
+                            </div>
+                            <div>
+                            </div>
+                            <div>
+                            </div>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            <input type="hidden" name="PackageProperties[0].Key" value="Company">
+                                            <label class="ms-Label" for="PackageProperties[0].Key">Company</label>
+                                        </th>
+                                        <td>
+                                            <input name="PackageProperties[0].Value" value="Contoso Electronics" class="pnp-tb">
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <input type="hidden" name="PackageProperties[1].Key" value="SiteUrlPrefix">
+                                            <label class="ms-Label" for="PackageProperties[1].Key">SiteUrlPrefix</label>
+                                        </th>
+                                        <td>
+                                            <input name="PackageProperties[1].Value" value="Contoso" class="pnp-tb">
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <input type="hidden" name="PackageProperties[2].Key" value="WeatherCity">
+                                            <label class="ms-Label" for="PackageProperties[2].Key">WeatherCity</label>
+                                        </th>
+                                        <td>
+                                            <input name="PackageProperties[2].Value" value="Seattle" class="pnp-tb">
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <input type="hidden" name="PackageProperties[3].Key" value="StockSymbol">
+                                            <label class="ms-Label" for="PackageProperties[3].Key">StockSymbol</label>
+                                        </th>
+                                        <td>
+                                            <input name="PackageProperties[3].Value" value="MSFT" class="pnp-tb">
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <input type="hidden" name="PackageProperties[4].Key" value="lcid">
+                                            <label class="ms-Label" for="PackageProperties[4].Key">lcid</label>
+                                        </th>
+                                        <td>
+                                            <input name="PackageProperties[4].Value" value="1033" class="pnp-tb">
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+                                        <th>
+                                            <label for="ThemeName">Theme Name</label>
+                                        </th>
+                                        <td>
+                                            <input type="text" name="ThemeName" class="pnp-tb">
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <label for="ThemePrimaryColor">Primary Theme Color</label>
+                                        </th>
+                                        <td>
+                                            <input type="text" class="pnp-tb" name="ThemePrimaryColor" id="ThemePrimaryColor">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <label for="ThemeBodyTextColor">Body Text Color</label>
+                                        </th>
+                                        <td>
+                                            <input type="text" class="pnp-tb" name="ThemeBodyTextColor" id="ThemeBodyTextColor">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <label for="ThemeBodyBackgroundColor">Body Background Color</label>
+                                        </th>
+                                        <td>
+                                            <input type="text" class="pnp-tb" name="ThemeBodyBackgroundColor" id="ThemeBodyBackgroundColor">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <td><button class="pnp-btn-provision">Provision</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-info">
+                    <ul class="footer-menu">
+                        <li class="footer-menu-item"><a href="http://" class="footer-menu-link" title="Contact us"
+                                class="footer-menu-link">Contact
+                                us</a></li>
+                        <li class="footer-menu-item"><a href="http://" class="footer-menu-link" title="Privacy & cookies">Privacy
+                                & cookies</a></li>
+                        <li class="footer-menu-item"><a href="http://" class="footer-menu-link" title="Terms of user">Terms
+                                of
+                                use</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    this is where the social media icons will be
+                </div>
+            </div>
+        </footer>
+
+        <!-- build:js scripts/vendor.js -->
+        <!-- bower:js -->
+        <!-- endbower -->
+        <!-- endbuild -->
+
+        <!-- build:js scripts/main.js -->
+        <script src="scripts/main.js"></script>
+        <!-- endbuild -->
+
+        <div class="pnp-stage" style="display: none;">
+            <div class="pnp-stage-content">
+                <img src="https://via.placeholder.com/1600x900?text=16:9">
+            </div>
+            <div class="pnp-stage-selector">
+                <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+                <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+                <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+                <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+                <div class="pnp-stage-item"><img src="https://via.placeholder.com/1600x900?text=16:9" alt="" class="pnp-stage-img"></div>
+            </div>
+        </div>
+</body>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+button.pnp-button {
+    background-color: $ms-sharepoint;
+    color: white;
+    font-size: 1rem;
+    padding: 0.8em 1em 0.8em;
+    text-align: left;
+    border: 3px $ms-sharepoint solid;
+
+    &:hover {
+        $hoverColor: darken($ms-sharepoint, 5%);
+        background-color: $hoverColor;
+        border: 3px $ms-sharepoint solid;
+        color: white;
+    }
+
+    &:active {
+        $activeColor: darken($ms-sharepoint, 10%);
+        background-color: $activeColor;
+        color: white;
+    }
+}

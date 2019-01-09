@@ -1,0 +1,40 @@
+.pnp-error {
+    max-width: 1200px;
+    width: 100%;
+    margin: 2em auto;
+    padding: 0 3em;
+    box-sizing: border-box;
+
+    a{
+        text-decoration: none;
+        color: $ms-sharepoint;
+        &:hover{
+            color: $ms-office;
+        }
+    }
+
+    .errorMessage {
+        font-size: 1.2em;
+        margin: 1em 0;
+    }
+
+    .showErrorLink {
+        text-align: right;
+        margin-bottom: 1em;
+    }
+
+    .errorStack {
+        max-width: 1200px;
+        background-color: #eaeaea;
+        padding: 1em;
+
+        div {
+            word-break: break-all;
+        }
+
+        hr {
+            margin-top: 1em;
+            margin-bottom: 2em;
+        }
+    }
+}

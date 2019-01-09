@@ -1,0 +1,107 @@
+.pnp-filter {
+    width: 100%;
+}
+
+.pnp-filter-toolbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+
+    .pnp-search {
+        justify-self: flex-start;
+    }
+
+    .pnp-filter-toggle {
+        justify-self: flex-end;
+        position: absolute;
+        padding-right: 35px;
+        font-weight: normal;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding-bottom: 28px;
+        z-index: 300;
+        box-sizing: border-box;
+
+
+        &.active {
+            border: 1px $ms-grey solid;
+            border-bottom: none;
+        }
+
+        &:after {
+            position: absolute;
+            display: inline-block;
+            font-family: "FW-MDL2";
+            top: 0px;
+            padding: 0.6em;
+            content: "";
+        }
+    }
+}
+
+
+.pnp-filter-panel {
+    background-color: whitesmoke;
+
+    align-content: flex-end;
+    flex-basis: 100%;
+    border: 1px $ms-grey solid;
+    display: none;
+
+    &.show {
+        display: block;
+    }
+
+    h2 {
+        font-weight: 100;
+
+        margin-top: .5em;
+        margin-bottom: .5em;
+        padding-left: 32px;
+    }
+}
+
+.pnp-filter-toggle {
+    margin: 0;
+    border: 0;
+    height: 37px;
+    padding-top: 0.6em;
+}
+
+.filter-list {
+    margin: 0;
+    padding: 0 32px 32px;
+
+    list-style: none;
+
+    column-count: 4;
+    column-fill: balance;
+    column-gap: 2em;
+
+    @media #{$base-tablet-portait} {
+        column-count: 2;
+        column-gap: 1em;
+    }
+}
+
+.filter-entry {
+    margin: 0;
+    padding: 0;
+}
+
+.filter-btn {
+    @extend .pnp-tag-label;
+
+    font-weight: 400;
+
+    padding-top: .25em;
+    padding-bottom: .25em;
+
+    &:hover {
+        cursor: pointer;
+
+        border-color: $ms-sharepoint;
+    }
+}

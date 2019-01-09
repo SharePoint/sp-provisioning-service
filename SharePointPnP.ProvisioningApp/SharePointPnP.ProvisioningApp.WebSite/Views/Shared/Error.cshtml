@@ -1,0 +1,51 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+}
+
+<section class="header-img">
+    <div class="header-img-inner"></div>
+</section>
+<section class="pnp-hero">
+    <div class="pnp-hero-inner">
+        <div class="pnp-hero-title">
+            <h1 class="pnp-hero-head">Office 365<br>Showcase</h1>
+            <div class="pnp-hero-subtl">
+                See the possibilities<br>
+                Deploy &gt; Test
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Inner Content Wrapper -->
+<div class="wrapper">
+    <div class="wrapper-inner">
+        <article class="pnp-error">
+            <h1>Sorry, something went wrong</h1>
+            <div class="errorMessage">@Model.Exception.Message</div>
+            <div class="showErrorLink"><a href="#">Click here to see more details</a></div>
+            <div class="errorStack" style="display: none;">
+                <hr />
+                <div>@Model.Exception.StackTrace</div>
+            </div>
+        </article>
+    </div>
+</div>
+
+<script language="javascript">
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+
+        document.body.querySelector(".errorStack").style.display = 'none';
+
+        document.body.querySelector(".showErrorLink a").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.body.querySelector(".errorStack").style.display = 'block';
+            document.body.querySelector(".showErrorLink a").style.display = 'none';
+        });
+    })
+
+</script>
+

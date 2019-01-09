@@ -1,0 +1,29 @@
+﻿@model SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ProvisioningActionModel
+
+<section class="header-img">
+    <div class="header-img-inner"></div>
+</section>
+<section class="pnp-hero">
+    <div class="pnp-hero-inner">
+        <div class="pnp-hero-title">
+            <h1 class="pnp-hero-head">Provisioning<br>Service</h1>
+            <div class="pnp-hero-subtl">
+                See the possibilities<br>
+                Deploy &gt; Test
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Inner Content Wrapper -->
+<div class="wrapper">
+    <div class="wrapper-inner">
+        <div class="wrapper-inner">
+            <div class="pnp-svcteaser">
+                <div class="pnp-svcteaser-inner">
+                    @(Html.Raw(Model.ProvisionDescription))
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

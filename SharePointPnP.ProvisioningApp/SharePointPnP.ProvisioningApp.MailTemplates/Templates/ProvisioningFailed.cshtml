@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="it-IT">
+<head>
+    <!--meta charset="utf-8"-->
+    <style>
+        html, body, div {
+            font-family: Arial, arial,sans;
+            font-size: 15px;
+            color: #6e6e6e;
+            line-height: 20px;
+        }
+
+        h1, h2, h3, p, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        img, a img {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        a:hover {
+            opacity: .8;
+        }
+
+        .head {
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container" style="color:#6e6e6e;font-size:16px;padding:10px">
+        <div class="head" style="margin-bottom: 20px;">
+            <img src="https://provisioning.sharepointpnp.com/app/images/pnp-provision-300.png" alt="SharePoint PnP Provisioning">
+            <h1>SharePoint Online Provisioning Service</h1>
+        </div>
+        <div class="body">
+            <div class="message" style="background:#f5f5f5;border-radius:3px;margin-bottom:44px">
+                <p style="padding:20px; font-weight: bold; color:#e89c2a; text-align: center; font-size: 20px">
+                    We're sorry to inform you that your request to provision "@Model.TemplateName" template failed.
+                </p>
+                <div class="separator" style="margin:0 20px;height:1px;background:#ffffff"></div>
+                <p style="padding:20px">
+                    Here is the exception that occurred:<br />
+                    @Model.ExceptionDetails
+                </p>
+                <div class="separator" style="margin:0 20px;height:1px;background:#ffffff"></div>
+                <hr />
+                <div class="separator" style="margin:0 20px;height:1px;background:#ffffff"></div>
+                <p style="padding:20px">
+                    PnP Correlation ID: @Model.PnPCorrelationId
+                </p>
+                <p style="padding:20px">
+                    Please submit any unexpected exception using the following issues list: <a href="https://aka.ms/spdev-issues">aka.ms/spdev-issues</a>
+                </p>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div class="footer" style="clear:both;margin-top:60px">
+            <div class="info" style="margin-top:25px;padding:10px 0;border-top:1px solid #aaaaaa;font-size:80%;opacity:.7">
+                This is an automatic email and you shouldn't reply to it.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

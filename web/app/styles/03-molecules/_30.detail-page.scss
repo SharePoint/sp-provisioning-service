@@ -1,0 +1,123 @@
+.pnp-stage {
+    max-width: 1200px;
+
+    img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+.pnp-stage-content {}
+
+.pnp-stage-selector {
+    display: flex;
+    flex-direction: none;
+}
+
+.pnp-stage-item {
+    justify-content: center;
+
+    &+& {
+        margin-left: 1vw;
+    }
+
+}
+
+.pnp-stage-img {
+    width: 100%;
+    height: auto;
+}
+
+
+.pnp-detail-content {
+    color: $ms-grey;
+    // background-color: palevioletred;
+    // margin-left: 10%;
+    // margin-right: 15%;
+    transition: all 0.125s ease-in-out;
+    margin-left: 2em;
+
+    &>* {
+        width: 90%;
+    }
+
+    p {
+        font-size: 1.15em;
+        line-height: 150%;
+        display: block;
+
+        &:first-child {
+            font-size: 1.5em;
+            line-height: 135%;
+            font-weight: 600;
+        }
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    a {
+        width: auto;
+    }
+
+    h1 {
+        font-size: 3em;
+        line-height: 115%;
+        max-width: 1200px;
+        // margin: 0 auto;
+    }
+
+    h2 {
+        font-size: 2em;
+        line-height: 110%;
+
+    }
+
+    h3 {
+        font-size: 1.6em;
+        line-height: 110%;
+
+    }
+
+    h4 {
+        font-size: 1.35em;
+        line-height: 125%;
+    }
+    & > ul{
+        margin-top: 2em;
+        margin-bottom: 2em;
+    }
+
+    li{
+        font-size: 1.25rem;
+    }
+    a{
+        text-decoration: none;
+        color: $ms-sharepoint;
+        &:hover{
+            color: $ms-office;
+        }
+    }
+
+
+}
+
+.pnp-detail {
+    min-height: 100%;
+    margin: 0 auto;
+    margin-top: 3em;
+    display: flex;
+    max-width: 1200px;
+    @media #{$base-tablet-portait}{
+        width: 100%;
+        flex-direction: column;
+        font-size: 16px;
+        ul,li{
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    }
+}

@@ -1,0 +1,33 @@
+﻿@model SharePointPnP.ProvisioningApp.WebSite.Models.ContentPageViewModel
+
+<section class="header-img">
+    <div class="header-img-inner"></div>
+</section>
+<section class="pnp-hero">
+    <div class="pnp-hero-inner">
+        <div class="pnp-hero-title">
+            <h1 class="pnp-hero-head">Provisioning<br>Service</h1>
+            <div class="pnp-hero-subtl">
+                See the possibilities<br>
+                Deploy &gt; Test
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="wrapper">
+    <div class="wrapper-inner">
+        <article class="pnp-detail">
+            <div class="pnp-detail-content">
+                @(Html.Raw(Model.Content))
+            </div>
+        </article>
+    </div>
+</div>
+
+@section scripts
+{
+    <!-- build:js scripts/main.js -->
+    <script src="/app/scripts/main.js"></script>
+    <!-- endbuild -->
+}

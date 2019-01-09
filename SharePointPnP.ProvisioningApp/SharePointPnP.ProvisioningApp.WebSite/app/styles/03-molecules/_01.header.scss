@@ -1,0 +1,111 @@
+.pnp-header {
+    position: fixed;
+    // position: absolute;
+    z-index: 10;
+    top: 0;
+    right: 0;
+    left: 0;
+
+    max-width: 1920px;
+    height: 65px;
+    margin: auto;
+
+    white-space: nowrap;
+
+    background-color: white;
+    @media #{$base-tablet} {
+        height: 57px;
+    }
+}
+
+.pnp-header {
+    display: block;
+
+    &-inner {
+        display: flex;
+
+        width: 100%;
+        margin: 1 auto;
+
+        flex-grow: 3;
+
+        // align-content: stretch;
+
+        >* {
+            flex: 0 100%;
+        }
+
+        @media #{$base-tablet} {
+            position: absolute;
+        }
+    }
+}
+
+.pnp-logo {
+
+    flex: 0 1;
+    align-self: stretch;
+
+    &-img {
+        height: 32px;
+        margin: auto;
+        padding: 1em 1.75em 1em .75em;
+        padding-right: 0px;
+        @media #{$base-tablet} {
+            height: 24px;
+        }
+    }
+    &-beta{
+        padding-right: 0;
+        padding: 1em .75em 1em .75em;
+        height: 32px;
+        @media #{$base-tablet} {
+            height: 24px;
+        }
+    }
+}
+
+.pnp-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+
+    display: inline-block;
+
+    color: $ms-grey;
+    // background: lime;
+
+    align-self: center;
+    flex: 0 1;
+
+    margin-top: -3px;
+
+    @media #{$base-tablet} {
+        flex: 0 100%;
+        justify-content: stretch;
+    }
+
+    @media #{$base-tablet-portait} {
+        visibility: hidden;
+        overflow: hidden;
+        width: 0px;
+    }
+
+}
+
+.BETA{
+    max-width: 1920px;
+    margin: 0 auto;
+    z-index: 300;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    text-align: center;
+    &-inner{
+        display: inline-block;
+        margin: 0 auto;
+        padding: 0.5em 1em;
+        background-color: $ms-office;
+        font-weight: bold;
+        color: white;
+    }
+}
