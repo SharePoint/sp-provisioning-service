@@ -1,60 +1,71 @@
 ﻿.pnp-tb {
     font-size: 1em;
-    padding: 0.2em 0.8em 0.3em;
     // border: 2px $ms-form-border solid;
 
+    position: relative;
+
+    padding: .2em .8em .3em;
+
     &[disabled] {
-        background-color: rgb(244, 244, 244);
         color: $ms-form-border;
+        background-color: rgb(244, 244, 244);
     }
 }
 
 input[type="radio"] {
     font-size: 1em;
+
     margin-right: 1em;
 }
 
 input[type="checkbox"] {
     font-size: 1em;
+
     margin-right: 1em;
 }
 
 button,
 input[type="button"] {
     font-size: 1em;
+    font-weight: 600;
+
+    padding: .4em 1em .5em;
+
+    transition: background-color .25s ease-in-out;
+
+    color: rgb(51, 51, 51);
+    border: 1px $ms-form-border solid;
     border-color: 2px $ms-form-border solid;
     background-color: rgb(244, 244, 244);
-    border: 1px $ms-form-border solid;
-    padding: 0.4em 1em 0.5em;
-    color: rgb(51, 51, 51);
-    font-weight: 600;
-    transition: background-color 0.25s ease-in-out;
 
     &:hover {
-        background-color: $ms-sharepoint;
         color: white;
+        background-color: $ms-sharepoint;
     }
 
     &:active,
     &:checked {
-        background-color: rgb(200, 200, 200);
         color: rgb(51, 51, 51);
+        background-color: rgb(200, 200, 200);
     }
 }
 
 
 textarea {
-    border-color: 2px $ms-form-border solid;
     font-family: "Segoe UI", "SegoeUI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1em;
-    padding: 0.2em 0.8em 0.3em;
+
+    padding: .2em .8em .3em;
+
+    border-color: 2px $ms-form-border solid;
 }
 
 select,
 option {
     font-size: 1em;
+
     border-color: 2px $ms-form-border solid;
-    -webkit-border-radius: 0px;
+    -webkit-border-radius: 0;
 }
 
 table {
@@ -63,15 +74,18 @@ table {
 
 th {
     font-size: 1.2em;
+
+    padding: .5em 2em;
+    padding-left: 0;
+
     text-align: left;
-    padding: 0.5em 2em;
-    padding-left: 0px;
 }
 
 #ThemePrimaryColor,
 #ThemeBodyBackgroundColor,
 #ThemeBodyTextColor {
-    padding: 0px;
+    padding: 0;
+
     background-color: white;
 }
 
@@ -81,50 +95,72 @@ th {
 
     &-input {
         @extend .pnp-tb;
+
+        float: left;
+
         margin-right: 0;
         padding-right: 0;
-        float: left;
-        border-right: 0;
+
         border: 1px $ms-form-border solid;
+        border-right: 0;
         border-right: 0;
     }
 
     &-button {
-        box-sizing: border-box;
-        background-color: white;
-        border-left: 0px;
-        margin-left: 0;
-        padding: 0.2em 0.4em 0.3em;
-        padding-bottom: calc(0.3em - 3px);
         float: left;
         overflow: hidden;
+
+        box-sizing: border-box;
+        margin-left: 0;
+        padding: .2em .4em .3em;
+        padding-bottom: calc(.3em - 3px);
+
         color: $ms-sharepoint;
+        border-left: 0;
+        background-color: white;
 
         &:before {
             font-family: "FW-MDL2";
-            margin-top: 3px;
 
             display: inline-block;
-            content: '';
+
+            margin-top: 3px;
+
+            content: "";
         }
     }
 }
-.pnp-form{
-    width: 100%;
-    .pnp-btn-provision{
-    }
 
-    @media #{$base-phone}{
-        table th, table td{
+.pnp-form {
+    width: 100%;
+
+    .pnp-btn-provision {}
+
+    @media #{$base-phone} {
+
+        table th,
+        table td {
             display: block;
         }
     }
 
     .pnp-field-description {
-        font-size: 0.7em;
+        font-size: .7em;
         font-weight: normal;
     }
 
-    .pnp-field-label {
-    }
+    .pnp-field-label {}
+}
+
+.pnp-colorpreview {
+    display: inline-block;
+
+    margin-top: 1px;
+    width: 31px;
+    height: 31px;
+    margin-right: 0.5em;
+
+    content: " ";
+    white-space: nowrap;
+    float: left;
 }
