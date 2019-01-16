@@ -208,7 +208,6 @@ const colorPickerInit = () => {
                 let marginSetOff = computedStyles.getPropertyValue('height').replace('px', '') * -1;
 
                 colorSelector.style.marginTop = marginSetOff + 'px';
-                colorSelector.style.backgroundColor = 'lime';
 
             }
 
