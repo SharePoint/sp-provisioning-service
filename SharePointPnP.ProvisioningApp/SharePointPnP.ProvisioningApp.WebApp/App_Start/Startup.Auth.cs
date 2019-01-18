@@ -14,6 +14,9 @@ using Newtonsoft.Json;
 using SharePointPnP.ProvisioningApp.Infrastructure;
 using SharePointPnP.ProvisioningApp.Infrastructure.ADAL;
 using System.Net.Http;
+using System.Web.Routing;
+using System.Web.Mvc;
+using SharePointPnP.ProvisioningApp.WebApp.Controllers;
 
 namespace SharePointPnP.ProvisioningApp.WebApp
 {
@@ -100,8 +103,20 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                         },
                         AuthenticationFailed = (context) =>
                         {
-                            context.OwinContext.Response.Redirect("/Home/Error");
+                            var httpContext = (HttpContextBase)context.OwinContext.Environment["System.Web.HttpContextBase"];
+
+                            var routeData = new RouteData();
+                            routeData.Values["controller"] = "Home";
+                            routeData.Values["action"] = "Error";
+                            routeData.Values["exception"] = context.Exception;
+
+                            IController errorController = DependencyResolver.Current.GetService<HomeController>();
+                            var requestContext = new RequestContext(httpContext, routeData);
+                            errorController.Execute(requestContext);
+
+                            // context.OwinContext.Response.Redirect("/Home/Error");
                             context.HandleResponse(); // Suppress the exception
+                            //context.OwinContext.Response.Write(context.Exception.ToString());
                             return Task.FromResult(0);
                         }
                     }

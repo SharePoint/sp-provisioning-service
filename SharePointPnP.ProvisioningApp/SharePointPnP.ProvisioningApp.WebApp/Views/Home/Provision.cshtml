@@ -63,10 +63,10 @@
 
                                     i++;
                                 }
-                                    }
+                            }
 
-                                    @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
-                                    {
+                            @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
+                            {
                                 <tr>
                                     <th>
                                         @Html.LabelFor(m => m.ThemeName)
@@ -81,7 +81,8 @@
                                         @Html.LabelFor(m => m.ThemePrimaryColor)
                                     </th>
                                     <td>
-                                        <input type="text" class="pnp-tb" name="@Html.IdFor(m => m.ThemePrimaryColor)" id="@Html.IdFor(m => m.ThemePrimaryColor)" />
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
                                     </td>
                                 </tr>
                                 <tr>
@@ -89,7 +90,8 @@
                                         @Html.LabelFor(m => m.ThemeBodyTextColor)
                                     </th>
                                     <td>
-                                        <input type="text" class="pnp-tb" name="@Html.IdFor(m => m.ThemeBodyTextColor)" id="@Html.IdFor(m => m.ThemeBodyTextColor)" />
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
                                     </td>
                                 </tr>
                                 <tr>
@@ -97,7 +99,8 @@
                                         @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
                                     </th>
                                     <td>
-                                        <input type="text" class="pnp-tb" name="@Html.IdFor(m => m.ThemeBodyBackgroundColor)" id="@Html.IdFor(m => m.ThemeBodyBackgroundColor)" />
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
                                     </td>
                                 </tr>
                                 @*
@@ -122,6 +125,13 @@
         </div>
     </div>
 </div>
+
+@section scripts
+{
+    <!-- build:js scripts/main.js -->
+    <script src="/app/scripts/main.js"></script>
+    <!-- endbuild -->
+}
 
 <img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />
 

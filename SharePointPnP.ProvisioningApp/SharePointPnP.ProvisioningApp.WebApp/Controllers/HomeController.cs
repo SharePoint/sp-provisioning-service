@@ -46,10 +46,22 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return View();
         }
 
+        //[AllowAnonymous]
+        //public ActionResult Error(string message)
+        //{
+        //    throw new Exception(message);
+        //}
+
         [AllowAnonymous]
-        public ActionResult Error(string message)
+        public ActionResult Error(Exception exception)
         {
-            throw new Exception(message);
+            HandleErrorInfo model = null;
+            if (exception != null)
+            {
+                model = new HandleErrorInfo(exception, "unknown", "unknown");
+            }
+
+            return View(model);
         }
 
         [HttpGet]

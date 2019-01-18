@@ -3,14 +3,15 @@
 }
 
 .pnp-page-selector{
-    display: inline-block;
-    display: flex;
-    justify-content: center;
+	display: inline-block;
+	display: flex;
 
 	margin: 0 auto;
 	padding: 0;
 
 	list-style: none;
+
+	justify-content: center;
 }
 
 .pnp-page-item{
@@ -21,58 +22,58 @@
 	}
 }
 .page-index{
-    margin-top: -3em;
+	margin-top: -3em;
 }
 .page-next,
 .page-prev{
-    .page-button{
-        padding-top: 0.1em;
-    }
+	.page-button{
+		padding-top: .1em;
+	}
 }
 
 
 .page-button{
 	width: 2em;
 	height: 2em;
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 
+	transition: none;
 	text-align: center;
 
 	color: $ms-grey;
 	border: none;
-    background-color: transparent;
-    transition: none;
+	background-color: transparent;
 
 	&:hover{
 		cursor: pointer;
-    }
-    &:active{
-        color: $ms-grey;
-    }
-    svg{
-        path{
-            fill: $ms-grey;
-        }
-    }
-    &:hover{
-        color: $ms-sharepoint;
-        background-color: transparent;
-        svg{
-            path{
-                fill: $ms-sharepoint;
-            }
-        }
-    }
-    &:active,
-    &:disabled,
-    &.selected{
-        background-color: $ms-sharepoint;
-        color: white;
-        svg{
-            path{
-                fill: white;
-            }
-        }
-    }
+	}
+	&:active{
+		color: $ms-grey;
+	}
+	svg{
+		path{
+			fill: $ms-grey;
+		}
+	}
+	&:hover{
+		color: $ms-sharepoint;
+		background-color: transparent;
+		svg{
+			path{
+				fill: $ms-sharepoint;
+			}
+		}
+	}
+	&:active,
+	&:disabled,
+	&.selected{
+		color: white;
+		background-color: $ms-sharepoint;
+		svg{
+			path{
+				fill: white;
+			}
+		}
+	}
 }
