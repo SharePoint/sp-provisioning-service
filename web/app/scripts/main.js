@@ -144,7 +144,7 @@ const colorPickerInit = () => {
 
     let colorRegex = /^#[0-9A-F]{6}$/i;
 
-    let colorPickers = document.querySelectorAll("input.pnp-tb[name$=Color]");
+    let colorPickers = document.querySelectorAll('input.pnp-tb[name$=Color]');
 
     let setColor = (event, closePicker) => {
 
@@ -192,7 +192,7 @@ const colorPickerInit = () => {
 
         })
 
-        colorPickers[i].addEventListener("focusin", (event) => {
+        colorPickers[i].addEventListener('focusin', (event) => {
 
             const colorSelector = document.querySelector('.color-picker');
             const header = document.querySelector('.header-img');
@@ -207,19 +207,18 @@ const colorPickerInit = () => {
 
                 let marginSetOff = computedStyles.getPropertyValue('height').replace('px', '') * -1;
 
-                colorSelector.style.marginTop = marginSetOff + "px";
-                colorSelector.style.backgroundColor = "lime";
+                colorSelector.style.marginTop = marginSetOff + 'px';
 
             }
 
         })
 
 
-        colorPickers[i].addEventListener("keydown", setColor);
+        colorPickers[i].addEventListener('keydown', setColor);
 
 
         // init all color picker
-        colorSeletors[i].on("change", function (color, event) {
+        colorSeletors[i].on('change', function (color, event) {
 
 
             this.source.value = '#' + color;
