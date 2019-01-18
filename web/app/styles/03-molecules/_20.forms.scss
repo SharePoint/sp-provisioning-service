@@ -84,8 +84,6 @@ th {
 #ThemePrimaryColor,
 #ThemeBodyBackgroundColor,
 #ThemeBodyTextColor {
-    padding: 0;
-
     background-color: white;
 }
 
@@ -134,6 +132,30 @@ th {
 .pnp-form {
     width: 100%;
 
+    th{
+        width: 60%;
+        max-width: 50%;
+    }
+
+    td{
+        white-space: nowrap;
+        max-width: 50%;
+    }
+
+    @media screen and (max-width: 768px){
+        table{
+            display: block;
+        }
+        th, td{
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            .pnp-tb{
+                width: 70%;
+            }
+        }
+    }
+
     .pnp-btn-provision {}
 
     @media #{$base-phone} {
@@ -147,6 +169,8 @@ th {
     .pnp-field-description {
         font-size: .7em;
         font-weight: normal;
+        display: flex;
+        max-width: 90%;
     }
 
     .pnp-field-label {}
