@@ -69,15 +69,15 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [DisplayName("Primary Theme Color")]
         [JsonProperty(PropertyName = "themePrimaryColor")]
-        public String ThemePrimaryColor { get; set; }
+        public String ThemePrimaryColor { get; set; } = "#03787C";
 
         [DisplayName("Body Text Color")]
         [JsonProperty(PropertyName = "themeBodyTextColor")]
-        public String ThemeBodyTextColor { get; set; }
+        public String ThemeBodyTextColor { get; set; } = "#000000";
 
         [DisplayName("Body Background Color")]
         [JsonProperty(PropertyName = "themeBodyBackgroundColor")]
-        public String ThemeBodyBackgroundColor { get; set; }
+        public String ThemeBodyBackgroundColor { get; set; } = "#FFFFFF";
 
         [DisplayName("Custom Logo")]
         [JsonProperty(PropertyName = "customLogo")]
