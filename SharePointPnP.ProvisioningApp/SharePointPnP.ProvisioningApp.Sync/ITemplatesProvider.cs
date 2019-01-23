@@ -8,9 +8,9 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 {
     public interface ITemplatesProvider
     {
-        Task<IEnumerable<ITemplateItem>> GetAsync(string path);
+        Task<IEnumerable<ITemplateItem>> GetAsync(string path, Action<string> log);
 
-        Task CloneAsync(ITemplatesProvider sourceProvider);
+        Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log);
 
     }
 }

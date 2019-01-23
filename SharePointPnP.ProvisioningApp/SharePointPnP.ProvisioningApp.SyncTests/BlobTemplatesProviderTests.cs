@@ -25,11 +25,11 @@ namespace SharePointPnP.ProvisioningApp.SyncTests
         [TestMethod]
         public async Task GetAsync()
         {
-            var items = (await _provider.GetAsync("/")).ToArray();
+            var items = (await _provider.GetAsync("/", null)).ToArray();
 
             foreach (var folder in items.OfType<ITemplateFolder>())
             {
-                var folderItems = (await _provider.GetAsync(folder.Path)).ToArray();
+                var folderItems = (await _provider.GetAsync(folder.Path, null)).ToArray();
             }
         }
 
@@ -39,7 +39,7 @@ namespace SharePointPnP.ProvisioningApp.SyncTests
             string root = ConfigurationManager.AppSettings["FileSystemTemplatesProvider:Root"];
             var sourceProvider = new FileSystemTemplatesProvider(root);
 
-            await _provider.CloneAsync(sourceProvider);
+            await _provider.CloneAsync(sourceProvider, null);
         }
     }
 }

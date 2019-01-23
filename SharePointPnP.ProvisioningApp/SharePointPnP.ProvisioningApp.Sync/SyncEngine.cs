@@ -46,13 +46,15 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
         {
             if (clone)
             {
+                bool enableDiagnostics;
+                bool.TryParse(ConfigurationManager.AppSettings["EnableDiagnostics"], out enableDiagnostics);
                 WriteLog("Cloning source...");
-                await _cloneProvider.CloneAsync(_sourceProvider);
+                await _cloneProvider.CloneAsync(_sourceProvider, enableDiagnostics ? (Action<String>)WriteLog : (s) => { });
             }
 
             // Where all source resources are based
-            _baseSourceUri = FixRelativeTo((await _sourceProvider.GetAsync("")).OfType<ITemplateFile>().First().DownloadUri);
-            _baseCloneUri = FixRelativeTo((await _cloneProvider.GetAsync("")).OfType<ITemplateFile>().First().DownloadUri);
+            _baseSourceUri = FixRelativeTo((await _sourceProvider.GetAsync("", WriteLog)).OfType<ITemplateFile>().First().DownloadUri);
+            _baseCloneUri = FixRelativeTo((await _cloneProvider.GetAsync("", WriteLog)).OfType<ITemplateFile>().First().DownloadUri);
 
             WriteLog("Synchonizing first release tenants...");
             await SyncFirstReleaseTenants();
@@ -75,7 +77,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             using (ProvisioningAppDBContext context = GetContext())
             {
                 // Find the category file
-                ITemplateFile file = (await _cloneProvider.GetAsync(SYSTEM_PATH)).FindFile(TENANTS_NAME);
+                ITemplateFile file = (await _cloneProvider.GetAsync(SYSTEM_PATH, WriteLog)).FindFile(TENANTS_NAME);
                 if (file == null) throw new InvalidOperationException($"Cannot find file {TENANTS_NAME}");
 
                 // Deserialize the json
@@ -128,7 +130,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             using (ProvisioningAppDBContext context = GetContext())
             {
                 // Find the category file
-                var files = await _cloneProvider.GetAsync(CONTENT_PATH);
+                var files = await _cloneProvider.GetAsync(CONTENT_PATH, WriteLog);
                 if (files == null || files.Count() == 0) throw new InvalidOperationException($"Cannot find files in folder {CONTENT_PATH}");
 
                 var existingDbContentPages = context.ContentPages.ToDictionary(cp => cp.Id, StringComparer.OrdinalIgnoreCase);
@@ -173,7 +175,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             using (ProvisioningAppDBContext context = GetContext())
             {
                 // Find the category file
-                ITemplateFile file = (await _cloneProvider.GetAsync(SYSTEM_PATH)).FindFile(CATEGORIES_NAME);
+                ITemplateFile file = (await _cloneProvider.GetAsync(SYSTEM_PATH, WriteLog)).FindFile(CATEGORIES_NAME);
                 if (file == null) throw new InvalidOperationException($"Cannot find file {CATEGORIES_NAME}");
 
                 // Deserialize the json
@@ -233,7 +235,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 var objectStateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
 
                 // Find packages inside folder
-                IEnumerable<ITemplateItem> items = await _cloneProvider.GetAsync(path);
+                IEnumerable<ITemplateItem> items = await _cloneProvider.GetAsync(path, WriteLog);
                 var packages = await FindPackagesAsync(items, context);
 
                 var existingDbPackages = context.Packages
@@ -331,7 +333,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
         private async Task<DomainModel.Package> GetPackageAsync(ITemplateFolder folder, ProvisioningAppDBContext context)
         {
-            var items = await _cloneProvider.GetAsync(folder.Path);
+            var items = await _cloneProvider.GetAsync(folder.Path, WriteLog);
 
             // Read settings file
             ITemplateFile settingsFile = items.OfType<ITemplateFile>().FindFile(SETTINGS_NAME);
@@ -477,10 +479,10 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
         private async Task<string> GetDescriptionAsync(string path)
         {
-            IMarkdownFile readmeFile = (await _sourceProvider.GetAsync(path)).FindFile(README_NAME) as IMarkdownFile;
+            IMarkdownFile readmeFile = (await _sourceProvider.GetAsync(path, WriteLog)).FindFile(README_NAME) as IMarkdownFile;
             if (readmeFile == null) return null;
 
-            ITemplateFile cloneReadmeFile = (await _cloneProvider.GetAsync(path)).FindFile(README_NAME);
+            ITemplateFile cloneReadmeFile = (await _cloneProvider.GetAsync(path, WriteLog)).FindFile(README_NAME);
 
             // Get the markdown
             using (var httpClient = new HttpClient())
@@ -494,10 +496,10 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
         private async Task<string> GetHtmlContentAsync(string path, string fileName)
         {
-            IMarkdownFile contentFile = (await _sourceProvider.GetAsync(path)).FindFile(fileName) as IMarkdownFile;
+            IMarkdownFile contentFile = (await _sourceProvider.GetAsync(path, WriteLog)).FindFile(fileName) as IMarkdownFile;
             if (contentFile == null) return null;
 
-            ITemplateFile cloneContentFile = (await _cloneProvider.GetAsync(path)).FindFile(fileName);
+            ITemplateFile cloneContentFile = (await _cloneProvider.GetAsync(path, WriteLog)).FindFile(fileName);
 
             // Get the markdown
             using (var httpClient = new HttpClient())

@@ -22,12 +22,12 @@ namespace SharePointPnP.ProvisioningApp.Sync.FileSystem
             _root = new DirectoryInfo(root);
         }
 
-        public Task CloneAsync(ITemplatesProvider sourceProvider)
+        public Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ITemplateItem>> GetAsync(string path)
+        public Task<IEnumerable<ITemplateItem>> GetAsync(string path, Action<string> log)
         {
             if (String.IsNullOrWhiteSpace(path) || path == "/")
             {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
 {
@@ -26,27 +27,33 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
             _container = blobClient.GetContainerReference(containerName);
         }
 
-        public async Task CloneAsync(ITemplatesProvider sourceProvider)
+        public async Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log)
         {
-            IEnumerable<ITemplateItem> items = await sourceProvider.GetAsync("");
-            await CloneAsync(sourceProvider, "", items);
+            IEnumerable<ITemplateItem> items = await sourceProvider.GetAsync("", log);
+            await CloneAsync(sourceProvider, "", items, log);
         }
 
-        private async Task CloneAsync(ITemplatesProvider sourceProvider, string path, IEnumerable<ITemplateItem> items)
+        private async Task CloneAsync(ITemplatesProvider sourceProvider, string path, IEnumerable<ITemplateItem> items, Action<string> log)
         {
-            HashSet<ITemplateItem> existingItems = new HashSet<ITemplateItem>(await GetAsync(path));
+            HashSet<ITemplateItem> existingItems = new HashSet<ITemplateItem>(await GetAsync(path, log));
 
             // Add or update the items
             foreach (ITemplateItem item in items)
             {
+                log?.Invoke($"Cloning: {item.Path}");
+
                 // Mark as done
-                existingItems.Remove(item);
+                if (!existingItems.Remove(item))
+                {
+                    existingItems.RemoveWhere(i => i.Path == System.Uri.EscapeUriString(item.Path));
+                }
 
                 if (item is ITemplateFolder folder)
                 {
+
                     // Get the children and clone the entire folder
-                    IEnumerable<ITemplateItem> folderItems = await sourceProvider.GetAsync(folder.Path);
-                    await CloneAsync(sourceProvider, folder.Path, folderItems);
+                    IEnumerable<ITemplateItem> folderItems = await sourceProvider.GetAsync(folder.Path, log);
+                    await CloneAsync(sourceProvider, folder.Path, folderItems, log);
                 }
                 else if (item is ITemplateFile file)
                 {
@@ -61,10 +68,12 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
             // Remove any additional item
             foreach (ITemplateItem item in existingItems)
             {
+                log?.Invoke($"Removing: {item.Path}");
+
                 if (item is ITemplateFolder folder)
                 {
                     // To remove a directory we need to iterate through children
-                    await DeleteDirectoryAsync(item.Path);
+                    await DeleteDirectoryAsync(item.Path, log);
                 }
                 else if (item is ITemplateFile file)
                 {
@@ -74,17 +83,17 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
             }
         }
 
-        private async Task DeleteDirectoryAsync(string path)
+        private async Task DeleteDirectoryAsync(string path, Action<string> log)
         {
             // Get the children
-            IEnumerable<ITemplateItem> items = await GetAsync(path);
+            IEnumerable<ITemplateItem> items = await GetAsync(path, log);
 
             foreach (ITemplateItem item in items)
             {
                 if (item is ITemplateFolder folder)
                 {
                     // To remove a directory we need to iterate through children
-                    await DeleteDirectoryAsync(item.Path);
+                    await DeleteDirectoryAsync(item.Path, log);
                 }
                 else if (item is ITemplateFile file)
                 {
@@ -94,7 +103,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
             }
         }
 
-        public Task<IEnumerable<ITemplateItem>> GetAsync(string path)
+        public Task<IEnumerable<ITemplateItem>> GetAsync(string path, Action<string> log)
         {
             if (String.IsNullOrWhiteSpace(path) || path == "/") path = "";
             CloudBlobDirectory directory = _container.GetDirectoryReference(path);
@@ -108,8 +117,13 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
             return blobs.Select(b =>
             {
                 if (b is ICloudBlob cb)
+                {
                     return (ITemplateItem)new BlobTemplateItem(cb);
-                return new DirectoryTemplateItem(b);
+                }
+                else
+                {
+                    return new DirectoryTemplateItem(b);
+                }
             });
         }
 

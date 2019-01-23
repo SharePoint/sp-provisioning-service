@@ -20,12 +20,12 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
             _helper = new GitHubHelper(baseUrl, repositoryPath, personalAccessToken);
         }
 
-        public async Task CloneAsync(ITemplatesProvider sourceProvider)
+        public async Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log)
         {
             throw new NotSupportedException();
         }
 
-        public async Task<IEnumerable<ITemplateItem>> GetAsync(string path)
+        public async Task<IEnumerable<ITemplateItem>> GetAsync(string path, Action<string> log)
         {
             var rateLimit = await _helper.GetRateLimitAsync();
 
