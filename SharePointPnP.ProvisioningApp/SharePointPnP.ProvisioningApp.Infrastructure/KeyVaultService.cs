@@ -116,7 +116,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
                 }
             }
 
-            var createdKey = await keyVaultClient.CreateKeyAsync(vaultAddress, key, JsonWebKeyType.Rsa, tags: tags);
+            var attributes = new KeyAttributes(recoveryLevel: "Purgeable");
+            attributes.Expires = DateTime.UtcNow.AddHours(12);
+
+            var createdKey = await keyVaultClient.CreateKeyAsync(vaultAddress, key, JsonWebKeyType.Rsa, keyAttributes: attributes, tags: tags);
         }
 
         /// <summary>

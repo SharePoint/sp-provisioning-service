@@ -28,10 +28,15 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Logins the user and redirects to the returnUrl, if any
+        /// </summary>
+        /// <param name="returnUrl">The optional return URL after login</param>
+        /// <returns></returns>
         [HttpGet]
-        public ActionResult Login()
+        public ActionResult Login(String returnUrl = null)
         {
-            return Redirect("/");
+            return Redirect(returnUrl ?? "/");
         }
 
         [HttpGet]
@@ -92,7 +97,10 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         model.UserPrincipalName = upn;
                         model.PackageId = packageId;
 
-                        var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}";
+                        String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                        String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                        var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                         var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                             tokenId, "https://graph.microsoft.com/");
 

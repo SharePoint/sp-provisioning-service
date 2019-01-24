@@ -30,10 +30,14 @@ namespace SharePointPnP.ProvisioningApp.WebApp
 
         public void ConfigureAuth(IAppBuilder app)
         {
-            
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions { });
+            String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+            String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+             app.UseCookieAuthentication(new CookieAuthenticationOptions {
+                CookiePath = provisioningScope ?? "/",
+            });
 
             app.UseOpenIdConnectAuthentication(
                 new OpenIdConnectAuthenticationOptions
@@ -97,7 +101,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                                 // Store the Refresh Token in the Azure Key Vault
                                 if (tenandIdClaim != null && !String.IsNullOrEmpty(tenandIdClaim.Value))
                                 {
-                                    await ProvisioningAppManager.AccessTokenProvider.WriteRefreshTokenAsync($"{tenandIdClaim.Value}-{upnClaim.Value.GetHashCode()}", token.RefreshToken);
+                                    String tokenId = $"{tenandIdClaim.Value}-{upnClaim.Value.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                                    await ProvisioningAppManager.AccessTokenProvider.WriteRefreshTokenAsync(tokenId, token.RefreshToken);
                                 }
                             }
                         },

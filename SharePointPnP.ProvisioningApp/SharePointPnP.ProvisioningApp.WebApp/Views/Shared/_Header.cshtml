@@ -2,7 +2,13 @@
 
     document.addEventListener("DOMContentLoaded", function (event) {
 
-        fetch("/site/UserProfile/Username")
+        var scope = "site";
+
+        if (window.location.href.indexOf('/tenant/')) {
+            scope = "tenant";
+        }
+
+        fetch("/" + scope + "/UserProfile/Username")
             .then(data => { return (data.json()); })
             .then(username => {
                 if (username) {

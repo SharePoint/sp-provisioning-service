@@ -61,7 +61,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 // Log telemetry event
                 telemetry?.LogEvent("ProvisioningFunction.Start");
 
-                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.GetHashCode()}";
+                String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
 
                 // Retrieve the SPO target tenant via Microsoft Graph
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
