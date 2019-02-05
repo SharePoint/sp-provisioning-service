@@ -1,0 +1,126 @@
+﻿.ms-Toggle {
+    font-family: Segoe UI WestEuropean,Segoe UI,-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    font-weight: 400;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    position: relative;
+    display: block;
+    margin-bottom: 26px;
+}
+
+.ms-Toggle-description {
+    position: relative;
+    font-size: 14px;
+    vertical-align: top;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.ms-Toggle-input {
+    display: none;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.ms-Toggle-field {
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 20px;
+    box-sizing: border-box;
+    border: 2px solid #a6a6a6;
+    border-radius: 20px;
+    cursor: pointer;
+    transition-property: background,left,border-color;
+    transition-duration: .25s;
+    transition-timing-function: cubic-bezier(.4,0,.23,1);
+    outline: 0;
+}
+
+.ms-Toggle .ms-Label {
+    position: relative;
+    top: -2px;
+    padding: 0 0 0 50px;
+}
+
+.ms-Toggle .ms-Toggle-field:before {
+    right: auto;
+}
+
+.ms-Toggle .ms-Toggle-field:before {
+    position: absolute;
+    top: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    content: "";
+    left: 4px;
+    background-color: #666;
+    outline: 1px solid transparent;
+    transition-property: background,left;
+    transition-duration: .25s;
+    transition-timing-function: cubic-bezier(.4,0,.23,1);
+}
+
+.ms-Toggle .ms-Toggle-field.is-selected:before {
+    background-color: #fff;
+    left: 28px;
+}
+
+.ms-Toggle .ms-Toggle-field.is-selected:before {
+    position: absolute;
+    top: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    content: "";
+    right: 4px;
+    outline: 1px solid transparent;
+    transition-property: background,left;
+    transition-duration: .25s;
+    transition-timing-function: cubic-bezier(.4,0,.23,1);
+}
+
+.ms-Toggle .ms-Toggle-field.is-selected {
+    background-color: #0078d7;
+    border-color: #0078d7;
+}
+
+.ms-Toggle.is-disabled .ms-Toggle-field {
+    background-color: #fff;
+    border-color: #c8c8c8;
+    pointer-events: none;
+    cursor: default;
+}
+
+.pnp-btn-provision.ms-Button--primary {
+    background-color: #0078d7;
+    border-color: #0078d7;
+    color: #fff;
+    margin-left: 118px;
+}
+
+.pnp-btn-provision {
+    font-size: 14px;
+}
+
+#ThemePrimaryColor, #ThemeBodyBackgroundColor, #ThemeBodyTextColor {
+    width: 158px;
+}
+
+select.pnp-tb {
+    width: 224px;
+}
+
+.pnp-tb.invalid {
+    border-color: red;
+    border-style: dashed;
+    border-width: 1px;
+}
