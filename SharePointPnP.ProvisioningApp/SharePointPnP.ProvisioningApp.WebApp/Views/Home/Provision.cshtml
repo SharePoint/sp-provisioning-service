@@ -431,6 +431,9 @@
                     else {
                         // set Theme fields state accordingly
                         disableField(selectedTheme);
+                        if (toggleIsSelected(toggleApplyCustomTheme)) {
+                            toggleState(toggleApplyCustomTheme, false);
+                        }
                         disableToggle(toggleApplyCustomTheme);
                         disableField(themeName);
                         disableField(themePrimaryColor);

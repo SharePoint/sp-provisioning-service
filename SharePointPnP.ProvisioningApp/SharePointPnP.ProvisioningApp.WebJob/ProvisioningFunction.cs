@@ -266,42 +266,65 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         // Configure the OAuth Access Tokens for the PnPClientContext, too
                                         pnpTenantContext.PropertyBag["AccessTokens"] = ptai.AccessTokens;
 
+                                        #region Theme handling
+
                                         // Process the graphical Theme
-                                        if (!String.IsNullOrEmpty(action.ThemeName) &&
-                                            !String.IsNullOrEmpty(action.ThemePrimaryColor) &&
-                                            !String.IsNullOrEmpty(action.ThemeBodyTextColor) &&
-                                            !String.IsNullOrEmpty(action.ThemeBodyBackgroundColor))
+                                        if (action.ApplyTheme)
                                         {
-                                            #region Palette generation for Theme
-
-                                            var jsonPalette = ThemeUtility.GetThemeAsJSON(
-                                                action.ThemePrimaryColor,
-                                                action.ThemeBodyTextColor,
-                                                action.ThemeBodyBackgroundColor);
-
-                                            #endregion
-
-                                            // Create a new Theme object
-                                            var targetTheme = new Theme
+                                            // If we don't have any custom Theme
+                                            if (!action.ApplyCustomTheme)
                                             {
-                                                Name = action.ThemeName,
-                                                IsInverted = false,
-                                                Palette = jsonPalette,
-                                            };
-
-                                            // And add it to the hierarchy
-                                            hierarchy.Tenant.Themes.Add(targetTheme);
-
-                                            // Associate the new Theme to all the sites of the hierarchy
-                                            foreach (var sc in hierarchy.Sequences[0].SiteCollections)
-                                            {
-                                                sc.Theme = targetTheme.Name;
-                                                foreach (var s in sc.Sites)
+                                                // Associate the selected already existing Theme to all the sites of the hierarchy
+                                                foreach (var sc in hierarchy.Sequences[0].SiteCollections)
                                                 {
-                                                    UpdateChildrenSitesTheme(s, targetTheme.Name);
+                                                    sc.Theme = action.SelectedTheme;
+                                                    foreach (var s in sc.Sites)
+                                                    {
+                                                        UpdateChildrenSitesTheme(s, action.SelectedTheme);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (!String.IsNullOrEmpty(action.ThemeName) &&
+                                                    !String.IsNullOrEmpty(action.ThemePrimaryColor) &&
+                                                    !String.IsNullOrEmpty(action.ThemeBodyTextColor) &&
+                                                    !String.IsNullOrEmpty(action.ThemeBodyBackgroundColor))
+                                                {
+                                                    #region Palette generation for Theme
+
+                                                    var jsonPalette = ThemeUtility.GetThemeAsJSON(
+                                                        action.ThemePrimaryColor,
+                                                        action.ThemeBodyTextColor,
+                                                        action.ThemeBodyBackgroundColor);
+
+                                                    #endregion
+
+                                                    // Create a new Theme object
+                                                    var targetTheme = new Theme
+                                                    {
+                                                        Name = action.ThemeName,
+                                                        IsInverted = false,
+                                                        Palette = jsonPalette,
+                                                    };
+
+                                                    // And add it to the hierarchy
+                                                    hierarchy.Tenant.Themes.Add(targetTheme);
+
+                                                    // Associate the new Theme to all the sites of the hierarchy
+                                                    foreach (var sc in hierarchy.Sequences[0].SiteCollections)
+                                                    {
+                                                        sc.Theme = targetTheme.Name;
+                                                        foreach (var s in sc.Sites)
+                                                        {
+                                                            UpdateChildrenSitesTheme(s, targetTheme.Name);
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
+
+                                        #endregion
 
                                         // Configure provisioning parameters
                                         if (action.PackageProperties != null)

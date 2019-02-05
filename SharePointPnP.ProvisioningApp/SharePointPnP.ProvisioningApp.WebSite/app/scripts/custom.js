@@ -5,7 +5,7 @@
 var toggleEvent = new Event('toggleClicked');
 
 // changes the state of a toggle between On and Off
-function toggleState(toggle) {
+function toggleState(toggle, dispatchEvent) {
 
     if (toggle.classList.contains('is-disabled')) {
         return;
@@ -39,7 +39,9 @@ function toggleState(toggle) {
         }
     }
 
-    toggle.dispatchEvent(toggleEvent);
+    if (dispatchEvent) {
+        toggle.dispatchEvent(toggleEvent);
+    }
 }
 
 // disables a toggle field
@@ -77,7 +79,6 @@ function toggleIsSelected(toggle) {
 document.addEventListener('DOMContentLoaded', function (e) {
     var toggles = document.querySelectorAll('.ms-Toggle');
     for (var i = 0; i < toggles.length; i++) {
-        // toggleState(toggles[i]);
 
         toggles[i].addEventListener('click', function (e) {
 
@@ -85,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
             e.preventDefault();
 
             // toggle the state of the toggle element
-            toggleState(e.currentTarget);
+            toggleState(e.currentTarget, true);
 
             // cancel the current event
             return (false);
