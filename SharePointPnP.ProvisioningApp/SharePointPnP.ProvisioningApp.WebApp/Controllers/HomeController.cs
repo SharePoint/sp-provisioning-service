@@ -1,9 +1,11 @@
 ﻿using Microsoft.Azure;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.SharePoint.Client;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
+using OfficeDevPnP.Core;
 using OfficeDevPnP.Core.Framework.Provisioning.Connectors;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using OfficeDevPnP.Core.Framework.Provisioning.Providers;
@@ -22,6 +24,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using TenantAdmin = Microsoft.Online.SharePoint.TenantAdministration;
 
 namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 {
@@ -96,6 +99,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         model.TenantId = tenantId;
                         model.UserPrincipalName = upn;
                         model.PackageId = packageId;
+                        model.ApplyTheme = false;
+                        model.ApplyCustomTheme = false;
 
                         String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                         String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
@@ -108,7 +113,36 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
                         model.NotificationEmail = upn;
 
-                        var context = GetContext();
+                        // If the current user is an admin, we can get the available Themes
+                        if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
+                        {
+                            // Determine the URL of the root SPO site for the current tenant
+                            var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
+                            SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
+
+                            var adminSiteUrl = rootSite.WebUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
+
+                            // Retrieve the SPO Access Token
+                            var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                tokenId, adminSiteUrl,
+                                ConfigurationManager.AppSettings["ida:ClientId"],
+                                ConfigurationManager.AppSettings["ida:ClientSecret"],
+                                ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                            // Connect to SPO and retrieve the list of available Themes
+                            AuthenticationManager authManager = new AuthenticationManager();
+                            using (ClientContext spoContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAccessToken))
+                            {
+                                TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(spoContext);
+                                var themes = tenant.GetAllTenantThemes();
+                                spoContext.Load(themes);
+                                spoContext.ExecuteQueryRetry();
+
+                                model.Themes = themes.Select(t => t.Name).ToList();
+                            }
+                        }
+
+                        var context = GetDataContext();
                         DomainModel.Package package = null;
 
                         // Get the package
@@ -282,7 +316,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
 
             // Get the service description content
-            var context = GetContext();
+            var context = GetDataContext();
             var contentPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/ProvisioningScheduled.md");
 
             if (contentPage != null)
@@ -297,7 +331,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
             {
                 // In test we support white-listed tenants only
-                var context = GetContext();
+                var context = GetDataContext();
 
                 if (context.Tenants.Count() == 0)
                 {
@@ -322,7 +356,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
         }
 
-        private ProvisioningAppDBContext GetContext()
+        private ProvisioningAppDBContext GetDataContext()
         {
             var context = new ProvisioningAppDBContext();
             context.Configuration.ProxyCreationEnabled = false;

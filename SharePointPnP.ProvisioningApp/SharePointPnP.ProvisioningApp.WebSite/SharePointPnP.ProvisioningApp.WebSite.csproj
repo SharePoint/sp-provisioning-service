@@ -183,7 +183,9 @@
     <Content Include="app\index.html" />
     <Content Include="app\robots.txt" />
     <Content Include="app\scripts\color-picker.min.js" />
+    <Content Include="app\scripts\custom.js" />
     <Content Include="app\styles\color-picker.min.css" />
+    <Content Include="app\styles\custom.css" />
     <Content Include="app\styles\main.css">
       <DependentUpon>main.scss</DependentUpon>
     </Content>

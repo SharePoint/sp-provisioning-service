@@ -63,6 +63,21 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         [JsonProperty(PropertyName = "actionType")]
         public ActionType ActionType { get; set; }
 
+        // [DisplayName("Apply theme")]
+        [JsonProperty(PropertyName = "applyTheme")]
+        public Boolean ApplyTheme { get; set; } = false;
+
+        [JsonIgnore]
+        public List<String> Themes { get; set; }
+
+        [DisplayName("Theme")]
+        [JsonProperty(PropertyName = "selectedTheme")]
+        public String SelectedTheme { get; set; }
+
+        // [DisplayName("Apply custom theme")]
+        [JsonProperty(PropertyName = "applyCustomTheme")]
+        public Boolean ApplyCustomTheme { get; set; } = false;
+
         [DisplayName("Theme Name")]
         [JsonProperty(PropertyName = "themeName")]
         public String ThemeName { get; set; }
