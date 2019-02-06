@@ -366,7 +366,7 @@
 
                             // if there isn't a custom theme and there isn't a currently existing Theme selected
                             // we have a validation exception and we skip submitting the form, too
-                            if (isValid) {
+                            if (isValid && !applyCustomThemeFlag) {
 
                                 var selectedTheme = document.getElementsByName('@Html.IdFor(m => m.SelectedTheme)')[0];
 
