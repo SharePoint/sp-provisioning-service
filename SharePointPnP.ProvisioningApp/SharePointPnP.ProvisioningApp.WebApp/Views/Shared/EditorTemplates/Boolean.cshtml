@@ -17,7 +17,7 @@
         <span class="ms-Label ms-Label--off" style="@(Model ? "display: none;" : "display: block;")">Off</span>
         <span class="ms-Label ms-Label--on" style="@(Model ? "display: block;" : "display: none;")">On</span>
     </label>
-    <input type="hidden" name="@fieldName" value="false">
+    @*<input type="hidden" name="@fieldName" value="false">*@
     <div>
         @Html.ValidationMessageFor(m => m)
     </div>

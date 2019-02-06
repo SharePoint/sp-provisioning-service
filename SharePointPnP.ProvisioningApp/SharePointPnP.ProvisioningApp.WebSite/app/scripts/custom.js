@@ -11,6 +11,12 @@ function toggleState(toggle, dispatchEvent) {
         return;
     }
 
+    // set the field value
+    var toggleFieldInputs = toggle.getElementsByClassName('ms-Toggle-input');
+    if (toggleFieldInputs.length > 0) {
+        toggleFieldInputs[0].checked = !toggleFieldInputs[0].checked;
+    }
+
     // toggle is-selected class on the toggle element
     var toggleFields = toggle.getElementsByClassName('ms-Toggle-field');
     if (toggleFields.length > 0) {

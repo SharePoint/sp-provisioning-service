@@ -124,3 +124,21 @@ select.pnp-tb {
     border-style: dashed;
     border-width: 1px;
 }
+
+.sectionTitle {
+    text-transform: uppercase;
+    font-size: 14pt;
+    float: left;
+    padding-right: 10px;
+}
+
+.sectionTitleDivider {
+    border: 1px;
+    position: absolute;
+    width: 100%;
+}
+
+hr.sectionTitleDivider {
+    position: relative;
+    top: 5px;
+}

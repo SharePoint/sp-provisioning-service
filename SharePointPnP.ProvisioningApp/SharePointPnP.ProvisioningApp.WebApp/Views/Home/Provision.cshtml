@@ -57,125 +57,145 @@
                         @Html.HiddenFor(m => m.ActionType)
                         @Html.HiddenFor(m => m.DisplayName)
 
-                        <table>
-                            <tr>
-                                <th>
-                                    @Html.LabelFor(m => m.NotificationEmail)
-                                    <div class="pnp-field-description">Provide an email address to get notifications about the provisioning process</div>
-                                </th>
-                                <td>
-                                    @Html.TextBoxFor(m => m.NotificationEmail, new { @class = "pnp-tb" })
+                    <table>
+                        <tr>
+                            <th>
+                                @Html.LabelFor(m => m.NotificationEmail)
+                                <div class="pnp-field-description">Provide an email address to get notifications about the provisioning process</div>
+                            </th>
+                            <td>
+                                @Html.TextBoxFor(m => m.NotificationEmail, new { @class = "pnp-tb" })
+                            </td>
+                        </tr>
+                        @if (Model.PackageProperties != null && Model.PackageProperties.Count > 0)
+                        {
+                            @*<tr>
+                                <td colspan="2">
+                                    <div class="sectionTitle">Template Properties</div>
+                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
                                 </td>
-                            </tr>
-                            @{
-                                int i = 0;
-                                foreach (var parameter in Model.PackageProperties)
-                                {
-                                    <tr>
-                                        <th>
-                                            <input type="hidden" name="PackageProperties[@i].Key" value="@parameter.Key" />
-                                            <label class="ms-Label pnp-field-label" for="PackageProperties[@i].Key">@(Model.MetadataProperties[parameter.Key].Caption)</label>
-                                            <div class="pnp-field-description">@(Model.MetadataProperties[parameter.Key].Description)</div>
-                                        </th>
-                                        <td>
-                                            <input name="PackageProperties[@i].Value" value="@parameter.Value" class="pnp-tb" />
-                                        </td>
-                                    </tr>
-
-                                    i++;
-                                }
-                            }
-
-                            @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
+                            </tr>*@
+                        }
+                        @{
+                            int i = 0;
+                            foreach (var parameter in Model.PackageProperties)
                             {
                                 <tr>
                                     <th>
-                                        Apply theme
-                                        <div class="pnp-field-description">Enable this flag to apply a Theme to the target sites</div>
+                                        <input type="hidden" name="PackageProperties[@i].Key" value="@parameter.Key" />
+                                        <label class="ms-Label pnp-field-label" for="PackageProperties[@i].Key">@(Model.MetadataProperties[parameter.Key].Caption)</label>
+                                        <div class="pnp-field-description">@(Model.MetadataProperties[parameter.Key].Description)</div>
                                     </th>
                                     <td>
-                                        @Html.EditorFor(m => m.ApplyTheme)
+                                        <input name="PackageProperties[@i].Value" value="@parameter.Value" class="pnp-tb" />
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.SelectedTheme)
-                                        <div class="pnp-field-description">Select an already existing Theme</div>
-                                    </th>
-                                    <td>
-                                        @Html.DropDownListFor(m => m.SelectedTheme, GetAvailableThemes(), new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        Apply custom theme
-                                        <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
-                                    </th>
-                                    <td>
-                                        @Html.EditorFor(m => m.ApplyCustomTheme)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemeName)
-                                        <div class="pnp-field-description">Provide a name for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <input type="text" name="@Html.IdFor(m => m.ThemeName)" class="pnp-tb" />
-                                        @*@Html.EditorFor(m => m.ThemeName, new { @class = "pnp-tb" })*@
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemePrimaryColor)
-                                        <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemeBodyTextColor)
-                                        <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
-                                        <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>
-                                @*
-                                    <tr>
-                                        <th>
-                                            <label for="CustomLogoFile">Logo</label>
-                                        </th>
-                                        <td>
-                                            <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
-                                        </td>
-                                    </tr>
-                                *@
+
+                                i++;
                             }
-                            <tr>
-                                <td>
-                                    <input type="button" id="cancelButton" class="pnp-btn-provision" value="Cancel" />
+                        }
+
+                        @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
+                        {
+                            @*<tr>
+                                <td colspan="2">
+                                    <div class="sectionTitle">Custom Theme Settings</div>
+                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
                                 </td>
+                            </tr>*@
+                            <tr>
+                                <th>
+                                    Apply theme
+                                    <div class="pnp-field-description">Enable this flag to apply a Theme to the target sites</div>
+                                </th>
                                 <td>
-                                    <input type="button" id="provisionButton" class="pnp-btn-provision ms-Button--primary" value="Provision" />
+                                    @Html.EditorFor(m => m.ApplyTheme)
                                 </td>
                             </tr>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.SelectedTheme)
+                                    <div class="pnp-field-description">Select an already existing Theme</div>
+                                </th>
+                                <td>
+                                    @Html.DropDownListFor(m => m.SelectedTheme, GetAvailableThemes(), new { @class = "pnp-tb" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Apply custom theme
+                                    <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
+                                </th>
+                                <td>
+                                    @Html.EditorFor(m => m.ApplyCustomTheme)
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.ThemeName)
+                                    <div class="pnp-field-description">Provide a name for the custom Theme</div>
+                                </th>
+                                <td>
+                                    <input type="text" name="@Html.IdFor(m => m.ThemeName)" class="pnp-tb" />
+                                    @*@Html.EditorFor(m => m.ThemeName, new { @class = "pnp-tb" })*@
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.ThemePrimaryColor)
+                                    <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
+                                </th>
+                                <td>
+                                    <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
+                                    @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.ThemeBodyTextColor)
+                                    <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
+                                </th>
+                                <td>
+                                    <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
+                                    @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
+                                    <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
+                                </th>
+                                <td>
+                                    <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
+                                    @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
+                                </td>
+                            </tr>
+                            @*
+                            <tr>
+                                <th>
+                                    <label for="CustomLogoFile">Logo</label>
+                                </th>
+                                <td>
+                                    <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
+                                </td>
+                            </tr>
+                            *@
+                        }
+                        @*<tr>
+                            <td colspan="2">
+                                <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                            </td>
+                        </tr>*@
+                        <tr>
+                            <td>
+                                <input type="button" id="cancelButton" class="pnp-btn-provision" value="Cancel" />
+                            </td>
+                            <td>
+                                <input type="button" id="provisionButton" class="pnp-btn-provision ms-Button--primary" value="Provision" />
+                            </td>
+                        </tr>
 
-                        </table>
+                    </table>
                     }
                     </
                 </div>
