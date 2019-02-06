@@ -437,13 +437,15 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 {
                     // That's a PnP Package file
 
-                    // Get the .xml provisioning template file name
-                    var xmlTemplateFileName = packageFile.Path.Substring(packageFile.Path.LastIndexOf('/') + 1)
-                        .ToLower().Replace(".pnp", ".xml");
-
                     // Get a provider based on the in-memory .PNP Open XML file
+                    OpenXMLConnector openXmlConnector = new OpenXMLConnector(mem);
                     XMLTemplateProvider provider = new XMLOpenXMLTemplateProvider(
-                        new OpenXMLConnector(mem));
+                        openXmlConnector);
+
+                    // Get the .xml provisioning template file name
+                    var xmlTemplateFileName = openXmlConnector.Info?.Properties?.TemplateFileName ??
+                        packageFile.Path.Substring(packageFile.Path.LastIndexOf('/') + 1)
+                        .ToLower().Replace(".pnp", ".xml");
 
                     // Get the full hierarchy
                     hierarchy = provider.GetHierarchy(xmlTemplateFileName);

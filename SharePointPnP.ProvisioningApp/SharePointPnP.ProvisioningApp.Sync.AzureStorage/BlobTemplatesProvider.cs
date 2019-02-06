@@ -77,7 +77,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
                 }
                 else if (item is ITemplateFile file)
                 {
-                    CloudBlockBlob blob = _container.GetBlockBlobReference(item.Path);
+                    CloudBlockBlob blob = _container.GetBlockBlobReference(System.Uri.UnescapeDataString(item.Path));
                     await blob.DeleteAsync();
                 }
             }
@@ -97,7 +97,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
                 }
                 else if (item is ITemplateFile file)
                 {
-                    CloudBlockBlob blob = _container.GetBlockBlobReference(item.Path);
+                    CloudBlockBlob blob = _container.GetBlockBlobReference(System.Uri.UnescapeDataString(item.Path));
                     await blob.DeleteAsync();
                 }
             }

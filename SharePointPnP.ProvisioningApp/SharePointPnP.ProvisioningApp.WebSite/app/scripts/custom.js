@@ -77,7 +77,7 @@ function toggleIsSelected(toggle) {
 }
 
 document.addEventListener('DOMContentLoaded', function (e) {
-    var toggles = document.querySelectorAll('.ms-Toggle');
+    var toggles = document.querySelectorAll('.ms-Toggle');e
     for (var i = 0; i < toggles.length; i++) {
 
         toggles[i].addEventListener('click', function (e) {
