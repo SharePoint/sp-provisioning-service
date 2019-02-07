@@ -132,16 +132,6 @@
                             </tr>
                             <tr>
                                 <th>
-                                    @Html.LabelFor(m => m.ThemeName)
-                                    <div class="pnp-field-description">Provide a name for the custom Theme</div>
-                                </th>
-                                <td>
-                                    <input type="text" name="@Html.IdFor(m => m.ThemeName)" class="pnp-tb" />
-                                    @*@Html.EditorFor(m => m.ThemeName, new { @class = "pnp-tb" })*@
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
                                     @Html.LabelFor(m => m.ThemePrimaryColor)
                                     <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
                                 </th>
@@ -284,10 +274,6 @@
             if (toggleApplyCustomTheme) {
                 disableToggle(toggleApplyCustomTheme);
             }
-            var themeName = document.getElementsByName('@Html.IdFor(m => m.ThemeName)');
-            if (themeName && themeName.length > 0) {
-                disableField(themeName[0]);
-            }
             var themePrimaryColor = document.getElementsByName('@Html.IdFor(m => m.ThemePrimaryColor)');
             if (themePrimaryColor && themePrimaryColor.length > 0) {
                 disableField(themePrimaryColor[0]);
@@ -331,15 +317,11 @@
                                 if (applyCustomThemeFlag) {
 
                                     // get the fields for the custom theme
-                                    var themeName = document.getElementsByName('@Html.IdFor(m => m.ThemeName)')[0];
                                     var themePrimaryColor = document.getElementsByName('@Html.IdFor(m => m.ThemePrimaryColor)')[0];
                                     var themeBodyBackgroundColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyBackgroundColor)')[0];
                                     var themeBodyTextColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyTextColor)')[0];
 
                                     // cleanup validation exceptions
-                                    if (themeName.classList.contains("invalid")) {
-                                        themeName.classList.toggle("invalid");
-                                    }
                                     if (themePrimaryColor.classList.contains("invalid")) {
                                         themePrimaryColor.classList.toggle("invalid");
                                     }
@@ -348,14 +330,6 @@
                                     }
                                     if (themeBodyTextColor.classList.contains("invalid")) {
                                         themeBodyTextColor.classList.toggle("invalid");
-                                    }
-
-                                    // check the Theme Name
-                                    if (getFieldValue(themeName) == '') {
-                                        if (!themeName.classList.contains("invalid")) {
-                                            themeName.classList.toggle("invalid");
-                                        }
-                                        isValid = false;
                                     }
 
                                     // check the Theme Primary Color
@@ -433,7 +407,6 @@
                     // get a reference to the Theme fields
                     var selectedTheme = document.getElementsByName('@Html.IdFor(m => m.SelectedTheme)')[0];
                     var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
-                    var themeName = document.getElementsByName('@Html.IdFor(m => m.ThemeName)')[0];
                     var themePrimaryColor = document.getElementsByName('@Html.IdFor(m => m.ThemePrimaryColor)')[0];
                     var themeBodyTextColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyTextColor)')[0];
                     var themeBodyBackgroundColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyBackgroundColor)')[0];
@@ -443,7 +416,6 @@
                         // set Theme fields state accordingly
                         enableField(selectedTheme);
                         enableToggle(toggleApplyCustomTheme);
-                        disableField(themeName);
                         disableField(themePrimaryColor);
                         disableField(themeBodyTextColor);
                         disableField(themeBodyBackgroundColor);
@@ -455,7 +427,6 @@
                             toggleState(toggleApplyCustomTheme, false);
                         }
                         disableToggle(toggleApplyCustomTheme);
-                        disableField(themeName);
                         disableField(themePrimaryColor);
                         disableField(themeBodyTextColor);
                         disableField(themeBodyBackgroundColor);
@@ -470,7 +441,6 @@
                     // get a reference to the Theme fields
                     var selectedTheme = document.getElementsByName('@Html.IdFor(m => m.SelectedTheme)')[0];
                     var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
-                    var themeName = document.getElementsByName('@Html.IdFor(m => m.ThemeName)')[0];
                     var themePrimaryColor = document.getElementsByName('@Html.IdFor(m => m.ThemePrimaryColor)')[0];
                     var themeBodyTextColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyTextColor)')[0];
                     var themeBodyBackgroundColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyBackgroundColor)')[0];
@@ -479,7 +449,6 @@
                     if (toggleIsSelected(e.target)) {
                         // set Theme fields state accordingly
                         disableField(selectedTheme);
-                        enableField(themeName);
                         enableField(themePrimaryColor);
                         enableField(themeBodyTextColor);
                         enableField(themeBodyBackgroundColor);
@@ -487,7 +456,6 @@
                     else {
                         // set Theme fields state accordingly
                         enableField(selectedTheme);
-                        disableField(themeName);
                         disableField(themePrimaryColor);
                         disableField(themeBodyTextColor);
                         disableField(themeBodyBackgroundColor);

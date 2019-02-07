@@ -232,6 +232,9 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
                             #region Apply the template
 
+                            // Prepare variable to collect provisioned sites
+                            var provisionedSites = new List<Tuple<String, String>>();
+
                             // If we have a hierarchy with at least one Sequence
                             if (hierarchy != null && hierarchy.Sequences != null && hierarchy.Sequences.Count > 0)
                             {
@@ -261,6 +264,15 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         ptai.ProgressDelegate += delegate (string message, int step, int total) {
                                             log.WriteLine($"{step:00}/{total:00} - {message}");
                                         };
+                                        ptai.SiteProvisionedDelegate += delegate (string title, string url)
+                                        {
+                                            log.WriteLine($"Fully provisioned site '{title}' with URL: {url}");
+                                            var provisionedSite = new Tuple<string, string>(title, url);
+                                            if (!provisionedSites.Contains(provisionedSite))
+                                            {
+                                                provisionedSites.Add(provisionedSite);
+                                            }
+                                        };
 
                                         // Configure the OAuth Access Tokens for the client context
                                         ptai.AccessTokens.Add(new Uri(tenantUrl).Authority, spoAdminAccessToken);
@@ -284,44 +296,6 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                                     foreach (var s in sc.Sites)
                                                     {
                                                         UpdateChildrenSitesTheme(s, action.SelectedTheme);
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (!String.IsNullOrEmpty(action.ThemeName) &&
-                                                    !String.IsNullOrEmpty(action.ThemePrimaryColor) &&
-                                                    !String.IsNullOrEmpty(action.ThemeBodyTextColor) &&
-                                                    !String.IsNullOrEmpty(action.ThemeBodyBackgroundColor))
-                                                {
-                                                    #region Palette generation for Theme
-
-                                                    var jsonPalette = ThemeUtility.GetThemeAsJSON(
-                                                        action.ThemePrimaryColor,
-                                                        action.ThemeBodyTextColor,
-                                                        action.ThemeBodyBackgroundColor);
-
-                                                    #endregion
-
-                                                    // Create a new Theme object
-                                                    var targetTheme = new Theme
-                                                    {
-                                                        Name = action.ThemeName,
-                                                        IsInverted = false,
-                                                        Palette = jsonPalette,
-                                                    };
-
-                                                    // And add it to the hierarchy
-                                                    hierarchy.Tenant.Themes.Add(targetTheme);
-
-                                                    // Associate the new Theme to all the sites of the hierarchy
-                                                    foreach (var sc in hierarchy.Sequences[0].SiteCollections)
-                                                    {
-                                                        sc.Theme = targetTheme.Name;
-                                                        foreach (var s in sc.Sites)
-                                                        {
-                                                            UpdateChildrenSitesTheme(s, targetTheme.Name);
-                                                        }
                                                     }
                                                 }
                                             }
@@ -356,6 +330,41 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         tenant.ApplyProvisionHierarchy(hierarchy, hierarchy.Sequences[0].ID, ptai);
                                         log.WriteLine($"Hierarchy Provisioning Completed: {DateTime.Now:hh.mm.ss}");
 
+                                        if(action.ApplyTheme && action.ApplyCustomTheme)
+                                        {
+                                            if (!String.IsNullOrEmpty(action.ThemePrimaryColor) &&
+                                                !String.IsNullOrEmpty(action.ThemeBodyTextColor) &&
+                                                !String.IsNullOrEmpty(action.ThemeBodyBackgroundColor))
+                                            {
+                                                log.WriteLine($"Applying custom Theme to provisioned sites");
+
+                                                #region Palette generation for Theme
+
+                                                var jsonPalette = ThemeUtility.GetThemeAsJSON(
+                                                    action.ThemePrimaryColor,
+                                                    action.ThemeBodyTextColor,
+                                                    action.ThemeBodyBackgroundColor);
+
+                                                #endregion
+
+                                                // Apply the custom theme to all of the provisioned sites
+                                                foreach (var ps in provisionedSites)
+                                                {
+                                                    using (var provisionedSiteContext = authManager.GetAzureADAccessTokenAuthenticatedContext(ps.Item2, spoAccessToken))
+                                                    {
+                                                        if (provisionedSiteContext.Web.ApplyTheme(jsonPalette))
+                                                        {
+                                                            log.WriteLine($"Custom Theme applied on site '{ps.Item1}' with URL: {ps.Item2}");
+                                                        }
+                                                        else
+                                                        {
+                                                            log.WriteLine($"Failed to apply custom Theme on site '{ps.Item1}' with URL: {ps.Item2}");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
                                         // Log telemetry event
                                         telemetry?.LogEvent("ProvisioningFunction.EndProvisioning", telemetryProperties);
 
@@ -367,6 +376,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             new
                                             {
                                                 TemplateName = action.DisplayName,
+                                                ProvisionedSites = provisionedSites,
                                             },
                                             appOnlyAccessToken);
                                     }

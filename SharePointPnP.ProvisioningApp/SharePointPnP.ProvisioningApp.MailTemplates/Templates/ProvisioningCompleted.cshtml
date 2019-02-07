@@ -29,6 +29,10 @@
             text-align: center;
         }
 
+        .provisionedSites {
+
+        }
+
     </style>
 </head>
 
@@ -41,9 +45,22 @@
         <div class="body">
             <div class="message" style="background:#f5f5f5;border-radius:3px;margin-bottom:44px">
                 <p style="padding:20px; font-weight: bold; color:#e89c2a; text-align: center; font-size: 20px">
-                    Your request to provision "@Model.TemplateName" template is now completed!<br/>
+                    Your request to provision "@Model.TemplateName" template is now completed!<br />
                     Enjoy your modern experience!
                 </p>
+                @if (Model.ProvisionedSites != null && Model.ProvisionedSites.Count > 0)
+                {
+                    <p class="provisionedSites" style="margin-top:25px;padding:10px 0;font-size:80%;opacity:.7">
+                        Here is the list of provisioned sites:
+                        <br />
+                        <ul>
+                            @foreach (Tuple<String, String> ps in Model.ProvisionedSites)
+                            {
+                                <li style="font-size:80%;opacity:.7"><a href="@ps.Item2">@ps.Item1</a></li>
+                            }
+                        </ul>
+                    </p>
+                }
             </div>
             <div style="clear:both"></div>
         </div>
