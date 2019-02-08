@@ -111,6 +111,9 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public Dictionary<String, MetadataProperty> MetadataProperties { get; set; }
+
+        [JsonIgnore]
+        public String MetadataPropertiesJson { get; set; }
     }
 
     /// <summary>

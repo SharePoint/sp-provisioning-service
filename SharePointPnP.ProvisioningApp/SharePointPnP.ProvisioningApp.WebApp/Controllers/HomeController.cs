@@ -251,6 +251,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                                     Description = i.description
                                 });
 
+                            model.MetadataPropertiesJson = JsonConvert.SerializeObject(model.MetadataProperties);
+
                             // Get the service description content
                             var contentPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/ProvisioningIntro.md");
 
@@ -279,6 +281,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         {
             if (model != null && ModelState.IsValid)
             {
+                if (!String.IsNullOrEmpty(model.MetadataPropertiesJson))
+                {
+                    model.MetadataProperties = JsonConvert.DeserializeObject<Dictionary<String, MetadataProperty>>(model.MetadataPropertiesJson);
+                }
+
                 // If there is an input file for the logo
                 if (Request.Files != null && Request.Files.Count > 0 && Request.Files[0].ContentLength > 0)
                 {

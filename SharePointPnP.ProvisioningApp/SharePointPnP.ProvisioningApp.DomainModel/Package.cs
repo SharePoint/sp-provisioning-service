@@ -91,6 +91,16 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         /// Holds the metadata (id, label, description, etc.) of properties for the Package as a JSON string
         /// </summary>
         public String PropertiesMetadata { get; set; }
+
+        /// <summary>
+        /// Property to hold special instructions for the current package
+        /// </summary>
+        public String Instructions { get; set; }
+
+        /// <summary>
+        /// Defines the text to show when the "confirm provisioning" page is shown
+        /// </summary>
+        public String ProvisionRecap { get; set; }
     }
 
     /// <summary>

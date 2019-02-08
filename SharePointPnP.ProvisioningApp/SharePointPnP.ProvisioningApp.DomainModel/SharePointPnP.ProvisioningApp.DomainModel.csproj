@@ -115,6 +115,10 @@
     <Compile Include="Migrations\201901081157406_Wave3-NotificationRecipients.Designer.cs">
       <DependentUpon>201901081157406_Wave3-NotificationRecipients.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902081140063_Wave4-PackagesAdditionalContent.cs" />
+    <Compile Include="Migrations\201902081140063_Wave4-PackagesAdditionalContent.Designer.cs">
+      <DependentUpon>201902081140063_Wave4-PackagesAdditionalContent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
@@ -141,6 +145,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901081157406_Wave3-NotificationRecipients.resx">
       <DependentUpon>201901081157406_Wave3-NotificationRecipients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902081140063_Wave4-PackagesAdditionalContent.resx">
+      <DependentUpon>201902081140063_Wave4-PackagesAdditionalContent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

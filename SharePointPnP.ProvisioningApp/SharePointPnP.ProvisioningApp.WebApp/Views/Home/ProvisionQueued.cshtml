@@ -22,6 +22,70 @@
             <div class="pnp-svcteaser">
                 <div class="pnp-svcteaser-inner">
                     @(Html.Raw(Model.ProvisionDescription))
+
+                    <div>
+                        <table>
+                            <tr>
+                                <th>@Html.LabelFor(m => m.NotificationEmail)</th>
+                                <td>@Model.NotificationEmail</td>
+                            </tr>
+                            @if (Model.PackageProperties != null && Model.PackageProperties.Count > 0)
+                            {
+                                foreach (var parameter in Model.PackageProperties)
+                                {
+                                    if (Model.MetadataProperties.ContainsKey(parameter.Key))
+                                    {
+                                        <tr>
+                                            <th>@Model.MetadataProperties[parameter.Key].Caption</th>
+                                            <td>@Model.PackageProperties[parameter.Key]</td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                            @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
+                            {
+                                if (Model.ApplyTheme && !Model.ApplyCustomTheme)
+                                {
+                                    <tr>
+                                        <th>@Html.LabelFor(m => m.ApplyTheme)</th>
+                                        <td>@Model.ApplyTheme</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.LabelFor(m => m.SelectedTheme)</th>
+                                        <td>@Model.SelectedTheme</td>
+                                    </tr>
+                                }
+                                else if (Model.ApplyTheme && Model.ApplyCustomTheme)
+                                {
+                                    <tr>
+                                        <th>@Html.LabelFor(m => m.ApplyCustomTheme)</th>
+                                        <td>@Model.ApplyCustomTheme</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.LabelFor(m => m.ThemePrimaryColor)</th>
+                                        <td>
+                                            <span class="pnp-colorpreview" style="background-color: @Model.ThemePrimaryColor;"></span>
+                                            @Model.ThemePrimaryColor
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.LabelFor(m => m.ThemeBodyTextColor)</th>
+                                        <td>
+                                            <span class="pnp-colorpreview" style="background-color: @Model.ThemeBodyTextColor;"></span>
+                                            @Model.ThemeBodyTextColor
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.LabelFor(m => m.ThemeBodyBackgroundColor)</th>
+                                        <td>
+                                            <span class="pnp-colorpreview" style="background-color: @Model.ThemeBodyBackgroundColor;"></span>
+                                            @Model.ThemeBodyBackgroundColor
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

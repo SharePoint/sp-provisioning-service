@@ -32,6 +32,8 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
         private const string CATEGORIES_NAME = "categories.json";
         private const string TENANTS_NAME = "tenants.json";
         private const string SETTINGS_NAME = "settings.json";
+        private const string INSTRUCTIONS_NAME = "instructions.md";
+        private const string PROVISIONING_NAME = "provisioning.md";
         private const string README_NAME = "readme.md";
 
         public SyncEngine(ITemplatesProvider sourceProvider, ITemplatesProvider cloneProvider)
@@ -262,9 +264,13 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         dbPackage.Promoted = package.Promoted;
                         dbPackage.Preview = package.Preview;
                         dbPackage.PropertiesMetadata = package.PropertiesMetadata;
-                        
+
                         // Keep times applied from the DB
                         // dbPackage.TimesApplied = package.TimesApplied;
+
+                        // New properties for Wave 4
+                        dbPackage.Instructions = package.Instructions;
+                        dbPackage.ProvisionRecap = package.ProvisionRecap;
 
                         context.Entry(dbPackage).State = EntityState.Modified;
 
@@ -378,6 +384,13 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 TimesApplied = 0,
                 PropertiesMetadata = JsonConvert.SerializeObject(settings.metadata)
             };
+
+            // Read the instructions.md and the provisioning.md files
+            String instructionsContent = await GetHtmlContentAsync(folder.Path, INSTRUCTIONS_NAME);
+            String provisioningContent = await GetHtmlContentAsync(folder.Path, PROVISIONING_NAME);
+
+            package.Instructions = instructionsContent;
+            package.ProvisionRecap = provisioningContent;
 
             // Find the categories to apply
             var dbCategories = settings.categories.Select(c =>
