@@ -169,6 +169,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                             model.DisplayName = package.DisplayName;
                             model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
+                            model.Instructions = package.Instructions;
+                            model.ProvisionRecap = package.ProvisionRecap;
 
                             // Retrieve parameters from the package/template definition
                             var packageFileUrl = new Uri(package.PackageUrl);

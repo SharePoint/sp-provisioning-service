@@ -114,6 +114,12 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public String MetadataPropertiesJson { get; set; }
+
+        [JsonIgnore]
+        public String Instructions { get; set; }
+
+        [JsonIgnore]
+        public String ProvisionRecap { get; set; }
     }
 
     /// <summary>

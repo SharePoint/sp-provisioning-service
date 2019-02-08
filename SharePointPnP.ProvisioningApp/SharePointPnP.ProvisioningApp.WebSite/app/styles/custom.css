@@ -142,3 +142,31 @@ hr.sectionTitleDivider {
     position: relative;
     top: 5px;
 }
+
+.confirmationDialog {
+    position: absolute;
+    background-color: white;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 30em;
+    height: 20em;
+    margin-top: -15em;
+    margin-left: -15em;
+    border: 1px solid #ccc;
+    border: 2px solid black;
+    z-index: 100;
+}
+
+.confirmationDialog.hide {
+    display: none;
+}
+
+.confirmationDialog.show {
+    display: block;
+}
+
+.confirmationDialogContent {
+    overflow-y: scroll;
+    height: 15em;
+}

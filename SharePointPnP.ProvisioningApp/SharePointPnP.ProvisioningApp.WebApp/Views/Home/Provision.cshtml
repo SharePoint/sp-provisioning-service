@@ -43,6 +43,8 @@
             <div class="pnp-svcteaser">
                 <div class="pnp-svcteaser-inner">
                     @(Html.Raw(Model.ProvisionDescription))
+                    <hr />
+                    @(Html.Raw(Model.Instructions))
                 </div>
             </div>
             <div class="pnp-form">
@@ -198,6 +200,15 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="confirmationDialog" class="confirmationDialog hide">
+    <div class="confirmationDialogContent">
+        @(Html.Raw(Model.ProvisionRecap))
+    </div>
+    <br />
+    <input type="button" id="cancelDialog" class="pnp-btn-provision" value="Cancel" />
+    <input type="button" id="confirmDialog" class="pnp-btn-provision ms-Button--primary" value="Provision" />
 </div>
 
 @section scripts
@@ -387,7 +398,11 @@
                     }
 
                     if (isValid) {
-                        document.forms[0].submit();
+                        var confirmationDialog = document.getElementById('confirmationDialog');
+                        if (confirmationDialog && confirmationDialog.classList.contains("hide")) {
+                            confirmationDialog.classList.toggle("hide");
+                            confirmationDialog.classList.toggle("show");
+                        }
                     }
 
                     return (false);
@@ -402,6 +417,26 @@
                     e.stopPropagation();
                     location.href = "/";
                     return (false);
+                });
+            }
+
+            // handles the click event of the confirmDialog button
+            var confirmDialogButton = document.getElementById('confirmDialog');
+            if (confirmDialogButton) {
+                confirmDialogButton.addEventListener('click', function (e) {
+                    document.forms[0].submit();
+                });
+            }
+
+            // handles the click event of the cancelDialog button
+            var cancelDialogButton = document.getElementById('cancelDialog');
+            if (cancelDialogButton) {
+                cancelDialogButton.addEventListener('click', function (e) {
+                    var confirmationDialog = document.getElementById('confirmationDialog');
+                    if (confirmationDialog && confirmationDialog.classList.contains("show")) {
+                        confirmationDialog.classList.toggle("show");
+                        confirmationDialog.classList.toggle("hide");
+                    }
                 });
             }
 
