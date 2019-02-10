@@ -169,8 +169,36 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                             model.DisplayName = package.DisplayName;
                             model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
+
+                            // Configure content for instructions
                             model.Instructions = package.Instructions;
+
+                            // If we don't have specific instructions
+                            if (String.IsNullOrEmpty(model.Instructions))
+                            {
+                                // Get the default instructions
+                                var instructionsPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/GenericInstructions.md");
+
+                                if (instructionsPage != null)
+                                {
+                                    model.Instructions = instructionsPage.Content;
+                                }
+                            }
+
+                            // Configure content for provisioning recap
                             model.ProvisionRecap = package.ProvisionRecap;
+
+                            // If we don't have specific provisioning recap
+                            if (String.IsNullOrEmpty(model.ProvisionRecap))
+                            {
+                                // Get the default provisioning recap
+                                var provisionRecapPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/GenericProvisioning.md");
+
+                                if (provisionRecapPage != null)
+                                {
+                                    model.ProvisionRecap = provisionRecapPage.Content;
+                                }
+                            }
 
                             // Retrieve parameters from the package/template definition
                             var packageFileUrl = new Uri(package.PackageUrl);

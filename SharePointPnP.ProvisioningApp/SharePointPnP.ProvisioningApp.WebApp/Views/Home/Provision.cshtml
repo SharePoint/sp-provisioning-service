@@ -211,6 +211,9 @@
     <input type="button" id="confirmDialog" class="pnp-btn-provision ms-Button--primary" value="Provision" />
 </div>
 
+<div id="confirmationDialogOverlay" class="dialogModalOverlay hide">
+</div>
+
 @section scripts
 {
     <!-- build:js scripts/main.js -->
@@ -399,9 +402,13 @@
 
                     if (isValid) {
                         var confirmationDialog = document.getElementById('confirmationDialog');
-                        if (confirmationDialog && confirmationDialog.classList.contains("hide")) {
+                        var confirmationDialogOverlay = document.getElementById('confirmationDialogOverlay');
+                        if (confirmationDialog && confirmationDialog.classList.contains("hide") &&
+                            confirmationDialogOverlay && confirmationDialogOverlay.classList.contains("hide")) {
                             confirmationDialog.classList.toggle("hide");
                             confirmationDialog.classList.toggle("show");
+                            confirmationDialogOverlay.classList.toggle("hide");
+                            confirmationDialogOverlay.classList.toggle("show");
                         }
                     }
 
@@ -433,9 +440,13 @@
             if (cancelDialogButton) {
                 cancelDialogButton.addEventListener('click', function (e) {
                     var confirmationDialog = document.getElementById('confirmationDialog');
-                    if (confirmationDialog && confirmationDialog.classList.contains("show")) {
+                    var confirmationDialogOverlay = document.getElementById('confirmationDialogOverlay');
+                    if (confirmationDialog && confirmationDialog.classList.contains("show") &&
+                        confirmationDialogOverlay && confirmationDialogOverlay.classList.contains("show")) {
                         confirmationDialog.classList.toggle("show");
                         confirmationDialog.classList.toggle("hide");
+                        confirmationDialogOverlay.classList.toggle("hide");
+                        confirmationDialogOverlay.classList.toggle("show");
                     }
                 });
             }
