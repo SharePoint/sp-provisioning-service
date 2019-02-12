@@ -19,6 +19,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -174,7 +175,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             model.Instructions = package.Instructions;
 
                             // If we don't have specific instructions
-                            if (String.IsNullOrEmpty(model.Instructions))
+                            if (model.Instructions == null)
                             {
                                 // Get the default instructions
                                 var instructionsPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/GenericInstructions.md");
@@ -268,17 +269,20 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                                         name = "",
                                         caption = "",
                                         description = "",
+                                        editor = "",
                                     }
                                 }
                             };
 
                             var metadataProperties = JsonConvert.DeserializeAnonymousType(package.PropertiesMetadata, metadata);
                             model.MetadataProperties = metadataProperties.properties.ToDictionary(
-                                i => i.name, 
-                                i => new MetadataProperty {
+                                i => i.name,
+                                i => new MetadataProperty
+                                {
                                     Name = i.name,
                                     Caption = i.caption,
-                                    Description = i.description
+                                    Description = i.description,
+                                    Editor = i.editor,
                                 });
 
                             model.MetadataPropertiesJson = JsonConvert.SerializeObject(model.MetadataProperties);
@@ -363,6 +367,55 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             return View("ProvisionQueued", model);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> UrlIsAvailableInSPO(String url)
+        {
+            bool siteUrlInUse = false;
+
+            if (System.Threading.Thread.CurrentPrincipal != null &&
+                System.Threading.Thread.CurrentPrincipal.Identity != null &&
+                System.Threading.Thread.CurrentPrincipal.Identity.IsAuthenticated)
+            {
+                var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
+                if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
+                {
+                    var issuerValue = issuer.Value.Substring(0, issuer.Value.Length - 1);
+                    var tenantId = issuerValue.Substring(issuerValue.LastIndexOf("/") + 1);
+                    var upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst(ClaimTypes.Upn)?.Value;
+
+                    String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                    String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                    var tokenId = $"{tenantId}-{upn.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                    var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                        tokenId, "https://graph.microsoft.com/");
+
+                    // Determine the URL of the root SPO site for the current tenant
+                    var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
+                    SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
+
+                    var rootSiteUrl = rootSite.WebUrl;
+
+                    // Retrieve the SPO Access Token
+                    var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                        tokenId, rootSiteUrl,
+                        ConfigurationManager.AppSettings["ida:ClientId"],
+                        ConfigurationManager.AppSettings["ida:ClientSecret"],
+                        ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                    // Connect to SPO and retrieve the list of available Themes
+                    AuthenticationManager authManager = new AuthenticationManager();
+                    using (ClientContext spoContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
+                    {
+                        siteUrlInUse = spoContext.WebExistsFullUrl($"{rootSiteUrl.TrimEnd(new char[] { '/' })}{url}");
+                    }
+                }
+            }
+
+            return (Json(new { result = !siteUrlInUse }, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet));
+        }
+
         private bool IsAllowedUpnTenant(string upn)
         {
             if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))

@@ -294,7 +294,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                     }
                 }
 
-                // Remove exceed packages
+                // Remove leftover packages
                 foreach (var dbPackage in existingDbPackages)
                 {
                     await context.Entry(dbPackage.Value).Collection(d => d.Categories).LoadAsync();
@@ -361,6 +361,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                             name = "",
                             caption = "",
                             description = "",
+                            editor = "",
                         }
                     }
                 }

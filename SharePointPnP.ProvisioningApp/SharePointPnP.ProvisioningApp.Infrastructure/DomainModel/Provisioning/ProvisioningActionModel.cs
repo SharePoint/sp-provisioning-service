@@ -137,12 +137,29 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         Tenant,
     }
 
+    /// <summary>
+    /// Defines a metadata property for the template/package
+    /// </summary>
     public class MetadataProperty
     {
+        /// <summary>
+        /// The name of the metadata property
+        /// </summary>
         public String Name { get; set; }
 
+        /// <summary>
+        /// The caption of the metadata property
+        /// </summary>
         public String Caption { get; set; }
 
+        /// <summary>
+        /// The description of the metadata property
+        /// </summary>
         public String Description { get; set; }
+
+        /// <summary>
+        /// The editor (CSHTML control) for the metadata property
+        /// </summary>
+        public String Editor { get; set; }
     }
 }

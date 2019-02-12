@@ -153,8 +153,8 @@ hr.sectionTitleDivider {
     height: 20em;
     margin-top: -15em;
     margin-left: -15em;
-    border: 1px solid #ccc;
-    border: 2px solid black;
+    /*border: 1px solid #ccc;
+    border: 2px solid black;*/
     z-index: 100;
 }
 

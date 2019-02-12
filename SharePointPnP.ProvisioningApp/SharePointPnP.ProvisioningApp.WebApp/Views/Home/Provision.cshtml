@@ -1,4 +1,5 @@
 ﻿@model SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ProvisioningActionModel
+@using SharePointPnP.ProvisioningApp.WebApp.Models
 
 @functions {
     public IEnumerable<SelectListItem> GetAvailableThemes()
@@ -43,8 +44,11 @@
             <div class="pnp-svcteaser">
                 <div class="pnp-svcteaser-inner">
                     @(Html.Raw(Model.ProvisionDescription))
-                    <hr />
-                    @(Html.Raw(Model.Instructions))
+                    @if (!String.IsNullOrEmpty(Model.Instructions))
+                    {
+                        <hr />
+                        @(Html.Raw(Model.Instructions))
+                    }
                 </div>
             </div>
             <div class="pnp-form">
@@ -94,7 +98,14 @@
                                                 <div class="pnp-field-description">@(Model.MetadataProperties[parameter.Key].Description)</div>
                                             </th>
                                             <td>
-                                                <input name="PackageProperties[@i].Value" value="@parameter.Value" class="pnp-tb" />
+                                                @if (String.IsNullOrEmpty(Model.MetadataProperties[parameter.Key].Editor))
+                                                {
+                                                    <input name="PackageProperties[@i].Value" value="@parameter.Value" class="pnp-tb" />
+                                                }
+                                                else
+                                                {
+                                                    @Html.Partial($"EditorTemplates/{Model.MetadataProperties[parameter.Key].Editor}", new TemplateParameterModel { Index = i, ParameterKey = parameter.Key, ParameterValue = parameter.Value, MetadataProperty = Model.MetadataProperties[parameter.Key] })
+                                                }
                                             </td>
                                         </tr>
                                     }
@@ -208,7 +219,7 @@
     </div>
     <br />
     <input type="button" id="cancelDialog" class="pnp-btn-provision" value="Cancel" />
-    <input type="button" id="confirmDialog" class="pnp-btn-provision ms-Button--primary" value="Provision" />
+    <input type="button" id="confirmDialog" class="pnp-btn-provision ms-Button--primary" value="Confirm" />
 </div>
 
 <div id="confirmationDialogOverlay" class="dialogModalOverlay hide">
@@ -270,13 +281,77 @@
             }
         }
 
+        // determines whether a URL starts with /sites/ or /teams/
+        function urlIsValidForSPO(url) {
+            // the URL has to be something like /sites/* or /teams/*
+            return (url.length > 7 &&
+                    (url.substring(0, 7) == '/sites/' ||
+                    url.substring(0, 7) == '/teams/'));
+        }
+
+        function urlIsAvailableInSPO(url) {
+            fetch('../home/urlIsAvailableInSPO?url=' + encodeURI(url), {
+                method: 'get'
+            })
+                .then(response => {
+                    return (response.json());
+                })
+                .then(data => {
+                    if (data.result != true) {
+                        alert('The URL provided is already in use. If you will proceed, the template will be applied on top of the already existing site, at your own risk.')
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
+
+            var siteUrlControls = document.getElementsByClassName('siteUrl');
+            if (siteUrlControls != null && siteUrlControls.length > 0) {
+                for (var i = 0; i < siteUrlControls.length; i++) {
+                    siteUrlControls[i].addEventListener('keyup', function (e) {
+                        if (urlIsValidForSPO(e.target.value)) {
+                            // remove the validation exception, if any
+                            if (e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+                        else {
+                            // add the validation exception
+                            if (!e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+                    });
+                    siteUrlControls[i].addEventListener('focusout', function (e) {
+                        if (urlIsValidForSPO(e.target.value)) {
+                            // remove the validation exception, if any
+                            if (e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+
+                            // check if the URL is available
+                            urlIsAvailableInSPO(e.target.value);
+                        }
+                        else {
+                            // add the validation exception
+                            if (!e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+
+                    });
+                }
+            }
 
             // cleanup any validation exception if keypress happens on the target field
             var formFields = document.getElementsByClassName('pnp-tb');
             for (var i = 0; i < formFields.length; i++) {
                 formFields[i].addEventListener('keypress', function (e) {
                     if (e.target &&
+                        !e.target.classList.contains('siteUrl') &&
                         e.target.value != '') {
                         if (e.target.classList.contains("invalid")) {
                             e.target.classList.toggle("invalid");
