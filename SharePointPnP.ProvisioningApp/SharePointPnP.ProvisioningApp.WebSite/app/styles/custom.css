@@ -153,8 +153,6 @@ hr.sectionTitleDivider {
     height: 20em;
     margin-top: -15em;
     margin-left: -15em;
-    /*border: 1px solid #ccc;
-    border: 2px solid black;*/
     z-index: 100;
 }
 
@@ -168,6 +166,8 @@ hr.sectionTitleDivider {
 
 .confirmationDialogContent {
     overflow-y: scroll;
+    text-align: left;
+    margin-left: 1em;
     height: 15em;
 }
 
@@ -190,4 +190,37 @@ hr.sectionTitleDivider {
 
 .dialogModalOverlay.show {
     display: block;
+}
+
+.siteExistsDialog {
+    position: absolute;
+    background-color: white;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 24em;
+    height: 14em;
+    margin-top: -7em;
+    margin-left: -12em;
+    z-index: 100;
+}
+
+.siteExistsDialog.hide {
+    display: none;
+}
+
+.siteExistsDialog.show {
+    display: block;
+}
+
+.siteExistsDialogContent {
+    height: 6em;
+    width: 20em;
+    margin-left: 2em;
+}
+
+.okDialog {
+    background-color: #0078d7;
+    border-color: #0078d7;
+    color: #fff;
 }
