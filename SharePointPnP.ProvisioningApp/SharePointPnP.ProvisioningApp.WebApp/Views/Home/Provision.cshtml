@@ -79,11 +79,11 @@
                             @if (Model.PackageProperties != null && Model.PackageProperties.Count > 0)
                             {
                                 @*<tr>
-                        <td colspan="2">
-                            <div class="sectionTitle">Template Properties</div>
-                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                        </td>
-                    </tr>*@
+                                        <td colspan="2">
+                                            <div class="sectionTitle">Template Properties</div>
+                                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                        </td>
+                                    </tr>*@
                             }
                             @{
                                 int i = 0;
@@ -117,11 +117,11 @@
                             @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
                             {
                                 @*<tr>
-                        <td colspan="2">
-                            <div class="sectionTitle">Custom Theme Settings</div>
-                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                        </td>
-                    </tr>*@
+                                        <td colspan="2">
+                                            <div class="sectionTitle">Custom Theme Settings</div>
+                                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                        </td>
+                                    </tr>*@
                                 <tr>
                                     <th>
                                         Apply theme
@@ -180,21 +180,21 @@
                                     </td>
                                 </tr>
                                 @*
-                    <tr>
-                        <th>
-                            <label for="CustomLogoFile">Logo</label>
-                        </th>
-                        <td>
-                            <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
-                        </td>
-                    </tr>
+                                    <tr>
+                                        <th>
+                                            <label for="CustomLogoFile">Logo</label>
+                                        </th>
+                                        <td>
+                                            <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
+                                        </td>
+                                    </tr>
                                 *@
                             }
                             @*<tr>
-                    <td colspan="2">
-                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                    </td>
-                </tr>*@
+                                    <td colspan="2">
+                                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                    </td>
+                                </tr>*@
                             <tr>
                                 <td>
                                     <input type="button" id="cancelButton" class="pnp-btn-provision" value="Cancel" />
@@ -310,9 +310,18 @@
                         var siteExistsDialog = document.getElementById('siteExistsDialog');
                         var dialogOverlay = document.getElementById('dialogOverlay');
                         if (siteExistsDialog && siteExistsDialog.classList.contains('hide') &&
-                            dialogOverlay && dialogOverlay.classList.contains('hide')) {
+                            dialogOverlay) {
                             siteExistsDialog.classList.toggle('hide');
                             siteExistsDialog.classList.toggle('show');
+                            if (dialogOverlay.classList.contains('hide')) {
+                                dialogOverlay.classList.toggle('hide');
+                                dialogOverlay.classList.toggle('show');
+                            }
+                        }
+                    }
+                    else {
+                        var dialogOverlay = document.getElementById('dialogOverlay');
+                        if (dialogOverlay && dialogOverlay.classList.contains('show')) {
                             dialogOverlay.classList.toggle('hide');
                             dialogOverlay.classList.toggle('show');
                         }
@@ -349,6 +358,11 @@
                                 e.target.classList.toggle("invalid");
                             }
 
+                            var dialogOverlay = document.getElementById('dialogOverlay');
+                            if (dialogOverlay && dialogOverlay.classList.contains('hide')) {
+                                dialogOverlay.classList.toggle('hide');
+                                dialogOverlay.classList.toggle('show');
+                            }
                             // check if the URL is available
                             urlIsAvailableInSPO(e.target.value);
                         }
