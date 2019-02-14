@@ -332,7 +332,12 @@
                         }
                     }
                     else {
+                        var checkingSiteDialog = document.getElementById('checkingSiteDialog');
                         var dialogOverlay = document.getElementById('dialogOverlay');
+                        if (checkingSiteDialog && checkingSiteDialog.classList.contains('show')) {
+                            checkingSiteDialog.classList.toggle('hide');
+                            checkingSiteDialog.classList.toggle('show');
+                        }
                         if (dialogOverlay && dialogOverlay.classList.contains('show')) {
                             dialogOverlay.classList.toggle('hide');
                             dialogOverlay.classList.toggle('show');
