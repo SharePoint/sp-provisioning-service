@@ -222,13 +222,20 @@
     <input type="button" id="confirmDialog" class="pnp-btn-provision ms-Button--primary" value="Confirm" />
 </div>
 
+<div id="checkingSiteDialog" class="checkingSiteDialog hide">
+    <div class="checkingSiteDialogContent">
+        <img width="32" height="32" src="data:image/gif;base64,R0lGODlhEAAQAIAAAFLOQv///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgABACwJAAIAAgACAAACAoRRACH5BAUKAAEALAwABQACAAIAAAIChFEAIfkEBQoAAQAsDAAJAAIAAgAAAgKEUQAh+QQFCgABACwJAAwAAgACAAACAoRRACH5BAUKAAEALAUADAACAAIAAAIChFEAIfkEBQoAAQAsAgAJAAIAAgAAAgKEUQAh+QQFCgABACwCAAUAAgACAAACAoRRACH5BAkKAAEALAIAAgAMAAwAAAINjAFne8kPo5y02ouzLQAh+QQJCgABACwCAAIADAAMAAACF4wBphvID1uCyNEZM7Ov4v1p0hGOZlAAACH5BAkKAAEALAIAAgAMAAwAAAIUjAGmG8gPW4qS2rscRPp1rH3H1BUAIfkECQoAAQAsAgACAAkADAAAAhGMAaaX64peiLJa6rCVFHdQAAAh+QQJCgABACwCAAIABQAMAAACDYwBFqiX3mJjUM63QAEAIfkECQoAAQAsAgACAAUACQAAAgqMARaol95iY9AUACH5BAkKAAEALAIAAgAFAAUAAAIHjAEWqJeuCgAh+QQJCgABACwFAAIAAgACAAACAoRRADs=" />
+        <span>&nbsp;Validating site URL...</span>
+    </div>
+</div>
+
 <div id="siteExistsDialog" class="siteExistsDialog hide">
-    <h2>Site already exists!</h2>
+    <h2>Site URL already in use</h2>
     <div class="siteExistsDialogContent">
         The URL provided is already in use. If you will proceed, the template will be applied
         on top of the already existing site and its contents might be replaced.
     </div>
-    <input type="button" id="okDialog" class="pnp-btn-provision okDialog" value="Ok, I've got it!" />
+    <input type="button" id="okDialog" class="pnp-btn-provision okDialog" value="Confirm" />
 </div>
 
 <div id="dialogOverlay" class="dialogModalOverlay hide">
@@ -307,15 +314,20 @@
                 })
                 .then(data => {
                     if (data.result != true) {
+                        var checkingSiteDialog = document.getElementById('checkingSiteDialog');
                         var siteExistsDialog = document.getElementById('siteExistsDialog');
                         var dialogOverlay = document.getElementById('dialogOverlay');
                         if (siteExistsDialog && siteExistsDialog.classList.contains('hide') &&
-                            dialogOverlay) {
+                            dialogOverlay && checkingSiteDialog) {
                             siteExistsDialog.classList.toggle('hide');
                             siteExistsDialog.classList.toggle('show');
                             if (dialogOverlay.classList.contains('hide')) {
                                 dialogOverlay.classList.toggle('hide');
                                 dialogOverlay.classList.toggle('show');
+                            }
+                            if (!checkingSiteDialog.classList.contains('hide')) {
+                                checkingSiteDialog.classList.toggle('hide');
+                                checkingSiteDialog.classList.toggle('show');
                             }
                         }
                     }
@@ -358,8 +370,12 @@
                                 e.target.classList.toggle("invalid");
                             }
 
+                            var checkingSiteDialog = document.getElementById('checkingSiteDialog');
                             var dialogOverlay = document.getElementById('dialogOverlay');
-                            if (dialogOverlay && dialogOverlay.classList.contains('hide')) {
+                            if (checkingSiteDialog && checkingSiteDialog.classList.contains('hide') &&
+                                dialogOverlay && dialogOverlay.classList.contains('hide')) {
+                                checkingSiteDialog.classList.toggle('hide');
+                                checkingSiteDialog.classList.toggle('show');
                                 dialogOverlay.classList.toggle('hide');
                                 dialogOverlay.classList.toggle('show');
                             }
