@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 {
@@ -112,6 +113,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         [JsonIgnore]
         public Dictionary<String, MetadataProperty> MetadataProperties { get; set; }
 
+        [AllowHtml]
         [JsonIgnore]
         public String MetadataPropertiesJson { get; set; }
 
