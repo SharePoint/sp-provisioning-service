@@ -1,70 +1,254 @@
 ﻿<!DOCTYPE html>
-<html lang="it-IT">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-    <!--meta charset="utf-8"-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x-apple-disable-message-reformatting">
+    <!-- Title will show in certain email notifications (e.g., Android 4.4). -->
+    <title>Provision request failed</title>
+
+    <!-- CSS Reset : BEGIN -->
     <style>
-        html, body, div {
-            font-family: Arial, arial,sans;
-            font-size: 15px;
-            color: #6e6e6e;
-            line-height: 20px;
+        html,
+        body {
+            margin: 0 auto !important;
+            padding: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
         }
 
-        h1, h2, h3, p, ul, li {
-            margin: 0;
-            padding: 0;
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
         }
 
-        img, a img {
-            border: none;
-            margin: 0;
-            padding: 0;
+        div[style*="margin: 16px 0"] {
+            margin: 0 !important;
         }
 
-        a:hover {
-            opacity: .8;
+        table,
+        td {
+            mso-table-lspace: 0pt !important;
+            mso-table-rspace: 0pt !important;
         }
 
-        .head {
-            text-align: center;
+        table {
+            border-spacing: 0 !important;
+            border-collapse: collapse !important;
+            table-layout: fixed !important;
+            margin: 0 auto !important;
         }
 
+        img {
+            -ms-interpolation-mode: bicubic;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        *[x-apple-data-detectors], /* iOS */
+        .unstyle-auto-detected-links *,
+        .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        .a6S {
+            display: none !important;
+            opacity: 0.01 !important;
+        }
+
+        .im {
+            color: inherit !important;
+        }
+
+        img.g-img + div {
+            display: none !important;
+        }
+
+        @@media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
+            u ~ div .email-container {
+                min-width: 320px !important;
+            }
+        }
+
+        @@media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
+            u ~ div .email-container {
+                min-width: 375px !important;
+            }
+        }
+
+        @@media only screen and (min-device-width: 414px) {
+            u ~ div .email-container {
+                min-width: 414px !important;
+            }
+        }
     </style>
-</head>
 
-<body>
-    <div class="container" style="color:#6e6e6e;font-size:16px;padding:10px">
-        <div class="head" style="margin-bottom: 20px;">
-            <img src="https://provisioning.sharepointpnp.com/app/images/pnp-provision-300.png" alt="SharePoint PnP Provisioning">
-            <h1>SharePoint Online Provisioning Service</h1>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
+
+    <style>
+        @@media screen and (max-width: 600px) {
+            .email-container p {
+                font-size: 17px !important;
+            }
+        }
+    </style>
+
+</head>
+<body width="100%" style="margin: 0; padding: 0 !important; mso-line-height-rule: exactly; background-color: #03787c;">
+    <center style="width: 100%; background-color: #03787c;">
+        <!--[if mso | IE]>
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #03787c;">
+        <tr>
+        <td>
+        <![endif]-->
+        <!-- Visually Hidden Preheader Text -->
+        <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+            Unfortunately, your request to provision "@Model.TemplateName" template failed!
         </div>
-        <div class="body">
-            <div class="message" style="background:#f5f5f5;border-radius:3px;margin-bottom:44px">
-                <p style="padding:20px; font-weight: bold; color:#e89c2a; text-align: center; font-size: 20px">
-                    We're sorry to inform you that your request to provision "@Model.TemplateName" template failed.
-                </p>
-                <div class="separator" style="margin:0 20px;height:1px;background:#ffffff"></div>
-                <p style="padding:20px">
-                    Here is the exception that occurred:<br />
-                    @Model.ExceptionDetails
-                </p>
-                <div class="separator" style="margin:0 20px;height:1px;background:#ffffff"></div>
-                <hr />
-                <div class="separator" style="margin:0 20px;height:1px;background:#ffffff"></div>
-                <p style="padding:20px">
-                    PnP Correlation ID: @Model.PnPCorrelationId
-                </p>
-                <p style="padding:20px">
-                    Please submit any unexpected exception using the following issues list: <a href="https://aka.ms/spdev-issues">aka.ms/spdev-issues</a>
-                </p>
-            </div>
-            <div style="clear:both"></div>
+
+        <!-- Create white space after the preview text so email clients don’t pull other distracting text into the inbox preview. Extend as necessary. -->
+        <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+            &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
         </div>
-        <div class="footer" style="clear:both;margin-top:60px">
-            <div class="info" style="margin-top:25px;padding:10px 0;border-top:1px solid #aaaaaa;font-size:80%;opacity:.7">
-                This is an automatic email and you shouldn't reply to it.
-            </div>
+
+        <div style="max-width: 600px; margin: 0 auto;" class="email-container">
+            <!--[if mso]>
+            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="600">
+            <tr>
+            <td>
+            <![endif]-->
+
+            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+                <tr>
+                    <td style="padding: 70px 0 0 0;">
+                        <img src="https://provisioning.sharepointpnp.com/app/images//failure.png" width="600" height="" alt="alt_text" border="0" style="width: 100%; max-width: 600px; height: auto; font-family: sans-serif; font-size: 15px; line-height: 15px; color: #555555; margin: auto; display: block;" class="g-img">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background-color: #eeeeee;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td style="padding: 0 20px 20px 20px;">
+                                    <img alt="SharePoint PnP Provisioning" src="https://provisioning.sharepointpnp.com/app/images/pnp-provision-300.png">
+                                    <p style="font-family: sans-serif; font-size: 18px; line-height: 25px; color: #000000; font-weight: bold; margin: 5px 0 30px 0">SharePoint Online Provisioning Service</p>
+                                    <h1 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 25px; line-height: 35px; color: #333333; font-weight: normal;">
+                                        Unfortunately, your request to provision<br>
+                                        <span style="color: #03787c; font-size: 35px;">"@Model.TemplateName"</span>
+                                        <br>template failed.
+                                    </h1>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td aria-hidden="true" height="40" style="font-size: 0px; line-height: 0px;">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background-color: #ffffff;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td style="padding: 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #444444;">
+                                    <h2 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 18px; line-height: 22px; color: #700404; font-weight: bold;">Here is the exception that occurred:</h2>
+
+                                    <p style="margin: 0 0 10px 0; font-family: Consolas, 'Courier New'; font-size: 12px; overflow: hidden; line-height: 20px;">
+                                        @Model.ExceptionDetails
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td aria-hidden="true" height="20" style="font-size: 0px; line-height: 0px;">
+                        &nbsp;
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="background-color: #ffffff;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td style="padding: 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #444444;">
+                                    <p>
+                                        <b>PnP Correlation ID: @Model.PnPCorrelationId</b><br><br>
+
+                                        Please submit any unexpected exception using the following issues list: <a href="https://aka.ms/spdev-issues" style="color: #03787c;">aka.ms/spdev-issues</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            </table>
+            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+                <tr>
+                    <td style="padding: 20px; font-family: sans-serif; font-size: 12px; line-height: 15px; text-align: center; color: #888888;">
+                        <webversion style="color: #cccccc; text-decoration: underline; font-weight: bold;">View as Web Page</webversion>
+                        <br><br>
+                        SharePoint Online Provisioning Service<br>
+                        This is an automatic email and you shouldn't reply to it.
+                    </td>
+                </tr>
+            </table>
+            <!--[if mso]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
         </div>
-    </div>
+
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #004c4f;">
+            <tr>
+                <td>
+                    <div align="center" style="max-width: 600px; margin: auto;" class="email-container">
+                        <!--[if mso]>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
+                        <tr>
+                        <td>
+                        <![endif]-->
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td style="padding: 20px; text-align: left; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #049fa5;">
+                                    <p style="margin: 0;">&nbsp;</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--[if mso]>
+                        </td>
+                        </tr>
+                        </table>
+                        <![endif]-->
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!--[if mso | IE]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+    </center>
 </body>
-</html>

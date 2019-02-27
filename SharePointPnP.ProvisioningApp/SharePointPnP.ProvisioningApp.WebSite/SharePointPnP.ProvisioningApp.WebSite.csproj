@@ -172,9 +172,11 @@
     <Content Include="app\images\arrow-thin-right.svg" />
     <Content Include="app\images\attow-thin-left.svg" />
     <Content Include="app\images\beta-tag.png" />
+    <Content Include="app\images\failure.png" />
     <Content Include="app\images\height-test.jpg" />
     <Content Include="app\images\hero\hero-bg.jpg" />
     <Content Include="app\images\pnp-provision-300.png" />
+    <Content Include="app\images\success.png" />
     <Content Include="app\images\userphoto.jpeg" />
     <Content Include="app\images\_pnp-provision-300.png" />
     <Content Include="app\images\__pnp-provision-300.png" />
