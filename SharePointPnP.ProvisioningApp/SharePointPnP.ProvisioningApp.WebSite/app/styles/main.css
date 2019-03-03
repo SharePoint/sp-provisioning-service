@@ -504,6 +504,12 @@ th {
 .lbl-sc {
   background-color: #0078d4; }
 
+.lbl-sc-permission {
+  font-weight: 400; }
+
+.lbl-tenant-permission {
+  font-weight: 400; }
+
 .pnp-item-title {
   font-size: 1.5em;
   line-height: 1em;

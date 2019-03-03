@@ -19,7 +19,7 @@
             <h1 class="pnp-hero-head">Provisioning<br>Service</h1>
             <div class="pnp-hero-subtl">
                 See the possibilities<br>
-                Deploy &gt; Test
+                Choose Template &gt; Deploy
             </div>
         </div>
     </div>
@@ -48,14 +48,14 @@
                 <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
                     <div class="pnp-img">
                         <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
-                        @if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
+                        @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
                         {
                             <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
                         }
                         else
                         {
                             <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
-                        }
+                        }*@
                     </div>
                     <div class="pnp-item-desc">
                         <div class="pnp-item-title">@package.DisplayName</div>
@@ -72,14 +72,14 @@
                 <a href="/home/details?packageId=@package.Id" class="pnp-item">
                     <div class="pnp-img">
                         <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
-                        @if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
+                        @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
                         {
                             <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
                         }
                         else
                         {
                             <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
-                        }
+                        }*@
                     </div>
                     <div class="pnp-item-desc">
                         <div class="pnp-item-title">@package.DisplayName</div>

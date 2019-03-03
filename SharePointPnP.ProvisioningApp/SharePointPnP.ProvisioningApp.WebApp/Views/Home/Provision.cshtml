@@ -31,7 +31,7 @@
             <h1 class="pnp-hero-head">Provisioning<br>Service</h1>
             <div class="pnp-hero-subtl">
                 See the possibilities<br>
-                Deploy &gt; Test
+                Choose Template &gt; Deploy
             </div>
         </div>
     </div>
@@ -140,7 +140,7 @@
                                         @Html.DropDownListFor(m => m.SelectedTheme, GetAvailableThemes(), new { @class = "pnp-tb" })
                                     </td>
                                 </tr>
-                                <tr>
+                                @*<tr>
                                     <th>
                                         Apply custom theme
                                         <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
@@ -178,7 +178,7 @@
                                         <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
                                         @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
                                     </td>
-                                </tr>
+                                </tr>*@
                                 @*
                                     <tr>
                                         <th>
@@ -235,7 +235,8 @@
         The URL provided is already in use. If you will proceed, the template will be applied
         on top of the already existing site and its contents might be replaced.
     </div>
-    <input type="button" id="okDialog" class="pnp-btn-provision okDialog" value="Confirm" />
+    <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision" value="Cancel" />
+    <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog" value="Confirm" />
 </div>
 
 <div id="dialogOverlay" class="dialogModalOverlay hide">
@@ -417,7 +418,7 @@
             if (selectedTheme && selectedTheme.length > 0) {
                 disableField(selectedTheme[0]);
             }
-            var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
+            @*var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
             if (toggleApplyCustomTheme) {
                 disableToggle(toggleApplyCustomTheme);
             }
@@ -432,7 +433,7 @@
             var themeBodyBackgroundColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyBackgroundColor)');
             if (themeBodyBackgroundColor && themeBodyBackgroundColor.length > 0) {
                 disableField(themeBodyBackgroundColor[0]);
-            }
+            }*@
 
             // handles the click event of the provisionButton
             var provisionButton = document.getElementById('provisionButton');
@@ -447,12 +448,14 @@
 
                     // check the toggles statuses
                     var toggleApplyTheme = document.getElementById('@(Html.IdFor(m => m.ApplyTheme))Div');
-                    var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
+                    @*var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');*@
 
                     // if we have the toggles ...
-                    if (toggleApplyTheme && toggleApplyCustomTheme) {
+                    //if (toggleApplyTheme && toggleApplyCustomTheme) {
+                    if (toggleApplyTheme) {
 
                         var applyThemeFlag = toggleIsSelected(toggleApplyTheme);
+                        @*
                         var applyCustomThemeFlag = toggleIsSelected(toggleApplyCustomTheme);
 
                         // if there isn't any Theme (custom or existing), we can proceed
@@ -525,6 +528,7 @@
                                 }
                             }
                         }
+                        *@
                     }
 
                     if (isValid) {
@@ -579,9 +583,25 @@
             }
 
             // handles the click event of the okDialogButton button
-            var okDialogButton = document.getElementById('okDialog');
-            if (okDialogButton) {
-                okDialogButton.addEventListener('click', function (e) {
+            var siteExistsConfirmDialog = document.getElementById('siteExistsConfirmDialog');
+            if (siteExistsConfirmDialog) {
+                siteExistsConfirmDialog.addEventListener('click', function (e) {
+                    var siteExistsDialog = document.getElementById('siteExistsDialog');
+                    var dialogOverlay = document.getElementById('dialogOverlay');
+                    if (siteExistsDialog && siteExistsDialog.classList.contains("show") &&
+                        dialogOverlay && dialogOverlay.classList.contains("show")) {
+                        siteExistsDialog.classList.toggle("show");
+                        siteExistsDialog.classList.toggle("hide");
+                        dialogOverlay.classList.toggle("hide");
+                        dialogOverlay.classList.toggle("show");
+                    }
+                });
+            }
+
+            // handles the click event of the okDialogButton button
+            var siteExistsCancelDialogButton = document.getElementById('siteExistsCancelDialog');
+            if (siteExistsCancelDialogButton) {
+                siteExistsCancelDialogButton.addEventListener('click', function (e) {
                     var siteExistsDialog = document.getElementById('siteExistsDialog');
                     var dialogOverlay = document.getElementById('dialogOverlay');
                     if (siteExistsDialog && siteExistsDialog.classList.contains("show") &&
@@ -601,35 +621,35 @@
 
                     // get a reference to the Theme fields
                     var selectedTheme = document.getElementsByName('@Html.IdFor(m => m.SelectedTheme)')[0];
-                    var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
+                    @*var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
                     var themePrimaryColor = document.getElementsByName('@Html.IdFor(m => m.ThemePrimaryColor)')[0];
                     var themeBodyTextColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyTextColor)')[0];
-                    var themeBodyBackgroundColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyBackgroundColor)')[0];
+                    var themeBodyBackgroundColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyBackgroundColor)')[0];*@
 
                     // if the Apply Theme toggle is enabled
                     if (toggleIsSelected(e.target)) {
                         // set Theme fields state accordingly
                         enableField(selectedTheme);
-                        enableToggle(toggleApplyCustomTheme);
-                        disableField(themePrimaryColor);
-                        disableField(themeBodyTextColor);
-                        disableField(themeBodyBackgroundColor);
+                        //enableToggle(toggleApplyCustomTheme);
+                        //disableField(themePrimaryColor);
+                        //disableField(themeBodyTextColor);
+                        //disableField(themeBodyBackgroundColor);
                     }
                     else {
                         // set Theme fields state accordingly
                         disableField(selectedTheme);
-                        if (toggleIsSelected(toggleApplyCustomTheme)) {
-                            toggleState(toggleApplyCustomTheme, false);
-                        }
-                        disableToggle(toggleApplyCustomTheme);
-                        disableField(themePrimaryColor);
-                        disableField(themeBodyTextColor);
-                        disableField(themeBodyBackgroundColor);
+                        //if (toggleIsSelected(toggleApplyCustomTheme)) {
+                        //    toggleState(toggleApplyCustomTheme, false);
+                        //}
+                        //disableToggle(toggleApplyCustomTheme);
+                        //disableField(themePrimaryColor);
+                        //disableField(themeBodyTextColor);
+                        //disableField(themeBodyBackgroundColor);
                     }
                 });
             }
 
-            var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
+            @*var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');
             if (toggleApplyCustomTheme) {
                 toggleApplyCustomTheme.addEventListener('toggleClicked', function (e) {
 
@@ -656,7 +676,7 @@
                         disableField(themeBodyBackgroundColor);
                     }
                 });
-            }
+            }*@
         });
 
     </script>

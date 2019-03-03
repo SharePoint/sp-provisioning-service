@@ -9,7 +9,7 @@
             <h1 class="pnp-hero-head">Provisioning<br>Service</h1>
             <div class="pnp-hero-subtl">
                 See the possibilities<br>
-                Deploy &gt; Test
+                Choose Template &gt; Deploy
             </div>
         </div>
     </div>
@@ -22,18 +22,7 @@
                 @(Html.Raw(Model.Package.Description))
             </div>
             <div class="pnp-sidebox">
-                <div class="permission">
-                    <h3 class="pnp-tag-header">Permissions required</h3>
-                    @if (Model.Package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
-                    {
-                        <div class="pnp-item-label lbl-tenant">Site Collection Owner</div>
-                    }
-                    else
-                    {
-                        <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
-                    }
-                </div>
-                <h3 class="pnp-tag-header">Try it and </h3>
+                @*<h3 class="pnp-tag-header">Try it and </h3>*@
                 @if (Model.Package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
                 {
                     <button class="pnp-button" data-provision-url="/site/home/provision?packageId=@Model.Package.Id"> Add to your site</button>
@@ -42,6 +31,21 @@
                 {
                     <button class="pnp-button" data-provision-url="/tenant/home/provision?packageId=@Model.Package.Id"> Add to your tenant</button>
                 }
+                <div class="permission">
+                    <h3 class="pnp-tag-header">
+                        Permissions required:<br />
+                        @if (Model.Package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
+                        {
+                            @*<div class="pnp-item-label lbl-sc">Site Collection Owner</div>*@
+                            <span class="lbl-sc-permission">Site Collection Owner</span>
+                        }
+                        else
+                        {
+                            @*<div class="pnp-item-label lbl-tenant">Tenant Admin</div>*@
+                            <span class="lbl-tenant-permission">Tenant Admin</span>
+                        }
+                    </h3>
+                </div>
                 @if (Model.Package.Categories != null && Model.Package.Categories.Count > 0)
                 {
                     <div class="pnp-category">
