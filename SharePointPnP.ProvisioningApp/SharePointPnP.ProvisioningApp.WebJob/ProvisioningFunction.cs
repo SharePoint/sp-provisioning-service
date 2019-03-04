@@ -117,9 +117,11 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     AuthenticationManager authManager = new AuthenticationManager();
                     using (ClientContext context = authManager.GetAzureADAccessTokenAuthenticatedContext(spoTenant, spoAccessToken))
                     {
+                        // Telemetry and startup
                         var web = context.Web;
-                        context.Load(web, w => w.Title);
-                        await context.ExecuteQueryRetryAsync();
+                        context.ClientTag = "SPDev:ProvisioningPortal";
+                        context.Load(web, w => w.Title, w => w.Id);
+                        await context.ExecuteQueryAsync();
 
                         log.WriteLine($"SharePoint Online Root Site Collection title: {web.Title}");
 
