@@ -121,6 +121,10 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
                             SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
 
+                            // Store the SPO Root Site URL in the Model
+                            model.SPORootSiteUrl = rootSite.WebUrl;
+
+                            // Retrieve the SPO URL for the Admin Site
                             var adminSiteUrl = rootSite.WebUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
 
                             // Retrieve the SPO Access Token

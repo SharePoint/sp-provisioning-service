@@ -191,5 +191,26 @@ th {
     border: 1px solid black;
 }
 
+/*.siteBaseUrl {
+    position: relative;
+    left: -395px;
+    top: 24px;
+    font-weight: 400;
+    font-size: 1em;
+    text-align: right;
+}*/
 
+.siteBaseUrl {
+    top: 2px;
+    font-weight: 400;
+    font-size: 1em;
+    text-align: right;
+    float: left;
+    position: relative;
+    padding-right: 4px;
+}
 
+.siteUrlLink > a {
+    text-decoration: none;
+    color: #0078d4;
+}

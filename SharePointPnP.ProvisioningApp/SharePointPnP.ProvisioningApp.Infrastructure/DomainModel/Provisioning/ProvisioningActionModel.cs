@@ -122,6 +122,9 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public String ProvisionRecap { get; set; }
+
+        [JsonIgnore]
+        public String SPORootSiteUrl { get; set; }
     }
 
     /// <summary>

@@ -396,6 +396,7 @@
     <Content Include="Views\Home\ProvisionQueued.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\SiteUrl.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteUrl.cshtml" />
     <None Include="Web.Site.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
@@ -421,7 +422,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Shared\DisplayTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

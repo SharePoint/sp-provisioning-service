@@ -1,4 +1,5 @@
 ﻿@model SharePointPnP.ProvisioningApp.WebApp.Models.TemplateParameterModel
 
 <!-- SiteUrl Custom Editor -->
+<div class="siteBaseUrl">@Model.SPORootSiteUrl</div>
 <input name="PackageProperties[@Model.Index].Value" value="@Model.ParameterValue" class="pnp-tb siteUrl" />

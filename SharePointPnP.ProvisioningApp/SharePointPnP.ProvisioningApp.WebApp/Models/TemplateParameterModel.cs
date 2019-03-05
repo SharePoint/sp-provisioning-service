@@ -30,5 +30,10 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Models
         /// The Metadata Properties for the parameter
         /// </summary>
         public MetadataProperty MetadataProperty { get; set; }
+
+        /// <summary>
+        /// Optionally provides the URL of the SPO Root Site
+        /// </summary>
+        public String SPORootSiteUrl { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿@model SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ProvisioningActionModel
+@using SharePointPnP.ProvisioningApp.WebApp.Models
 
 <section class="header-img">
     <div class="header-img-inner"></div>
@@ -30,16 +31,28 @@
                         </tr>
                         @if (Model.PackageProperties != null && Model.PackageProperties.Count > 0)
                         {
+                            int i = 0;
                             foreach (var parameter in Model.PackageProperties)
                             {
                                 if (Model.MetadataProperties.ContainsKey(parameter.Key))
                                 {
                                     <tr>
                                         <th>@Model.MetadataProperties[parameter.Key].Caption</th>
-                                        <td>@Model.PackageProperties[parameter.Key]</td>
+                                        <td>
+                                            @if (String.IsNullOrEmpty(Model.MetadataProperties[parameter.Key].Editor))
+                                            {
+                                                @Model.PackageProperties[parameter.Key]
+                                            }
+                                            else
+                                            {
+                                                @Html.Partial($"DisplayTemplates/{Model.MetadataProperties[parameter.Key].Editor}", new TemplateParameterModel { Index = i, ParameterKey = parameter.Key, ParameterValue = parameter.Value, MetadataProperty = Model.MetadataProperties[parameter.Key], SPORootSiteUrl = Model.SPORootSiteUrl })
+                                            }
+                                        </td>
                                     </tr>
                                 }
                             }
+
+                            i++;
                         }
                         @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
                         {
