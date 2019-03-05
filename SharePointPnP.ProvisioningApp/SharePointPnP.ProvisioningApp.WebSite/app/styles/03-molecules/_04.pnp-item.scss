@@ -36,6 +36,9 @@ $pnp-item-boxshadow: 0 0 30px 16px rgba(0, 0, 0, .17);
     }
 }
 
+.wrapper-inner-short {
+    min-height: initial !important;
+}
 
 .pnp-img {
     // max-width: 501px;
@@ -96,7 +99,7 @@ $pnp-item-boxshadow: 0 0 30px 16px rgba(0, 0, 0, .17);
 .pnp-item-content {
     margin: .5em 16px;
     margin-top: 0px;
-    max-height: 5.7em;
+    // max-height: 5.7em;
     overflow: hidden;
 
     p {

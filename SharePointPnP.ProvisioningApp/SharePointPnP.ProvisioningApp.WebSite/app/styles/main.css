@@ -40,6 +40,9 @@ body {
   padding: 0;
   background: #fafafa; }
 
+.body-short {
+  min-height: initial !important; }
+
 h1 {
   font-size: 32pt;
   line-height: 32pt;
@@ -478,6 +481,9 @@ th {
     .wrapper-inner {
       flex-direction: column; } }
 
+.wrapper-inner-short {
+  min-height: initial !important; }
+
 .pnp-img {
   max-height: 286px;
   overflow: hidden;
@@ -519,7 +525,6 @@ th {
 .pnp-item-content {
   margin: .5em 16px;
   margin-top: 0px;
-  max-height: 5.7em;
   overflow: hidden; }
   .pnp-item-content p {
     display: none;

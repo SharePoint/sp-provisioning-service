@@ -119,7 +119,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     {
                         // Telemetry and startup
                         var web = context.Web;
-                        context.ClientTag = "SPDev:ProvisioningPortal";
+                        context.ClientTag = $"SPDev:ProvisioningPortal-{provisioningEnvironment}";
                         context.Load(web, w => w.Title, w => w.Id);
                         await context.ExecuteQueryAsync();
 

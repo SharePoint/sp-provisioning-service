@@ -272,6 +272,12 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         dbPackage.Instructions = package.Instructions;
                         dbPackage.ProvisionRecap = package.ProvisionRecap;
 
+                        // New properties for Wave 5
+                        dbPackage.SortOrder = package.SortOrder;
+                        dbPackage.SortOrderPromoted = package.SortOrderPromoted;
+                        dbPackage.RepositoryRelativeUrl = package.RepositoryRelativeUrl;
+                        dbPackage.Abstract = package.Abstract;
+
                         context.Entry(dbPackage).State = EntityState.Modified;
 
                         // Add new categories
@@ -351,9 +357,12 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
             var settings = await settingsFile.DownloadAsJsonAsync(new
             {
+                @abstract = "",
+                sortOrder = 0,
                 categories = new string[0],
                 packageFile = "",
                 promoted = false,
+                sortOrderPromoted = 0,
                 preview = false,
                 metadata = new {
                     properties = new[] { 
@@ -383,7 +392,12 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 Promoted = settings.promoted,
                 Preview = settings.preview,
                 TimesApplied = 0,
-                PropertiesMetadata = JsonConvert.SerializeObject(settings.metadata)
+                PropertiesMetadata = JsonConvert.SerializeObject(settings.metadata),
+                // New properties for Wave 5
+                Abstract = settings.@abstract,
+                SortOrder = settings.sortOrder,
+                SortOrderPromoted = settings.sortOrderPromoted,
+                RepositoryRelativeUrl = folder.Path,
             };
 
             // Read the instructions.md and the provisioning.md files

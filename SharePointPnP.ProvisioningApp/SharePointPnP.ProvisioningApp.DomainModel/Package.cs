@@ -40,6 +40,12 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public String DisplayName { get; set; }
 
         /// <summary>
+        /// The Abstract of the Package
+        /// </summary>
+        [Required]
+        public String Abstract { get; set; }
+
+        /// <summary>
         /// The Description of the Package
         /// </summary>
         [Required]
@@ -101,6 +107,21 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         /// Defines the text to show when the "confirm provisioning" page is shown
         /// </summary>
         public String ProvisionRecap { get; set; }
+
+        /// <summary>
+        /// Defines the sort order of the package when shown in the list
+        /// </summary>
+        public Int32 SortOrder { get; set; }
+
+        /// <summary>
+        /// Defines the sort order of the package when shown in the promoted list
+        /// </summary>
+        public Int32 SortOrderPromoted { get; set; }
+
+        /// <summary>
+        /// Defines the relative URL of the package in the source repository
+        /// </summary>
+        public String RepositoryRelativeUrl { get; set; }
     }
 
     /// <summary>

@@ -43,7 +43,7 @@
             </div>
         </div>*@
         <div class="pnp-hightlight-sm">
-            @foreach (var package in Model.Packages.Where(p => p.Promoted))
+            @foreach (var package in Model.Packages.Where(p => p.Promoted).OrderByDescending(p => p.SortOrderPromoted))
             {
                 <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
                     <div class="pnp-img">
@@ -60,14 +60,14 @@
                     <div class="pnp-item-desc">
                         <div class="pnp-item-title">@package.DisplayName</div>
                         <div class="pnp-item-content">
-                            <p>@(StripHtml(Html.Raw(package.Description).ToString()))</p>
+                            <p>@Html.Raw(package.Abstract)</p>
                         </div>
                     </div>
                 </a>
             }
         </div>
         <div class="pnp-hightlight-reg">
-            @foreach (var package in Model.Packages.Where(p => !p.Promoted))
+            @foreach (var package in Model.Packages.Where(p => !p.Promoted).OrderByDescending(p => p.SortOrder))
             {
                 <a href="/home/details?packageId=@package.Id" class="pnp-item">
                     <div class="pnp-img">
@@ -84,7 +84,7 @@
                     <div class="pnp-item-desc">
                         <div class="pnp-item-title">@package.DisplayName</div>
                         <div class="pnp-item-content">
-                            <p>@(StripHtml(Html.Raw(package.Description).ToString()))</p>
+                            <p>@Html.Raw(package.Abstract)</p>
                         </div>
                     </div>
                 </a>
