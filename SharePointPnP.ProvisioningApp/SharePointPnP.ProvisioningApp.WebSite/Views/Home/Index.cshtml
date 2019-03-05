@@ -66,10 +66,18 @@
                 </a>
             }
         </div>
+        <div class="pnp-categoryTabs">
+            @{
+                foreach (var category in Model.Categories)
+                {
+                    <div id="@("category-" + category.Key.ToLower())" onclick="selectCategory('@category.Key.ToLower()')" class="pnp-categoryTitle">@category.Value</div>
+                }
+            }
+        </div>
         <div class="pnp-hightlight-reg">
             @foreach (var package in Model.Packages.Where(p => !p.Promoted).OrderByDescending(p => p.SortOrder))
             {
-                <a href="/home/details?packageId=@package.Id" class="pnp-item">
+                <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-regular @(package.Categories.Aggregate("", (a, c) => a += $" category-{c.Id.ToLower()}"))">
                     <div class="pnp-img">
                         <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
                         @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
@@ -100,4 +108,48 @@
     <!-- build:js scripts/main.js -->
     <script src="/app/scripts/main.js"></script>
     <!-- endbuild -->
+
+    <script>
+
+        function selectCategory(categoryId) {
+
+            // unselect the selected item
+            var previouslySelectedCategoryItems = document.getElementsByClassName('pnp-categoryTitle selected');
+            if (previouslySelectedCategoryItems &&
+                previouslySelectedCategoryItems.length > 0) {
+                previouslySelectedCategoryItems[0].classList.remove('selected');
+            }
+
+            // highlight the the currently selected item
+            var categoryItem = document.getElementById('category-' + categoryId);
+            if (categoryItem) {
+                if (!categoryItem.classList.contains('selected')) {
+                    categoryItem.classList.add('selected');
+                }
+            }
+
+            // play with show/hide against the real template items
+            var packages = document.getElementsByClassName('pnp-item pnp-item-regular');
+            if (packages) {
+                for (var i = 0; i < packages.length; i++) {
+                    // if the package belongs to the currently selected category
+                    if (packages[i].classList.contains('category-' + categoryId) &&
+                        packages[i].classList.contains('hide')) {
+                        // show the package
+                        packages[i].classList.remove('hide');
+                    }
+                    else if (!packages[i].classList.contains('hide') &&
+                        !packages[i].classList.contains('category-' + categoryId)) {
+                        // hide any other package that is not already hidden
+                        packages[i].classList.add('hide');
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            selectCategory('@Model.Categories.First().Key.ToLower()');
+        });
+
+    </script>
 }

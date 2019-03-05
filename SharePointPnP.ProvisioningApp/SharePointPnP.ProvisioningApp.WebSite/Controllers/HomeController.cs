@@ -38,6 +38,9 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Controllers
                 model.ServiceDescription = contentPage.Content;
             }
 
+            // Get the categories
+            model.Categories = context.Categories.ToDictionary(c => c.Id, c => c.DisplayName);
+
             return View(model);
         }
 

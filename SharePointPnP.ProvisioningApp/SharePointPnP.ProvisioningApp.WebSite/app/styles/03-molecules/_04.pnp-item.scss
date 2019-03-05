@@ -116,21 +116,14 @@ $pnp-item-boxshadow: 0 0 30px 16px rgba(0, 0, 0, .17);
 
 .pnp-item {
     position: relative;
-
     display: inline-block;
-
     justify-content: flex-start;
-
     transition: all $timing-2 ease-in-out;
     text-decoration: none;
-
     color: black;
-
     // background-color: rgba(white, .4);
     // background-color: blue;
-
     flex-basis: auto;
-
     // box-shadow: $pnp-item-boxshadow;
     &-label {
         position: absolute;
@@ -174,12 +167,10 @@ $pnp-item-boxshadow: 0 0 30px 16px rgba(0, 0, 0, .17);
             // min-height: 171px;
         }
 
-        &+& {
+        & + & {
             margin-top: 1em;
         }
-
     }
-
 }
 
 .pnp-hightlight-reg {
@@ -294,3 +285,32 @@ $pnp-item-boxshadow: 0 0 30px 16px rgba(0, 0, 0, .17);
     }
 
 }
+
+.pnp-categoryTabs {
+    border-bottom: 2px #d83b01 solid;
+    padding-bottom: 10px;
+    width: 100%;
+
+    .pnp-categoryTitle {
+        display: inline;
+        border: #d83b01 1px solid;
+        color: black;
+        padding-left: 10px;
+        padding-right: 50px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        background-color: #FFFFFF;
+        margin-left: -5px;
+        text-align: left;
+
+        &:first-child {
+            margin-left: 0px;
+        }
+    }
+
+    .pnp-categoryTitle.selected {
+        color: white;
+        background-color: #d83b01;
+    }
+}
+

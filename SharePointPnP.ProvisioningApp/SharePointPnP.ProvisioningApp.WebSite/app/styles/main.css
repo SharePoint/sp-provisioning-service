@@ -652,6 +652,27 @@ th {
         min-height: unset;
         max-height: unset; } }
 
+.pnp-categoryTabs {
+  border-bottom: 2px #d83b01 solid;
+  padding-bottom: 10px;
+  width: 100%; }
+  .pnp-categoryTabs .pnp-categoryTitle {
+    display: inline;
+    border: #d83b01 1px solid;
+    color: black;
+    padding-left: 10px;
+    padding-right: 50px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-color: #FFFFFF;
+    margin-left: -5px;
+    text-align: left; }
+    .pnp-categoryTabs .pnp-categoryTitle:first-child {
+      margin-left: 0px; }
+  .pnp-categoryTabs .pnp-categoryTitle.selected {
+    color: white;
+    background-color: #d83b01; }
+
 .pnp-tag-header {
   font-weight: 200; }
 
