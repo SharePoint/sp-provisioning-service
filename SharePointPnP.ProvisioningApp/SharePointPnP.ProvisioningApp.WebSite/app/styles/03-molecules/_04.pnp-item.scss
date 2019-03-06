@@ -181,21 +181,32 @@ $pnp-item-boxshadow: 0 0 30px 16px rgba(0, 0, 0, .17);
     margin: 2em 0 1em;
 
     .pnp-item {
-        margin: 1em;
+        margin: .5em;
 
-        &:nth-child(4n+1) {
+        /*&:not(.hide) {
+            background-color: yellowgreen;
+        }*/
+
+        /*&:nth-child(4n+1 of not(.hide)) {
+            margin-left: 0;
+        }
+
+        &:nth-child(4n of not(.hide)) {
+            margin-right: 0;
+        }*/
+
+        /*&:nth-child(4n+1) {
             margin-left: 0;
         }
 
         &:nth-child(4n) {
             margin-right: 0;
-        }
+        }*/
 
         @media #{$base-tablet} {
             margin-left: 0;
             margin-right: 0;
         }
-
     }
 
     @media #{$base-tablet} {
@@ -302,6 +313,7 @@ $pnp-item-boxshadow: 0 0 30px 16px rgba(0, 0, 0, .17);
         background-color: #FFFFFF;
         margin-left: -5px;
         text-align: left;
+        cursor: pointer;
 
         &:first-child {
             margin-left: 0px;

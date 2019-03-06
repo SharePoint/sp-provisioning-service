@@ -75,7 +75,7 @@
             }
         </div>
         <div class="pnp-hightlight-reg">
-            @foreach (var package in Model.Packages.Where(p => !p.Promoted).OrderByDescending(p => p.SortOrder))
+            @foreach (var package in Model.Packages.OrderByDescending(p => p.SortOrder))
             {
                 <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-regular @(package.Categories.Aggregate("", (a, c) => a += $" category-{c.Id.ToLower()}"))">
                     <div class="pnp-img">
