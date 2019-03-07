@@ -96,6 +96,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Telemetry
                 metrics = metrics ?? new Dictionary<string, double>();
 
                 properties["TestingEnvironment"] = ProvisioningAppManager.IsTestingEnvironment.ToString();
+                properties["DetailedException"] = ex.ToDetailedString();
 
                 if (!string.IsNullOrEmpty(location))
                 {

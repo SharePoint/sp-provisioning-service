@@ -33,6 +33,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
         public static async Task RunAsync([QueueTrigger("actions")]ProvisioningActionModel action, TextWriter log)
         {
             log.WriteLine($"Processing queue trigger function for {action.UserPrincipalName} on tenant {action.TenantId}");
+            log.WriteLine($"PnP Correlation ID: {action.CorrelationId.ToString()}");
 
             // Instantiate and use the telemetry model
             TelemetryUtility telemetry = new TelemetryUtility(log);
