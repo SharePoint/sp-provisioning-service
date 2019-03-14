@@ -178,6 +178,7 @@ FakesAssemblies/
 [Aa]pp-*.[Cc]onfig
 [Ww]eb.[Cc]onfig
 Web.*.[Cc]onfig
+local.settings.json
 
 # Visual Studio 2015 cache/options directory
 .vs/

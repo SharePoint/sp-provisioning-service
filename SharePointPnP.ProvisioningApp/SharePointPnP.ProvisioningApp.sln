@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.MailTemplates", "SharePointPnP.ProvisioningApp.MailTemplates\SharePointPnP.ProvisioningApp.MailTemplates.csproj", "{859262ED-E06A-4665-BA63-C63B467A1A64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.ReportingFunction", "SharePointPnP.ProvisioningApp.ReportingFunction\SharePointPnP.ProvisioningApp.ReportingFunction.csproj", "{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -256,6 +258,24 @@ Global
 		{859262ED-E06A-4665-BA63-C63B467A1A64}.Tenant|Any CPU.Build.0 = Release|Any CPU
 		{859262ED-E06A-4665-BA63-C63B467A1A64}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{859262ED-E06A-4665-BA63-C63B467A1A64}.Test|Any CPU.Build.0 = Release|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Site.Prod|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Site.Prod|Any CPU.Build.0 = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Site.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Site.Test|Any CPU.Build.0 = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Site|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Site|Any CPU.Build.0 = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Tenant.Prod|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Tenant.Prod|Any CPU.Build.0 = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Tenant.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Tenant.Test|Any CPU.Build.0 = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Tenant|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Tenant|Any CPU.Build.0 = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -32,6 +33,10 @@ namespace SharePointPnP.ProvisioningApp.WebJob
     {
         public static async Task RunAsync([QueueTrigger("actions")]ProvisioningActionModel action, TextWriter log)
         {
+            var startProvisioning = DateTime.Now;
+
+            String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
             log.WriteLine($"Processing queue trigger function for {action.UserPrincipalName} on tenant {action.TenantId}");
             log.WriteLine($"PnP Correlation ID: {action.CorrelationId.ToString()}");
 
@@ -62,7 +67,6 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 // Log telemetry event
                 telemetry?.LogEvent("ProvisioningFunction.Start");
 
-                String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
                 var tokenId = $"{action.TenantId}-{action.UserPrincipalName.GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
 
                 // Retrieve the SPO target tenant via Microsoft Graph
@@ -382,6 +386,9 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                                 ProvisionedSites = provisionedSites,
                                             },
                                             appOnlyAccessToken);
+
+                                        // Log reporting event (1 = Success)
+                                        logReporting(action, provisioningEnvironment, startProvisioning, package, 1);
                                     }
                                 }
                             }
@@ -413,6 +420,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
             catch (Exception ex)
             {
+                // Log telemetry event
                 telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
 
                 // Notify user about the provisioning outcome
@@ -427,11 +435,41 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     },
                     appOnlyAccessToken);
 
+                // Log reporting event (2 = Failed)
+                logReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
+
                 throw ex;
             }
             finally
             {
                 telemetry?.Flush();
+            }
+        }
+
+        private static void logReporting(ProvisioningActionModel action, string provisioningEnvironment, DateTime startProvisioning, DomainModel.Package package, Int32 outcome, String details = null)
+        {
+            // Prepare the reporting event
+            var provisioningEvent = new
+            {
+                EventId = action.CorrelationId,
+                EventStartDateTime = startProvisioning,
+                EventEndDateTime = DateTime.Now,
+                EventOutcome = outcome,
+                EventDetails = details,
+                EventFromProduction = provisioningEnvironment.ToUpper() != "TEST" ? 1 : 0,
+                TemplateId = action.PackageId,
+                TemplateDisplayName = package?.DisplayName,
+            };
+
+            try
+            {
+                // Make the Azure Function call for reporting
+                HttpHelper.MakePostRequest(ConfigurationManager.AppSettings["SPPA:ReportingFunctionUrl"],
+                    provisioningEvent, "application/json", null);
+            }
+            catch
+            {
+                // Intentionally ignore any reporting issue
             }
         }
 
