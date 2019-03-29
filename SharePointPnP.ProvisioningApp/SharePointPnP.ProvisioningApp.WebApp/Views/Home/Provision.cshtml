@@ -114,14 +114,15 @@
                             }
                         }
 
-                        @if (Model.UserIsTenantAdmin || Model.UserIsSPOAdmin)
+                        @if ((Model.UserIsTenantAdmin || Model.UserIsSPOAdmin) && 
+                            Model.Themes != null && Model.Themes.Count > 0)
                         {
                             @*<tr>
-                        <td colspan="2">
-                            <div class="sectionTitle">Custom Theme Settings</div>
-                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                        </td>
-                    </tr>*@
+                                <td colspan="2">
+                                    <div class="sectionTitle">Custom Theme Settings</div>
+                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                </td>
+                            </tr>*@
                             <tr>
                                 <th>
                                     Apply theme
