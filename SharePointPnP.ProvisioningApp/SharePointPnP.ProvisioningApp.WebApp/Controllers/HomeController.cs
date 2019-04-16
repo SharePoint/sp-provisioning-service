@@ -55,12 +55,6 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return View();
         }
 
-        //[AllowAnonymous]
-        //public ActionResult Error(string message)
-        //{
-        //    throw new Exception(message);
-        //}
-
         [AllowAnonymous]
         public ActionResult Error(Exception exception)
         {

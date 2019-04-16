@@ -430,7 +430,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     additionalRecipients,
                     new {
                         TemplateName = action.DisplayName,
-                        ExceptionDetails = ex.ToDetailedString(),
+                        ExceptionDetails = SimplifyException(ex),
                         PnPCorrelationId = action.CorrelationId.ToString(),
                     },
                     appOnlyAccessToken);
@@ -443,6 +443,30 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             finally
             {
                 telemetry?.Flush();
+            }
+        }
+
+        private static String SimplifyException(Exception ex)
+        {
+            if ((ex is System.UnauthorizedAccessException && ex.StackTrace.Contains("OfficeDevPnP.Core.ALM.AppManager")) ||
+                (ex is Microsoft.SharePoint.Client.ServerException && ex.StackTrace.Contains("OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.Utilities.TenantHelper.ProcessWebApiPermissions")))
+            {
+                // This is the AppCatalog exception
+                return (FriendlyErrorMessages.Missing_App_Catalog);
+            }
+            else if (ex is Microsoft.SharePoint.Client.ServerUnauthorizedAccessException && ex.StackTrace.Contains("OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.ObjectHierarchySequenceTermGroups"))
+            {
+                // This is the TermStore permission exception
+                return (FriendlyErrorMessages.Term_Store_Not_Admin);
+            }
+            else if (ex is Microsoft.Azure.KeyVault.Models.KeyVaultErrorException && ex.StackTrace.Contains("'429'"))
+            {
+                // This is the KeyVault throttling exception
+                return (FriendlyErrorMessages.Key_Vault_Throttling);
+            }
+            else
+            {
+                return (ex.ToDetailedString());
             }
         }
 
