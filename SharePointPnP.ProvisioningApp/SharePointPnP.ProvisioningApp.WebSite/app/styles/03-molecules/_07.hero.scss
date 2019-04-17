@@ -7,7 +7,7 @@
     margin-top: 100;
 }
 .header-img-inner{
-    min-height: 55vh;
+    min-height: 35vh;
     max-width: 1920px;
     margin: auto;
     background-position: center center;
@@ -30,10 +30,14 @@
     right: 0;
     bottom: 0;
 }
+.pnp-hero-divider {
+    border-bottom: 2px #d83b01 solid;
+    width: 100%;
+}
 .pnp-hero-title{
     box-sizing: border-box;
     padding: 2.5%;
-    margin: 2.5%;
+    margin: 1.5%;
     margin-left: 0;
     position: absolute;
     bottom: 0;

@@ -449,7 +449,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
         private static String SimplifyException(Exception ex)
         {
             if ((ex is System.UnauthorizedAccessException && ex.StackTrace.Contains("OfficeDevPnP.Core.ALM.AppManager")) ||
-                (ex is Microsoft.SharePoint.Client.ServerException && ex.StackTrace.Contains("OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.Utilities.TenantHelper.ProcessWebApiPermissions")))
+                (ex is Microsoft.SharePoint.Client.ServerException && ex.StackTrace.Contains("OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.Utilities.TenantHelper.ProcessWebApiPermissions")) ||
+                (ex is System.Exception && ex.StackTrace.Contains("OfficeDevPnP.Core.ALM.AppManager")))
             {
                 // This is the AppCatalog exception
                 return (FriendlyErrorMessages.Missing_App_Catalog);
