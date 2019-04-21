@@ -31,6 +31,26 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 {
     public static class ProvisioningFunction
     {
+        private static KnownExceptions knownExceptions;
+
+        static ProvisioningFunction()
+        {
+            // Get the JSON settings for known exceptions
+            Stream stream = typeof(KnownExceptions)
+                .Assembly
+                .GetManifestResourceStream("SharePointPnP.ProvisioningApp.WebJob.known-exceptions.json");
+
+            // If we have the stream and it can be read
+            if (stream != null && stream.CanRead)
+            {
+                using (var sr = new StreamReader(stream))
+                {
+                    // Deserialize it
+                    knownExceptions = JsonConvert.DeserializeObject<KnownExceptions>(sr.ReadToEnd());
+                }
+            }
+        }
+
         public static async Task RunAsync([QueueTrigger("actions")]ProvisioningActionModel action, TextWriter log)
         {
             var startProvisioning = DateTime.Now;
@@ -448,22 +468,14 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
         private static String SimplifyException(Exception ex)
         {
-            if ((ex is System.UnauthorizedAccessException && ex.StackTrace.Contains("OfficeDevPnP.Core.ALM.AppManager")) ||
-                (ex is Microsoft.SharePoint.Client.ServerException && ex.StackTrace.Contains("OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.Utilities.TenantHelper.ProcessWebApiPermissions")) ||
-                (ex is System.Exception && ex.StackTrace.Contains("OfficeDevPnP.Core.ALM.AppManager")))
+            var knownException = knownExceptions?.Exceptions?.Find(e => ex.GetType().FullName == e.ExceptionType && ex.StackTrace.Contains(e.MatchingText));
+
+            if (knownException != null)
             {
-                // This is the AppCatalog exception
-                return (FriendlyErrorMessages.Missing_App_Catalog);
-            }
-            else if (ex is Microsoft.SharePoint.Client.ServerUnauthorizedAccessException && ex.StackTrace.Contains("OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.ObjectHierarchySequenceTermGroups"))
-            {
-                // This is the TermStore permission exception
-                return (FriendlyErrorMessages.Term_Store_Not_Admin);
-            }
-            else if (ex is Microsoft.Azure.KeyVault.Models.KeyVaultErrorException && ex.StackTrace.Contains("'429'"))
-            {
-                // This is the KeyVault throttling exception
-                return (FriendlyErrorMessages.Key_Vault_Throttling);
+                var tmp = typeof(FriendlyErrorMessages).GetProperties(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+
+                return (typeof(FriendlyErrorMessages).GetProperty(knownException.FriendlyMessageResourceKey,
+                    System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)?.GetValue(null, null) as String);
             }
             else
             {

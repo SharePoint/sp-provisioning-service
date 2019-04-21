@@ -393,6 +393,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FriendlyErrorMessages.resx</DependentUpon>
     </Compile>
+    <Compile Include="KnownExceptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvisioningFunction.cs" />
@@ -402,6 +403,7 @@
     <None Include="App-Test.config" />
     <None Include="App-Prod.config" />
     <None Include="App.config" />
+    <EmbeddedResource Include="known-exceptions.json" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />
