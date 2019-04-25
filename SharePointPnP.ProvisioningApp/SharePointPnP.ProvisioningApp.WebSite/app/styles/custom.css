@@ -107,6 +107,12 @@ input[type="checkbox"], input[type="radio"] {
     margin-left: 118px;
 }
 
+.pnp-btn-provision.ms-Button--primary.is-disabled {
+    background-color: rgb(244, 244, 244);
+    color: rgb(166, 166, 166);
+    border-color: transparent;
+}
+
 .pnp-btn-provision {
     font-size: 14px;
 }
@@ -117,6 +123,10 @@ input[type="checkbox"], input[type="radio"] {
 
 select.pnp-tb {
     width: 224px;
+}
+
+select.pnp-tb-sites {
+    width: 105px;
 }
 
 .pnp-tb.invalid {
@@ -150,7 +160,7 @@ hr.sectionTitleDivider {
     top: 50%;
     left: 50%;
     width: 30em;
-    height: 20em;
+    height: 26em;
     margin-top: -15em;
     margin-left: -15em;
     z-index: 100;
@@ -168,7 +178,7 @@ hr.sectionTitleDivider {
     overflow-y: scroll;
     text-align: left;
     margin-left: 1em;
-    height: 15em;
+    height: 21em;
 }
 
 .dialogModalOverlay {

@@ -64,6 +64,8 @@
                     @Html.HiddenFor(m => m.UserIsTenantAdmin)
                     @Html.HiddenFor(m => m.UserIsSPOAdmin)
                     @Html.HiddenFor(m => m.SPORootSiteUrl)
+                    @Html.HiddenFor(m => m.TargetSiteAlreadyExists)
+                    @Html.HiddenFor(m => m.TargetSiteBaseTemplateId)
 
                     <table>
                         <tr>
@@ -113,15 +115,15 @@
                             }
                         }
 
-                        @if ((Model.UserIsTenantAdmin || Model.UserIsSPOAdmin) && 
+                        @if ((Model.UserIsTenantAdmin || Model.UserIsSPOAdmin) &&
                             Model.Themes != null && Model.Themes.Count > 0)
                         {
                             @*<tr>
-                                <td colspan="2">
-                                    <div class="sectionTitle">Custom Theme Settings</div>
-                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                                </td>
-                            </tr>*@
+                        <td colspan="2">
+                            <div class="sectionTitle">Custom Theme Settings</div>
+                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                        </td>
+                    </tr>*@
                             <tr>
                                 <th>
                                     Apply theme
@@ -276,6 +278,36 @@
             }
         }
 
+        // disables the Provision button
+        function disableProvisionButton() {
+            var provisionButton = this.document.getElementById('provisionButton');
+            if (provisionButton) {
+                // set the disabled style
+                if (!provisionButton.classList.contains("is-disabled")) {
+                    provisionButton.classList.toggle("is-disabled");
+                }
+                // disable the command
+                if (!provisionButton.hasAttribute('disabled')) {
+                    provisionButton.setAttribute('disabled', '');
+                }
+            }
+        }
+
+        // enables the Provision button
+        function enableProvisionButton() {
+            var provisionButton = this.document.getElementById('provisionButton');
+            if (provisionButton) {
+                // remove the disabled style
+                if (provisionButton.classList.contains("is-disabled")) {
+                    provisionButton.classList.toggle("is-disabled");
+                }
+                // enable the command
+                if (provisionButton.hasAttribute('disabled')) {
+                    provisionButton.removeAttribute('disabled');
+                }
+            }
+        }
+
         // toggles the enabled/disabled status of a field
         function toggleFieldStatus(field) {
             if (field) {
@@ -288,6 +320,7 @@
             }
         }
 
+        // returns the value of a field, if any
         function getFieldValue(field) {
             if (field) {
                 return (field.value);
@@ -297,14 +330,19 @@
             }
         }
 
-        // determines whether a URL starts with /sites/ or /teams/
-        function urlIsValidForSPO(url) {
-            // the URL has to be something like /sites/* or /teams/*
-            return (url.length > 7 &&
-                    (url.substring(0, 7) == '/sites/' ||
-                    url.substring(0, 7) == '/teams/'));
+        // determines whether a string is valid against a regex rule
+        function regexIsValid(value, regexRule) {
+            var regex = new RegExp(regexRule);
+            return (value.match(regex) && value.length > 0);
         }
 
+        // determines whether a URL is valid for SharePoint or not
+        function urlIsValidForSPO(url) {
+            var regex = new RegExp(/^(\w|\-|\.|\_)*$/);
+            return (url.match(regex) && url.length > 0);
+        }
+
+        // determines if the the URL is available in SPO or not, using a backend API
         function urlIsAvailableInSPO(url) {
             fetch('../home/urlIsAvailableInSPO?url=' + encodeURI(url), {
                 method: 'get'
@@ -343,14 +381,139 @@
                             dialogOverlay.classList.toggle('show');
                         }
                     }
+
+                    // Share the resulting values back with the back-end engine
+                    document.getElementById("TargetSiteAlreadyExists").value = !data.result;
+                    document.getElementById("TargetSiteBaseTemplateId").value = data.baseTemplateId;
                 })
                 .catch(err => {
                     console.log(err);
                 });
         }
 
+        // determines whether the form is valid and can be submitted or not
+        function formIsValid() {
+
+            var isValid = true;
+
+            // check the toggles statuses
+            var toggleApplyTheme = document.getElementById('@(Html.IdFor(m => m.ApplyTheme))Div');
+            @*var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');*@
+
+            // if we have the toggles ...
+            //if (toggleApplyTheme && toggleApplyCustomTheme) {
+            if (toggleApplyTheme) {
+
+                var applyThemeFlag = toggleIsSelected(toggleApplyTheme);
+                        
+                //var applyCustomThemeFlag = toggleIsSelected(toggleApplyCustomTheme);
+
+                // if there isn't any Theme (custom or existing), we can proceed
+                if (applyThemeFlag) {
+
+                    @*// if there is a custom theme and the custom theme name is missing
+                    // we have a validation exception and we skip submitting the form
+                    if (isValid) {
+                        if (applyCustomThemeFlag) {
+
+                            // get the fields for the custom theme
+                            var themePrimaryColor = document.getElementsByName('@Html.IdFor(m => m.ThemePrimaryColor)')[0];
+                            var themeBodyBackgroundColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyBackgroundColor)')[0];
+                            var themeBodyTextColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyTextColor)')[0];
+
+                            // cleanup validation exceptions
+                            if (themePrimaryColor.classList.contains("invalid")) {
+                                themePrimaryColor.classList.toggle("invalid");
+                            }
+                            if (themeBodyBackgroundColor.classList.contains("invalid")) {
+                                themeBodyBackgroundColor.classList.toggle("invalid");
+                            }
+                            if (themeBodyTextColor.classList.contains("invalid")) {
+                                themeBodyTextColor.classList.toggle("invalid");
+                            }
+
+                            // check the Theme Primary Color
+                            if (getFieldValue(themePrimaryColor) == '') {
+                                if (!themePrimaryColor.classList.contains("invalid")) {
+                                    themePrimaryColor.classList.toggle("invalid");
+                                }
+                                isValid = false;
+                            }
+
+                            // check the Theme Body Background Color
+                            if (getFieldValue(themeBodyBackgroundColor) == '') {
+                                if (!themeBodyBackgroundColor.classList.contains("invalid")) {
+                                    themeBodyBackgroundColor.classList.toggle("invalid");
+                                }
+                                isValid = false;
+                            }
+
+                            // check the Theme Body Text Color
+                            if (getFieldValue(themeBodyTextColor) == '') {
+                                if (!themeBodyTextColor.classList.contains("invalid")) {
+                                    themeBodyTextColor.classList.toggle("invalid");
+                                }
+                                isValid = false;
+                            }
+                        }
+                    }*@
+
+                    // if there isn't a custom theme and there isn't a currently existing Theme selected
+                    // we have a validation exception and we skip submitting the form, too
+                    //if (isValid && !applyCustomThemeFlag) {
+                    if (isValid) {
+
+                        var selectedTheme = document.getElementById('@Html.IdFor(m => m.SelectedTheme)');
+
+                        // cleanup validation exceptions
+                        if (selectedTheme.classList.contains("invalid")) {
+                            selectedTheme.classList.toggle("invalid");
+                        }
+
+                        // check the Selected Theme
+                        if (getFieldValue(selectedTheme) == '********') {
+                            if (!selectedTheme.classList.contains("invalid")) {
+                                selectedTheme.classList.toggle("invalid");
+                            }
+                            isValid = false;
+                        }
+                    }
+                }
+                        
+            }
+
+            // if the form is still valid
+            if (isValid) {
+                // check if the form fields are all valid
+                var siteUrlControls = document.getElementsByClassName('siteUrl');
+                for (var i = 0; i < siteUrlControls.length; i++) {
+                    isValid = isValid && !siteUrlControls[i].classList.contains("invalid");
+                }
+                var regexEditorControls = document.getElementsByClassName('regexEditor');
+                for (var i = 0; i < regexEditorControls.length; i++) {
+                    isValid = isValid && !regexEditorControls[i].classList.contains("invalid");
+                }
+            }
+
+            return (isValid);
+        }
+
+        // changes the form submit status whether the form is valid or not
+        function toggleFormSubmitStatus() {
+
+            // toggle the Provision button accordingly
+            if (!formIsValid()) {
+                disableProvisionButton()
+            }
+            else {
+                enableProvisionButton();
+            }
+
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
 
+            // validation events for any URL control fields
             var siteUrlControls = document.getElementsByClassName('siteUrl');
             if (siteUrlControls != null && siteUrlControls.length > 0) {
                 for (var i = 0; i < siteUrlControls.length; i++) {
@@ -367,6 +530,12 @@
                                 e.target.classList.toggle("invalid");
                             }
                         }
+
+                        // toggle the Provision button accordingly
+                        toggleFormSubmitStatus();
+
+                        // save the new value in the supporting hidden field
+                        e.target.nextElementSibling.value = e.target.previousElementSibling.value + e.target.value;
                     });
                     siteUrlControls[i].addEventListener('focusout', function (e) {
                         if (urlIsValidForSPO(e.target.value)) {
@@ -385,7 +554,10 @@
                                 dialogOverlay.classList.toggle('show');
                             }
                             // check if the URL is available
-                            urlIsAvailableInSPO(e.target.value);
+                            urlIsAvailableInSPO(e.target.previousElementSibling.value + e.target.value);
+
+                            // save the new value in the supporting hidden field
+                            e.target.nextElementSibling.value = e.target.previousElementSibling.value + e.target.value;
                         }
                         else {
                             // add the validation exception
@@ -394,23 +566,125 @@
                             }
                         }
 
+                        // toggle the Provision button accordingly
+                        toggleFormSubmitStatus();
                     });
                 }
             }
 
+            // validation events for any URL prefix control fields
+            var siteUrlPrefixControls = document.getElementsByClassName('siteUrlPrefix');
+            if (siteUrlPrefixControls != null && siteUrlPrefixControls.length > 0) {
+                for (var i = 0; i < siteUrlPrefixControls.length; i++) {
+                    siteUrlPrefixControls[i].addEventListener('change', function (e) {
+                        if (urlIsValidForSPO(e.target.nextElementSibling.value)) {
+                            // remove the validation exception, if any
+                            if (e.target.nextElementSibling.classList.contains("invalid")) {
+                                e.target.nextElementSibling.classList.toggle("invalid");
+                            }
+
+                            var checkingSiteDialog = document.getElementById('checkingSiteDialog');
+                            var dialogOverlay = document.getElementById('dialogOverlay');
+                            if (checkingSiteDialog && checkingSiteDialog.classList.contains('hide') &&
+                                dialogOverlay && dialogOverlay.classList.contains('hide')) {
+                                checkingSiteDialog.classList.toggle('hide');
+                                checkingSiteDialog.classList.toggle('show');
+                                dialogOverlay.classList.toggle('hide');
+                                dialogOverlay.classList.toggle('show');
+                            }
+                            // check if the URL is available
+                            urlIsAvailableInSPO(e.target.value + e.target.nextElementSibling.value);
+
+                            // save the new value in the supporting hidden field
+                            e.target.nextElementSibling.nextElementSibling.value = e.target.value + e.target.nextElementSibling.value;
+                        }
+                        else {
+                            // add the validation exception
+                            if (!e.target.nextElementSibling.classList.contains("invalid")) {
+                                e.target.nextElementSibling.classList.toggle("invalid");
+                            }
+                        }
+
+                        // toggle the Provision button accordingly
+                        toggleFormSubmitStatus();
+                    });
+                }
+            }
+
+            // validation events for any regex editor fields
+            var regexEditorControls = document.getElementsByClassName('regexEditor');
+            if (regexEditorControls != null && regexEditorControls.length > 0) {
+                for (var i = 0; i < regexEditorControls.length; i++) {
+                    regexEditorControls[i].addEventListener('keyup', function (e) {
+                        if (regexIsValid(e.target.value, e.target.dataset.regex)) {
+                            // remove the validation exception, if any
+                            if (e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+                        else {
+                            // add the validation exception
+                            if (!e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+
+                        // toggle the Provision button accordingly
+                        toggleFormSubmitStatus();
+                    });
+                }
+            }
+
+            // validation events for SelectedTheme field
+            var selectedTheme = document.getElementById('@Html.IdFor(m => m.SelectedTheme)');
+            if (selectedTheme) {
+                selectedTheme.addEventListener('change', function (e) {
+                    // cleanup validation exceptions
+                    if (e.target.classList.contains("invalid")) {
+                        e.target.classList.toggle("invalid");
+                    }
+
+                    // check the Selected Theme
+                    if (getFieldValue(e.target) == '********') {
+                        if (!e.target.classList.contains("invalid")) {
+                            e.target.classList.toggle("invalid");
+                        }
+                    }
+
+                    // toggle the Provision button accordingly
+                    toggleFormSubmitStatus();
+                });
+            }
+
+            // validation events for ApplyTheme toggle
+            var toggleApplyTheme = document.getElementById('@(Html.IdFor(m => m.ApplyTheme))Div');
+            if (toggleApplyTheme) {
+                toggleApplyTheme.addEventListener('click', function () {
+                    // toggle the Provision button accordingly
+                    toggleFormSubmitStatus();
+                });
+            }
+            
             // cleanup any validation exception if keypress happens on the target field
             var formFields = document.getElementsByClassName('pnp-tb');
             for (var i = 0; i < formFields.length; i++) {
                 formFields[i].addEventListener('keypress', function (e) {
                     if (e.target &&
+                        !e.target.classList.contains('regexEditor') &&
                         !e.target.classList.contains('siteUrl') &&
                         e.target.value != '') {
                         if (e.target.classList.contains("invalid")) {
                             e.target.classList.toggle("invalid");
                         }
                     }
+
+                    // toggle the Provision button accordingly
+                    toggleFormSubmitStatus();
                 });
             }
+
+            // set initial state for the form
+            toggleFormSubmitStatus();
 
             // set initial state for Theme fields
             var selectedTheme = document.getElementsByName('@Html.IdFor(m => m.SelectedTheme)');
@@ -442,93 +716,8 @@
                     // stop event propagation
                     e.stopPropagation();
 
-                    // initial validation status (OK)
-                    var isValid = true;
-
-                    // check the toggles statuses
-                    var toggleApplyTheme = document.getElementById('@(Html.IdFor(m => m.ApplyTheme))Div');
-                    @*var toggleApplyCustomTheme = document.getElementById('@(Html.IdFor(m => m.ApplyCustomTheme))Div');*@
-
-                    // if we have the toggles ...
-                    //if (toggleApplyTheme && toggleApplyCustomTheme) {
-                    if (toggleApplyTheme) {
-
-                        var applyThemeFlag = toggleIsSelected(toggleApplyTheme);
-                        @*
-                        var applyCustomThemeFlag = toggleIsSelected(toggleApplyCustomTheme);
-
-                        // if there isn't any Theme (custom or existing), we can proceed
-                        if (applyThemeFlag) {
-
-                            // if there is a custom theme and the custom theme name is missing
-                            // we have a validation exception and we skip submitting the form
-                            if (isValid) {
-                                if (applyCustomThemeFlag) {
-
-                                    // get the fields for the custom theme
-                                    var themePrimaryColor = document.getElementsByName('@Html.IdFor(m => m.ThemePrimaryColor)')[0];
-                                    var themeBodyBackgroundColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyBackgroundColor)')[0];
-                                    var themeBodyTextColor = document.getElementsByName('@Html.IdFor(m => m.ThemeBodyTextColor)')[0];
-
-                                    // cleanup validation exceptions
-                                    if (themePrimaryColor.classList.contains("invalid")) {
-                                        themePrimaryColor.classList.toggle("invalid");
-                                    }
-                                    if (themeBodyBackgroundColor.classList.contains("invalid")) {
-                                        themeBodyBackgroundColor.classList.toggle("invalid");
-                                    }
-                                    if (themeBodyTextColor.classList.contains("invalid")) {
-                                        themeBodyTextColor.classList.toggle("invalid");
-                                    }
-
-                                    // check the Theme Primary Color
-                                    if (getFieldValue(themePrimaryColor) == '') {
-                                        if (!themePrimaryColor.classList.contains("invalid")) {
-                                            themePrimaryColor.classList.toggle("invalid");
-                                        }
-                                        isValid = false;
-                                    }
-
-                                    // check the Theme Body Background Color
-                                    if (getFieldValue(themeBodyBackgroundColor) == '') {
-                                        if (!themeBodyBackgroundColor.classList.contains("invalid")) {
-                                            themeBodyBackgroundColor.classList.toggle("invalid");
-                                        }
-                                        isValid = false;
-                                    }
-
-                                    // check the Theme Body Text Color
-                                    if (getFieldValue(themeBodyTextColor) == '') {
-                                        if (!themeBodyTextColor.classList.contains("invalid")) {
-                                            themeBodyTextColor.classList.toggle("invalid");
-                                        }
-                                        isValid = false;
-                                    }
-                                }
-                            }
-
-                            // if there isn't a custom theme and there isn't a currently existing Theme selected
-                            // we have a validation exception and we skip submitting the form, too
-                            if (isValid && !applyCustomThemeFlag) {
-
-                                var selectedTheme = document.getElementsByName('@Html.IdFor(m => m.SelectedTheme)')[0];
-
-                                // cleanup validation exceptions
-                                if (selectedTheme.classList.contains("invalid")) {
-                                    selectedTheme.classList.toggle("invalid");
-                                }
-
-                                // check the Selected Theme
-                                if (getFieldValue(selectedTheme) == '********') {
-                                    if (!selectedTheme.classList.contains("invalid")) {
-                                        selectedTheme.classList.toggle("invalid");
-                                    }
-                                    isValid = false;
-                                }
-                            }
-                        }
-                        *@
-                    }
+                    // validate form
+                    var isValid = formIsValid();
 
                     if (isValid) {
                         var confirmationDialog = document.getElementById('confirmationDialog');

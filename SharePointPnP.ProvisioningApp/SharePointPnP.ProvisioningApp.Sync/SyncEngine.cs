@@ -371,6 +371,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                             caption = "",
                             description = "",
                             editor = "",
+                            editorSettings = "",
                         }
                     }
                 }

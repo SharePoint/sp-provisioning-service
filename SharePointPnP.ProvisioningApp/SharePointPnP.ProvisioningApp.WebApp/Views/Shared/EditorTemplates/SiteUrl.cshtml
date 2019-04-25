@@ -2,4 +2,9 @@
 
 <!-- SiteUrl Custom Editor -->
 <div class="siteBaseUrl">@Model.SPORootSiteUrl</div>
-<input name="PackageProperties[@Model.Index].Value" value="@Model.ParameterValue" class="pnp-tb siteUrl" />
+<select id="urlPrefix" class="pnp-tb pnp-tb-sites siteUrlPrefix">
+    <option value="/sites/">/sites/</option>
+    <option value="/teams/">/teams/</option>
+</select>
+<input value="@(Model.ParameterValue.StartsWith("/sites/") || Model.ParameterValue.StartsWith("/teams/") ? Model.ParameterValue.Substring(7, Model.ParameterValue.Length - 7) : Model.ParameterValue)" class="pnp-tb siteUrl" />
+<input type="hidden" name="PackageProperties[@Model.Index].Value" value="@Model.ParameterValue" />

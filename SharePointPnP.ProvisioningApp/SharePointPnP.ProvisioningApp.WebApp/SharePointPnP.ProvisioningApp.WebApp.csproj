@@ -359,8 +359,10 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Test.pubxml" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Test.pubxml" />
     <None Include="Properties\PublishProfiles\spprovisioningappdev - Tenant.pubxml" />
@@ -397,9 +399,17 @@
     <Content Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\SiteUrl.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteUrl.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\RegEx.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\RegEx.cshtml" />
+    <None Include="Web.Dev.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
     <None Include="Web.Site.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.Site.Dev.config">
+      <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Site.Prod.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -408,6 +418,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Tenant.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Tenant.Dev.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Tenant.Prod.config">
@@ -501,6 +514,34 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Site.Dev|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Tenant.Dev|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Dev|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>

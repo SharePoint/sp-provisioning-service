@@ -27,7 +27,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Models
         public String ParameterValue { get; set; }
 
         /// <summary>
-        /// The Metadata Properties for the parameter
+        /// The Metadata Property for the parameter
         /// </summary>
         public MetadataProperty MetadataProperty { get; set; }
 

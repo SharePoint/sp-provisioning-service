@@ -255,11 +255,18 @@
     <Content Include="app\styles\03-molecules\_07.hero.scss" />
     <Content Include="app\styles\main.scss" />
     <Content Include="Views\Home\Details.cshtml" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Test.pubxml" />
-    <None Include="Properties\PublishProfiles\spprovisioningappdev - Web - Dev.pubxml" />
     <Content Include="Views\Home\ContentPage.cshtml" />
+    <None Include="Properties\PublishProfiles\spprovisioningappdev - Web - Local Dev.pubxml" />
+    <None Include="Web.Dev.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
     <None Include="Web.Site.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Site.Dev.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Site.Prod.config">
@@ -269,6 +276,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Tenant.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Tenant.Dev.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Tenant.Prod.config">
@@ -346,6 +356,34 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Site.Dev|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Tenant.Dev|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Dev|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>

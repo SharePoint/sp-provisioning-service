@@ -125,6 +125,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public String SPORootSiteUrl { get; set; }
+
+        public Boolean TargetSiteAlreadyExists { get; set; } = false;
+
+        public String TargetSiteBaseTemplateId { get; set; }
     }
 
     /// <summary>
@@ -166,5 +170,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         /// The editor (CSHTML control) for the metadata property
         /// </summary>
         public String Editor { get; set; }
+
+        /// <summary>
+        /// The custom settings for the Editor
+        /// </summary>
+        public String EditorSettings { get; set; }
     }
 }

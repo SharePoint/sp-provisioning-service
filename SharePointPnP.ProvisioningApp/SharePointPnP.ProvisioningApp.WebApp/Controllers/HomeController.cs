@@ -272,6 +272,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                                         caption = "",
                                         description = "",
                                         editor = "",
+                                        editorSettings = "",
                                     }
                                 }
                             };
@@ -285,6 +286,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                                     Caption = i.caption,
                                     Description = i.description,
                                     Editor = i.editor,
+                                    EditorSettings = i.editorSettings
                                 });
 
                             model.MetadataPropertiesJson = JsonConvert.SerializeObject(model.MetadataProperties);
@@ -374,6 +376,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         public async Task<JsonResult> UrlIsAvailableInSPO(String url)
         {
             bool siteUrlInUse = false;
+            string baseTemplateId = null;
 
             if (System.Threading.Thread.CurrentPrincipal != null &&
                 System.Threading.Thread.CurrentPrincipal.Identity != null &&
@@ -406,16 +409,24 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         ConfigurationManager.AppSettings["ida:ClientSecret"],
                         ConfigurationManager.AppSettings["ida:AppUrl"]);
 
-                    // Connect to SPO and retrieve the list of available Themes
+                    // Connect to SPO and check if the URL is available or not
                     AuthenticationManager authManager = new AuthenticationManager();
                     using (ClientContext spoContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
                     {
-                        siteUrlInUse = spoContext.WebExistsFullUrl($"{rootSiteUrl.TrimEnd(new char[] { '/' })}{url}");
+                        var targetUrl = $"{rootSiteUrl.TrimEnd(new char[] { '/' })}{url}";
+                        siteUrlInUse = spoContext.WebExistsFullUrl(targetUrl);
+                        if (siteUrlInUse)
+                        {
+                            using (ClientContext spoTargetSiteContext = authManager.GetAzureADAccessTokenAuthenticatedContext(targetUrl, spoAccessToken))
+                            {
+                                baseTemplateId = spoTargetSiteContext.Web.GetBaseTemplateId();
+                            }
+                        }
                     }
                 }
             }
 
-            return (Json(new { result = !siteUrlInUse }, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet));
+            return (Json(new { result = !siteUrlInUse, baseTemplateId }, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet));
         }
 
         private bool IsAllowedUpnTenant(string upn)

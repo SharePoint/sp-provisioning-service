@@ -68,6 +68,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             // telemetryProperties.Add("UserPrincipalName", action.UserPrincipalName);
             // telemetryProperties.Add("TenantId", action.TenantId);
             telemetryProperties.Add("PnPCorrelationId", action.CorrelationId.ToString());
+            telemetryProperties.Add("TargetSiteAlreadyExists", action.TargetSiteAlreadyExists.ToString());
+            telemetryProperties.Add("TargetSiteBaseTemplateId", action.TargetSiteBaseTemplateId);
 
             var appOnlyAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAppOnlyAccessTokenAsync(
                 "https://graph.microsoft.com/",
