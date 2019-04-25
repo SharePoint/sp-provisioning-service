@@ -6,8 +6,10 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using OfficeDevPnP.Core;
+using OfficeDevPnP.Core.Framework.Provisioning.CanProvisionRules;
 using OfficeDevPnP.Core.Framework.Provisioning.Connectors;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
+using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
 using OfficeDevPnP.Core.Framework.Provisioning.Providers;
 using OfficeDevPnP.Core.Framework.Provisioning.Providers.Xml;
 using SharePointPnP.ProvisioningApp.DomainModel;
@@ -77,9 +79,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             ProvisioningActionModel model = new ProvisioningActionModel();
 
-            if (System.Threading.Thread.CurrentPrincipal != null &&
-                System.Threading.Thread.CurrentPrincipal.Identity != null &&
-                System.Threading.Thread.CurrentPrincipal.Identity.IsAuthenticated)
+            if (IsValidUser())
             {
                 var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
                 if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
@@ -90,6 +90,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                     if (this.IsAllowedUpnTenant(upn))
                     {
+                        #region Prepare model generic context data
+
                         // Prepare the model data
                         model.TenantId = tenantId;
                         model.UserPrincipalName = upn;
@@ -108,201 +110,15 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
                         model.NotificationEmail = upn;
 
+                        #endregion
+
                         // If the current user is an admin, we can get the available Themes
                         if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
                         {
-                            // Determine the URL of the root SPO site for the current tenant
-                            var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
-                            SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
-
-                            // Store the SPO Root Site URL in the Model
-                            model.SPORootSiteUrl = rootSite.WebUrl;
-
-                            // Retrieve the SPO URL for the Admin Site
-                            var adminSiteUrl = rootSite.WebUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
-
-                            // Retrieve the SPO Access Token
-                            var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                tokenId, adminSiteUrl,
-                                ConfigurationManager.AppSettings["ida:ClientId"],
-                                ConfigurationManager.AppSettings["ida:ClientSecret"],
-                                ConfigurationManager.AppSettings["ida:AppUrl"]);
-
-                            // Connect to SPO and retrieve the list of available Themes
-                            AuthenticationManager authManager = new AuthenticationManager();
-                            using (ClientContext spoContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAccessToken))
-                            {
-                                TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(spoContext);
-                                var themes = tenant.GetAllTenantThemes();
-                                spoContext.Load(themes);
-                                spoContext.ExecuteQueryRetry();
-
-                                model.Themes = themes.Select(t => t.Name).ToList();
-                            }
+                            await LoadThemesFromTenant(model, tokenId, graphAccessToken);
                         }
 
-                        var context = GetDataContext();
-                        DomainModel.Package package = null;
-
-                        // Get the package
-                        if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
-                        {
-                            // Process all packages in the test environment
-                            package = context.Packages.FirstOrDefault(p => p.Id == new Guid(packageId));
-                        }
-                        else
-                        {
-                            // Process not-preview packages in the production environment
-                            package = context.Packages.FirstOrDefault(p => p.Id == new Guid(packageId) && p.Preview == false);
-                        }
-
-                        if (package != null)
-                        {
-                            if ((package.PackageType == PackageType.Tenant &&
-                                !this.Request.Url.AbsolutePath.Contains("/tenant/")) ||
-                                (package.PackageType == PackageType.SiteCollection &&
-                                !this.Request.Url.AbsolutePath.Contains("/site/")))
-                            {
-                                throw new ApplicationException("Invalid request, the requested package/template is not valid for the current request!");
-                            }
-
-                            model.DisplayName = package.DisplayName;
-                            model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
-
-                            // Configure content for instructions
-                            model.Instructions = package.Instructions;
-
-                            // If we don't have specific instructions
-                            if (model.Instructions == null)
-                            {
-                                // Get the default instructions
-                                var instructionsPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/GenericInstructions.md");
-
-                                if (instructionsPage != null)
-                                {
-                                    model.Instructions = instructionsPage.Content;
-                                }
-                            }
-
-                            // Configure content for provisioning recap
-                            model.ProvisionRecap = package.ProvisionRecap;
-
-                            // If we don't have specific provisioning recap
-                            if (String.IsNullOrEmpty(model.ProvisionRecap))
-                            {
-                                // Get the default provisioning recap
-                                var provisionRecapPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/GenericProvisioning.md");
-
-                                if (provisionRecapPage != null)
-                                {
-                                    model.ProvisionRecap = provisionRecapPage.Content;
-                                }
-                            }
-
-                            // Retrieve parameters from the package/template definition
-                            var packageFileUrl = new Uri(package.PackageUrl);
-                            var packageLocalFolder = packageFileUrl.AbsolutePath.Substring(1,
-                                packageFileUrl.AbsolutePath.LastIndexOf('/') - 1);
-                            var packageFileName = packageFileUrl.AbsolutePath.Substring(packageLocalFolder.Length + 2);
-
-
-                            var provider = new XMLAzureStorageTemplateProvider(
-                                ConfigurationManager.AppSettings["BlobTemplatesProvider:ConnectionString"],
-                                packageLocalFolder);
-
-                            using (Stream stream = provider.Connector.GetFileStream(packageFileName))
-                            {
-                                // Crate a copy of the source stream
-                                MemoryStream mem = new MemoryStream();
-                                stream.CopyTo(mem);
-                                mem.Position = 0;
-
-                                ProvisioningHierarchy hierarchy = null;
-
-                                if (packageFileName.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    // That's an XML Provisioning Template file
-
-                                    XDocument xml = XDocument.Load(mem);
-                                    mem.Position = 0;
-
-                                    var formatter = XMLPnPSchemaFormatter.GetSpecificFormatter(xml.Root.Name.NamespaceName);
-                                    formatter.Initialize(provider);
-
-                                    hierarchy = ((IProvisioningHierarchyFormatter)formatter).ToProvisioningHierarchy(mem);
-                                }
-                                else if (packageFileName.EndsWith(".pnp", StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    // That's a PnP Package file
-
-                                    // Get a provider based on the in-memory .PNP Open XML file
-                                    OpenXMLConnector openXmlConnector = new OpenXMLConnector(mem);
-                                    XMLTemplateProvider openXmlProvider = new XMLOpenXMLTemplateProvider(
-                                        openXmlConnector);
-
-                                    // Get the .xml provisioning template file name
-                                    var xmlTemplateFileName = openXmlConnector.Info?.Properties?.TemplateFileName ??
-                                        packageFileName.Substring(packageFileName.LastIndexOf('/') + 1)
-                                        .ToLower().Replace(".pnp", ".xml");
-
-
-                                    // Get the full hierarchy
-                                    hierarchy = openXmlProvider.GetHierarchy(xmlTemplateFileName);
-                                }
-
-                                // If we have the hierarchy and its parameters
-                                if (hierarchy != null && hierarchy.Parameters != null)
-                                {
-                                    // Use them
-                                    model.PackageProperties = hierarchy.Parameters;
-                                }
-                                else
-                                {
-                                    // Otherwise, use an empty list of parameters
-                                    model.PackageProperties = new Dictionary<string, string>();
-                                }
-                            }
-
-                            // Configure the metadata properties
-                            var metadata = new
-                            {
-                                properties = new[] {
-                                    new {
-                                        name = "",
-                                        caption = "",
-                                        description = "",
-                                        editor = "",
-                                        editorSettings = "",
-                                    }
-                                }
-                            };
-
-                            var metadataProperties = JsonConvert.DeserializeAnonymousType(package.PropertiesMetadata, metadata);
-                            model.MetadataProperties = metadataProperties.properties.ToDictionary(
-                                i => i.name,
-                                i => new MetadataProperty
-                                {
-                                    Name = i.name,
-                                    Caption = i.caption,
-                                    Description = i.description,
-                                    Editor = i.editor,
-                                    EditorSettings = i.editorSettings
-                                });
-
-                            model.MetadataPropertiesJson = JsonConvert.SerializeObject(model.MetadataProperties);
-
-                            // Get the service description content
-                            var contentPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/ProvisioningIntro.md");
-
-                            if (contentPage != null)
-                            {
-                                model.ProvisionDescription = contentPage.Content;
-                            }
-                        }
-                        else
-                        {
-                            throw new ApplicationException("Invalid request, the requested package/template is not available!");
-                        }
+                        LoadPackageDataIntoModel(packageId, model);
                     }
                     else
                     {
@@ -378,9 +194,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             bool siteUrlInUse = false;
             string baseTemplateId = null;
 
-            if (System.Threading.Thread.CurrentPrincipal != null &&
-                System.Threading.Thread.CurrentPrincipal.Identity != null &&
-                System.Threading.Thread.CurrentPrincipal.Identity.IsAuthenticated)
+            if (IsValidUser())
             {
                 var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
                 if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
@@ -429,6 +243,128 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return (Json(new { result = !siteUrlInUse, baseTemplateId }, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet));
         }
 
+        [HttpPost]
+        public async Task<JsonResult> CanProvisionPackage(CanProvisionModel model)
+        {
+            if (String.IsNullOrEmpty(model.PackageId))
+            {
+                throw new ArgumentNullException("PackageId");
+            }
+
+            if (String.IsNullOrEmpty(model.TenantId))
+            {
+                throw new ArgumentNullException("TenantId");
+            }
+
+            if (String.IsNullOrEmpty(model.UserPrincipalName))
+            {
+                throw new ArgumentNullException("UserPrincipalName");
+            }
+
+            var canProvisionResult = new CanProvisionResult();
+
+            if (IsValidUser())
+            {
+                String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                    tokenId, "https://graph.microsoft.com/");
+
+                // Retrieve the provisioning package from the database and from the Blob Storage
+                var context = GetDataContext();
+                DomainModel.Package package = null;
+
+                // Get the package
+                if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
+                {
+                    // Process all packages in the test environment
+                    package = context.Packages.FirstOrDefault(p => p.Id == new Guid(model.PackageId));
+                }
+                else
+                {
+                    // Process not-preview packages in the production environment
+                    package = context.Packages.FirstOrDefault(p => p.Id == new Guid(model.PackageId) && p.Preview == false);
+                }
+
+                if (package != null)
+                {
+                    if ((package.PackageType == PackageType.Tenant &&
+                        !this.Request.Url.AbsolutePath.Contains("/tenant/")) ||
+                        (package.PackageType == PackageType.SiteCollection &&
+                        !this.Request.Url.AbsolutePath.Contains("/site/")))
+                    {
+                        throw new ApplicationException("Invalid request, the requested package/template is not valid for the current request!");
+                    }
+
+                    // Retrieve parameters from the package/template definition
+                    var packageFileUrl = new Uri(package.PackageUrl);
+                    var packageLocalFolder = packageFileUrl.AbsolutePath.Substring(1,
+                        packageFileUrl.AbsolutePath.LastIndexOf('/') - 1);
+                    var packageFileName = packageFileUrl.AbsolutePath.Substring(packageLocalFolder.Length + 2);
+
+                    ProvisioningHierarchy hierarchy = GetHierarchyFromStorage(packageLocalFolder, packageFileName);
+
+                    // If we have the hierarchy
+                    if (hierarchy != null)
+                    {
+                        AuthenticationManager authManager = new AuthenticationManager();
+                        var applyingInformation = new ProvisioningTemplateApplyingInformation();
+
+                        // If the user is an admin (SPO or Tenant) we run the Tenant level CanProvision rules
+                        if (model.UserIsSPOAdmin || model.UserIsTenantAdmin)
+                        {
+                            // Retrieve the SPO URL for the Admin Site
+                            var adminSiteUrl = model.SPORootSiteUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
+
+                            // Retrieve the SPO Access Token
+                            var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                tokenId, adminSiteUrl,
+                                ConfigurationManager.AppSettings["ida:ClientId"],
+                                ConfigurationManager.AppSettings["ida:ClientSecret"],
+                                ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                            // Connect to SPO Admin Site and evaluate the CanProvision rules for the hierarchy
+                            using (ClientContext adminContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAccessToken))
+                            {
+                                TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(adminContext);
+
+                                // Run the CanProvision rules against the current tenant
+                                canProvisionResult = CanProvisionRulesManager.CanProvision(tenant, hierarchy, null, applyingInformation);
+                            }
+                        }
+                        else
+                        {
+                            // Otherwise we run the Site level CanProvision rules
+
+                            // Retrieve the SPO URL for the Admin Site
+                            var rootSiteUrl = model.SPORootSiteUrl;
+
+                            // Retrieve the SPO Access Token
+                            var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                tokenId, rootSiteUrl,
+                                ConfigurationManager.AppSettings["ida:ClientId"],
+                                ConfigurationManager.AppSettings["ida:ClientSecret"],
+                                ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                            // Connect to SPO Admin Site and evaluate the CanProvision rules for the hierarchy
+                            using (ClientContext spoContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
+                            {
+                                canProvisionResult = CanProvisionRulesManager.CanProvision(spoContext.Web, hierarchy.Templates[0], applyingInformation);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new ApplicationException("Invalid request, the requested package/template is not available!");
+                }
+            }
+
+            return Json(canProvisionResult);
+        }
+
         private bool IsAllowedUpnTenant(string upn)
         {
             if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
@@ -467,6 +403,219 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             context.Configuration.AutoDetectChangesEnabled = false;
 
             return context;
+        }
+
+        private static bool IsValidUser()
+        {
+            return System.Threading.Thread.CurrentPrincipal != null &&
+                            System.Threading.Thread.CurrentPrincipal.Identity != null &&
+                            System.Threading.Thread.CurrentPrincipal.Identity.IsAuthenticated;
+        }
+
+        private static ProvisioningHierarchy GetHierarchyFromStorage(String packageLocalFolder, String packageFileName)
+        {
+            // Prepare the resulting value
+            ProvisioningHierarchy hierarchy = null;
+
+            // Create the template provider instance targeting the Blob Storage
+            var provider = new XMLAzureStorageTemplateProvider(
+                ConfigurationManager.AppSettings["BlobTemplatesProvider:ConnectionString"],
+                packageLocalFolder);
+
+            using (Stream stream = provider.Connector.GetFileStream(packageFileName))
+            {
+                // Crate a copy of the source stream
+                MemoryStream mem = new MemoryStream();
+                stream.CopyTo(mem);
+                mem.Position = 0;
+
+                if (packageFileName.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // That's an XML Provisioning Template file
+
+                    XDocument xml = XDocument.Load(mem);
+                    mem.Position = 0;
+
+                    var formatter = XMLPnPSchemaFormatter.GetSpecificFormatter(xml.Root.Name.NamespaceName);
+                    formatter.Initialize(provider);
+
+                    hierarchy = ((IProvisioningHierarchyFormatter)formatter).ToProvisioningHierarchy(mem);
+                }
+                else if (packageFileName.EndsWith(".pnp", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // That's a PnP Package file
+
+                    // Get a provider based on the in-memory .PNP Open XML file
+                    OpenXMLConnector openXmlConnector = new OpenXMLConnector(mem);
+                    XMLTemplateProvider openXmlProvider = new XMLOpenXMLTemplateProvider(
+                        openXmlConnector);
+
+                    // Get the .xml provisioning template file name
+                    var xmlTemplateFileName = openXmlConnector.Info?.Properties?.TemplateFileName ??
+                        packageFileName.Substring(packageFileName.LastIndexOf('/') + 1)
+                        .ToLower().Replace(".pnp", ".xml");
+
+
+                    // Get the full hierarchy
+                    hierarchy = openXmlProvider.GetHierarchy(xmlTemplateFileName);
+                }
+            }
+
+            return (hierarchy);
+        }
+
+        private void LoadPackageDataIntoModel(string packageId, ProvisioningActionModel model)
+        {
+            var context = GetDataContext();
+            DomainModel.Package package = null;
+
+            // Get the package
+            if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
+            {
+                // Process all packages in the test environment
+                package = context.Packages.FirstOrDefault(p => p.Id == new Guid(packageId));
+            }
+            else
+            {
+                // Process not-preview packages in the production environment
+                package = context.Packages.FirstOrDefault(p => p.Id == new Guid(packageId) && p.Preview == false);
+            }
+
+            if (package != null)
+            {
+                if ((package.PackageType == PackageType.Tenant &&
+                    !this.Request.Url.AbsolutePath.Contains("/tenant/")) ||
+                    (package.PackageType == PackageType.SiteCollection &&
+                    !this.Request.Url.AbsolutePath.Contains("/site/")))
+                {
+                    throw new ApplicationException("Invalid request, the requested package/template is not valid for the current request!");
+                }
+
+                model.DisplayName = package.DisplayName;
+                model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
+
+                // Configure content for instructions
+                model.Instructions = package.Instructions;
+
+                // If we don't have specific instructions
+                if (model.Instructions == null)
+                {
+                    // Get the default instructions
+                    var instructionsPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/GenericInstructions.md");
+
+                    if (instructionsPage != null)
+                    {
+                        model.Instructions = instructionsPage.Content;
+                    }
+                }
+
+                // Configure content for provisioning recap
+                model.ProvisionRecap = package.ProvisionRecap;
+
+                // If we don't have specific provisioning recap
+                if (String.IsNullOrEmpty(model.ProvisionRecap))
+                {
+                    // Get the default provisioning recap
+                    var provisionRecapPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/GenericProvisioning.md");
+
+                    if (provisionRecapPage != null)
+                    {
+                        model.ProvisionRecap = provisionRecapPage.Content;
+                    }
+                }
+
+                // Retrieve parameters from the package/template definition
+                var packageFileUrl = new Uri(package.PackageUrl);
+                var packageLocalFolder = packageFileUrl.AbsolutePath.Substring(1,
+                    packageFileUrl.AbsolutePath.LastIndexOf('/') - 1);
+                var packageFileName = packageFileUrl.AbsolutePath.Substring(packageLocalFolder.Length + 2);
+
+                ProvisioningHierarchy hierarchy = GetHierarchyFromStorage(packageLocalFolder, packageFileName);
+
+                // If we have the hierarchy and its parameters
+                if (hierarchy != null && hierarchy.Parameters != null)
+                {
+                    // Use them
+                    model.PackageProperties = hierarchy.Parameters;
+                }
+                else
+                {
+                    // Otherwise, use an empty list of parameters
+                    model.PackageProperties = new Dictionary<string, string>();
+                }
+
+                // Configure the metadata properties
+                var metadata = new
+                {
+                    properties = new[] {
+                                    new {
+                                        name = "",
+                                        caption = "",
+                                        description = "",
+                                        editor = "",
+                                        editorSettings = "",
+                                    }
+                                }
+                };
+
+                var metadataProperties = JsonConvert.DeserializeAnonymousType(package.PropertiesMetadata, metadata);
+                model.MetadataProperties = metadataProperties.properties.ToDictionary(
+                    i => i.name,
+                    i => new MetadataProperty
+                    {
+                        Name = i.name,
+                        Caption = i.caption,
+                        Description = i.description,
+                        Editor = i.editor,
+                        EditorSettings = i.editorSettings
+                    });
+
+                model.MetadataPropertiesJson = JsonConvert.SerializeObject(model.MetadataProperties);
+
+                // Get the service description content
+                var contentPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/ProvisioningIntro.md");
+
+                if (contentPage != null)
+                {
+                    model.ProvisionDescription = contentPage.Content;
+                }
+            }
+            else
+            {
+                throw new ApplicationException("Invalid request, the requested package/template is not available!");
+            }
+        }
+
+        private static async Task LoadThemesFromTenant(ProvisioningActionModel model, string tokenId, string graphAccessToken)
+        {
+            // Determine the URL of the root SPO site for the current tenant
+            var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
+            SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
+
+            // Store the SPO Root Site URL in the Model
+            model.SPORootSiteUrl = rootSite.WebUrl;
+
+            // Retrieve the SPO URL for the Admin Site
+            var adminSiteUrl = rootSite.WebUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
+
+            // Retrieve the SPO Access Token
+            var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                tokenId, adminSiteUrl,
+                ConfigurationManager.AppSettings["ida:ClientId"],
+                ConfigurationManager.AppSettings["ida:ClientSecret"],
+                ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+            // Connect to SPO and retrieve the list of available Themes
+            AuthenticationManager authManager = new AuthenticationManager();
+            using (ClientContext spoContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAccessToken))
+            {
+                TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(spoContext);
+                var themes = tenant.GetAllTenantThemes();
+                spoContext.Load(themes);
+                spoContext.ExecuteQueryRetry();
+
+                model.Themes = themes.Select(t => t.Name).ToList();
+            }
         }
     }
 }
