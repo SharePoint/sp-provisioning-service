@@ -181,6 +181,39 @@ hr.sectionTitleDivider {
     height: 21em;
 }
 
+.missingPreReqsDialog {
+    position: absolute;
+    background-color: white;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 30em;
+    height: 26em;
+    margin-top: -15em;
+    margin-left: -15em;
+    z-index: 100;
+}
+
+.missingPreReqsDialog.hide {
+    display: none;
+}
+
+.missingPreReqsDialog.show {
+    display: block;
+}
+
+.missingPreReqsDialogContent {
+    overflow-y: scroll;
+    text-align: left;
+    margin-left: 1em;
+    height: 21em;
+}
+
+.pnp-btn-acknowledge {
+    font-size: 14px;
+    margin-left: 0px;
+}
+
 .dialogModalOverlay {
     position: fixed; /* Stay in place */
     z-index: 50; /* Sit on top */

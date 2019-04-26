@@ -129,6 +129,12 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         public Boolean TargetSiteAlreadyExists { get; set; } = false;
 
         public String TargetSiteBaseTemplateId { get; set; }
+
+        [JsonIgnore]
+        public String MissingPreReqsHeader { get; set; }
+
+        [JsonIgnore]
+        public String MissingPreReqsFooter { get; set; }
     }
 
     /// <summary>

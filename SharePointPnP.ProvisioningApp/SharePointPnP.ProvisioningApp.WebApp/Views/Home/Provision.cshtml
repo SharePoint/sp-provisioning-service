@@ -80,11 +80,11 @@
                         @if (Model.PackageProperties != null && Model.PackageProperties.Count > 0)
                         {
                             @*<tr>
-                        <td colspan="2">
-                            <div class="sectionTitle">Template Properties</div>
-                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                        </td>
-                    </tr>*@
+                                    <td colspan="2">
+                                        <div class="sectionTitle">Template Properties</div>
+                                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                    </td>
+                                </tr>*@
                         }
                         @{
                             int i = 0;
@@ -119,11 +119,11 @@
                             Model.Themes != null && Model.Themes.Count > 0)
                         {
                             @*<tr>
-                        <td colspan="2">
-                            <div class="sectionTitle">Custom Theme Settings</div>
-                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                        </td>
-                    </tr>*@
+                                    <td colspan="2">
+                                        <div class="sectionTitle">Custom Theme Settings</div>
+                                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                    </td>
+                                </tr>*@
                             <tr>
                                 <th>
                                     Apply theme
@@ -143,60 +143,60 @@
                                 </td>
                             </tr>
                             @*<tr>
-                        <th>
-                            Apply custom theme
-                            <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
-                        </th>
-                        <td>
-                            @Html.EditorFor(m => m.ApplyCustomTheme)
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            @Html.LabelFor(m => m.ThemePrimaryColor)
-                            <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
-                        </th>
-                        <td>
-                            <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
-                            @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            @Html.LabelFor(m => m.ThemeBodyTextColor)
-                            <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
-                        </th>
-                        <td>
-                            <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
-                            @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
-                            <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
-                        </th>
-                        <td>
-                            <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
-                            @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
-                        </td>
-                    </tr>*@
+                                    <th>
+                                        Apply custom theme
+                                        <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
+                                    </th>
+                                    <td>
+                                        @Html.EditorFor(m => m.ApplyCustomTheme)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemePrimaryColor)
+                                        <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
+                                    </th>
+                                    <td>
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemeBodyTextColor)
+                                        <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
+                                    </th>
+                                    <td>
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
+                                        <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
+                                    </th>
+                                    <td>
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
+                                    </td>
+                                </tr>*@
                             @*
-                    <tr>
-                        <th>
-                            <label for="CustomLogoFile">Logo</label>
-                        </th>
-                        <td>
-                            <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
-                        </td>
-                    </tr>
+                                <tr>
+                                    <th>
+                                        <label for="CustomLogoFile">Logo</label>
+                                    </th>
+                                    <td>
+                                        <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
+                                    </td>
+                                </tr>
                             *@
                         }
                         @*<tr>
-                    <td colspan="2">
-                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                    </td>
-                </tr>*@
+                                <td colspan="2">
+                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                </td>
+                            </tr>*@
                         <tr>
                             <td>
                                 <input type="button" id="cancelButton" class="pnp-btn-provision" value="Cancel" />
@@ -238,6 +238,16 @@
     </div>
     <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision" value="Cancel" />
     <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog ms-Button--primary" value="Confirm" />
+</div>
+
+<div id="missingPreReqsDialog" class="missingPreReqsDialog hide">
+    <div class="missingPreReqsDialogContent">
+        @(Html.Raw(Model.MissingPreReqsHeader))
+        <div id="missingPreReqsList"></div>
+        @(Html.Raw(Model.MissingPreReqsFooter))
+    </div>
+    <br />
+    <input type="button" id="acknowledgeDialog" class="pnp-btn-acknowledge ms-Button--primary" value="Ok" />
 </div>
 
 <div id="dialogOverlay" class="dialogModalOverlay hide">
@@ -368,10 +378,31 @@
             }
         }
 
+        function emailIsValid(email) {
+            // regex for Email
+            var regex = new RegExp(/^((?!\.)[\w-_.]*[^.])(@@\w+)(\.\w+(\.\w+)?[^.\W])$/);
+
+            // check for valid email
+            return (email.match(regex) && email.length > 0);
+        }
+
         // determines whether a URL is valid for SharePoint or not
         function urlIsValidForSPO(url) {
+
+            // regex for COM1-COM9
+            var comNregex = new RegExp(/^((?!com[1-9]).)*$/, 'i');
+            // regex for LPT1-LPT9
+            var lptNregex = new RegExp(/^((?!lpt[1-9]).)*$/, 'i');
+            // regex for URL
             var regex = new RegExp(/^(\w|\-|\.|\_)*$/);
-            return (url.match(regex) && url.length > 0);
+
+            // exclude all invalid URLs
+            return (url.match(regex) &&
+                url.match(comNregex) &&
+                url.match(lptNregex) &&
+                url.toLowerCase() != 'aux' &&
+                url.toLowerCase() != 'nul' &&
+                url.length > 0);
         }
 
         // determines if the the URL is available in SPO or not, using a backend API
@@ -457,7 +488,28 @@
                         }
                     }
                     else {
-                        alert('You cannot provision this package right now!');
+                        // show the pre-reqs dialog
+                        var missingPreReqsDialog = document.getElementById('missingPreReqsDialog');
+                        var missingPreReqsList = document.getElementById('missingPreReqsList');
+                        var dialogOverlay = document.getElementById('dialogOverlay');
+                        if (missingPreReqsList && missingPreReqsDialog &&
+                            missingPreReqsDialog.classList.contains("hide") &&
+                            dialogOverlay && dialogOverlay.classList.contains("hide")) {
+
+                            // list the pre-reqs
+                            var preReqsIssues = '';
+                            for (var i = 0; i < data.Issues.length; i++) {
+                                preReqsIssues += '<li>' + data.Issues[i].Message + '</li>'
+                            }
+
+                            // show the pre-reqs
+                            missingPreReqsList.innerHTML = '<ul>' + preReqsIssues + '</ul>';
+
+                            missingPreReqsDialog.classList.toggle("hide");
+                            missingPreReqsDialog.classList.toggle("show");
+                            dialogOverlay.classList.toggle("hide");
+                            dialogOverlay.classList.toggle("show");
+                        }
                     }
                 })
                 .catch(err => {
@@ -486,7 +538,7 @@
             if (toggleApplyTheme) {
 
                 var applyThemeFlag = toggleIsSelected(toggleApplyTheme);
-                        
+
                 //var applyCustomThemeFlag = toggleIsSelected(toggleApplyCustomTheme);
 
                 // if there isn't any Theme (custom or existing), we can proceed
@@ -560,7 +612,7 @@
                         }
                     }
                 }
-                        
+
             }
 
             // if the form is still valid
@@ -570,9 +622,15 @@
                 for (var i = 0; i < siteUrlControls.length; i++) {
                     isValid = isValid && !siteUrlControls[i].classList.contains("invalid");
                 }
+
                 var regexEditorControls = document.getElementsByClassName('regexEditor');
                 for (var i = 0; i < regexEditorControls.length; i++) {
                     isValid = isValid && !regexEditorControls[i].classList.contains("invalid");
+                }
+
+                var notificationEmail = document.getElementById('@Html.IdFor(m => m.NotificationEmail)');
+                if (notificationEmail) {
+                    isValid = isValid && !notificationEmail.classList.contains("invalid");
                 }
             }
 
@@ -593,6 +651,28 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+
+            // validation events for email field
+            var notificationEmail = document.getElementById('@Html.IdFor(m => m.NotificationEmail)');
+            if (notificationEmail) {
+                notificationEmail.addEventListener('keyup', function (e) {
+                    if (emailIsValid(e.target.value)) {
+                        // remove the validation exception, if any
+                        if (e.target.classList.contains("invalid")) {
+                            e.target.classList.toggle("invalid");
+                        }
+                    }
+                    else {
+                        // add the validation exception
+                        if (!e.target.classList.contains("invalid")) {
+                            e.target.classList.toggle("invalid");
+                        }
+                    }
+
+                    // toggle the Provision button accordingly
+                    toggleFormSubmitStatus();
+                });
+            }
 
             // validation events for any URL control fields
             var siteUrlControls = document.getElementsByClassName('siteUrl');
@@ -658,15 +738,9 @@
                                 e.target.nextElementSibling.classList.toggle("invalid");
                             }
 
-                            var workingOnItSiteDialog = document.getElementById('workingOnItSiteDialog');
-                            var dialogOverlay = document.getElementById('dialogOverlay');
-                            if (workingOnItSiteDialog && workingOnItSiteDialog.classList.contains('hide') &&
-                                dialogOverlay && dialogOverlay.classList.contains('hide')) {
-                                workingOnItSiteDialog.classList.toggle('hide');
-                                workingOnItSiteDialog.classList.toggle('show');
-                                dialogOverlay.classList.toggle('hide');
-                                dialogOverlay.classList.toggle('show');
-                            }
+                            // show the Working on it dialog
+                            showWorkingOnIt("&nbsp;Validating site URL...");
+
                             // check if the URL is available
                             urlIsAvailableInSPO(e.target.value + e.target.nextElementSibling.value);
 
@@ -739,7 +813,7 @@
                     toggleFormSubmitStatus();
                 });
             }
-            
+
             // cleanup any validation exception if keypress happens on the target field
             var formFields = document.getElementsByClassName('pnp-tb');
             for (var i = 0; i < formFields.length; i++) {
@@ -832,6 +906,22 @@
                         dialogOverlay && dialogOverlay.classList.contains("show")) {
                         confirmationDialog.classList.toggle("show");
                         confirmationDialog.classList.toggle("hide");
+                        dialogOverlay.classList.toggle("hide");
+                        dialogOverlay.classList.toggle("show");
+                    }
+                });
+            }
+
+            // handles the click event of the acknowledgeDialog button
+            var acknowledgeDialogButton = document.getElementById('acknowledgeDialog');
+            if (acknowledgeDialogButton) {
+                acknowledgeDialogButton.addEventListener('click', function (e) {
+                    var missingPreReqsDialog = document.getElementById('missingPreReqsDialog');
+                    var dialogOverlay = document.getElementById('dialogOverlay');
+                    if (missingPreReqsDialog && missingPreReqsDialog.classList.contains("show") &&
+                        dialogOverlay && dialogOverlay.classList.contains("show")) {
+                        missingPreReqsDialog.classList.toggle("show");
+                        missingPreReqsDialog.classList.toggle("hide");
                         dialogOverlay.classList.toggle("hide");
                         dialogOverlay.classList.toggle("show");
                     }

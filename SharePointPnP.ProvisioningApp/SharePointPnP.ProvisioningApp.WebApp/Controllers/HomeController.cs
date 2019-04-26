@@ -599,6 +599,20 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 {
                     model.ProvisionDescription = contentPage.Content;
                 }
+
+                // Get the pre-reqs Header content
+                var preReqsHeaderPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/CanProvisionPreReqsHeader.md");
+                if (preReqsHeaderPage != null)
+                {
+                    model.MissingPreReqsHeader = preReqsHeaderPage.Content;
+                }
+
+                // Get the pre-reqs Footer content
+                var preReqsFooterPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/CanProvisionPreReqsFooter.md");
+                if (preReqsFooterPage != null)
+                {
+                    model.MissingPreReqsFooter = preReqsFooterPage.Content;
+                }
             }
             else
             {
