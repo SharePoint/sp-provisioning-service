@@ -223,10 +223,10 @@
     <input type="button" id="confirmDialog" class="pnp-btn-provision ms-Button--primary" value="Confirm" />
 </div>
 
-<div id="checkingSiteDialog" class="checkingSiteDialog hide">
-    <div class="checkingSiteDialogContent">
+<div id="workingOnItSiteDialog" class="workingOnItSiteDialog hide">
+    <div class="workingOnItSiteDialogContent">
         <img width="32" height="32" src="data:image/gif;base64,R0lGODlhEAAQAIAAAFLOQv///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgABACwJAAIAAgACAAACAoRRACH5BAUKAAEALAwABQACAAIAAAIChFEAIfkEBQoAAQAsDAAJAAIAAgAAAgKEUQAh+QQFCgABACwJAAwAAgACAAACAoRRACH5BAUKAAEALAUADAACAAIAAAIChFEAIfkEBQoAAQAsAgAJAAIAAgAAAgKEUQAh+QQFCgABACwCAAUAAgACAAACAoRRACH5BAkKAAEALAIAAgAMAAwAAAINjAFne8kPo5y02ouzLQAh+QQJCgABACwCAAIADAAMAAACF4wBphvID1uCyNEZM7Ov4v1p0hGOZlAAACH5BAkKAAEALAIAAgAMAAwAAAIUjAGmG8gPW4qS2rscRPp1rH3H1BUAIfkECQoAAQAsAgACAAkADAAAAhGMAaaX64peiLJa6rCVFHdQAAAh+QQJCgABACwCAAIABQAMAAACDYwBFqiX3mJjUM63QAEAIfkECQoAAQAsAgACAAUACQAAAgqMARaol95iY9AUACH5BAkKAAEALAIAAgAFAAUAAAIHjAEWqJeuCgAh+QQJCgABACwFAAIAAgACAAACAoRRADs=" />
-        <span>&nbsp;Validating site URL...</span>
+        <span id="workingOnItSiteDialogMessage"></span>
     </div>
 </div>
 
@@ -336,6 +336,38 @@
             return (value.match(regex) && value.length > 0);
         }
 
+        // shows the Working On It dialog
+        function showWorkingOnIt(message) {
+            var workingOnItSiteDialog = document.getElementById('workingOnItSiteDialog');
+            var workingOnItSiteDialogMessage = document.getElementById('workingOnItSiteDialogMessage');
+            var dialogOverlay = document.getElementById('dialogOverlay');
+            if (workingOnItSiteDialog && workingOnItSiteDialogMessage &&
+                workingOnItSiteDialog.classList.contains('hide') &&
+                dialogOverlay && dialogOverlay.classList.contains('hide')) {
+
+                workingOnItSiteDialog.classList.toggle('hide');
+                workingOnItSiteDialog.classList.toggle('show');
+                dialogOverlay.classList.toggle('hide');
+                dialogOverlay.classList.toggle('show');
+
+                workingOnItSiteDialogMessage.innerHTML = message;
+            }
+        }
+
+        // hides the Working On It dialog
+        function hideWorkingOnIt() {
+            var workingOnItSiteDialog = document.getElementById('workingOnItSiteDialog');
+            var dialogOverlay = document.getElementById('dialogOverlay');
+            if (workingOnItSiteDialog && workingOnItSiteDialog.classList.contains('show')) {
+                workingOnItSiteDialog.classList.toggle('hide');
+                workingOnItSiteDialog.classList.toggle('show');
+            }
+            if (dialogOverlay && dialogOverlay.classList.contains('show')) {
+                dialogOverlay.classList.toggle('hide');
+                dialogOverlay.classList.toggle('show');
+            }
+        }
+
         // determines whether a URL is valid for SharePoint or not
         function urlIsValidForSPO(url) {
             var regex = new RegExp(/^(\w|\-|\.|\_)*$/);
@@ -352,34 +384,19 @@
                 })
                 .then(data => {
                     if (data.result != true) {
-                        var checkingSiteDialog = document.getElementById('checkingSiteDialog');
+
+                        // hide the working on it dialog
+                        hideWorkingOnIt();
+
+                        // show the Site already exists dialog
                         var siteExistsDialog = document.getElementById('siteExistsDialog');
-                        var dialogOverlay = document.getElementById('dialogOverlay');
-                        if (siteExistsDialog && siteExistsDialog.classList.contains('hide') &&
-                            dialogOverlay && checkingSiteDialog) {
+                        if (siteExistsDialog && siteExistsDialog.classList.contains('hide')) {
                             siteExistsDialog.classList.toggle('hide');
                             siteExistsDialog.classList.toggle('show');
-                            if (dialogOverlay.classList.contains('hide')) {
-                                dialogOverlay.classList.toggle('hide');
-                                dialogOverlay.classList.toggle('show');
-                            }
-                            if (!checkingSiteDialog.classList.contains('hide')) {
-                                checkingSiteDialog.classList.toggle('hide');
-                                checkingSiteDialog.classList.toggle('show');
-                            }
                         }
                     }
                     else {
-                        var checkingSiteDialog = document.getElementById('checkingSiteDialog');
-                        var dialogOverlay = document.getElementById('dialogOverlay');
-                        if (checkingSiteDialog && checkingSiteDialog.classList.contains('show')) {
-                            checkingSiteDialog.classList.toggle('hide');
-                            checkingSiteDialog.classList.toggle('show');
-                        }
-                        if (dialogOverlay && dialogOverlay.classList.contains('show')) {
-                            dialogOverlay.classList.toggle('hide');
-                            dialogOverlay.classList.toggle('show');
-                        }
+                        hideWorkingOnIt();
                     }
 
                     // Share the resulting values back with the back-end engine
@@ -387,6 +404,70 @@
                     document.getElementById("TargetSiteBaseTemplateId").value = data.baseTemplateId;
                 })
                 .catch(err => {
+                    console.log(err);
+                });
+        }
+
+        // determines if the current package can be provisioned in the target tenant/site
+        function canProvisionPackage() {
+
+            // disable the Provision button to avoid multiple concurrent submissions
+            disableProvisionButton();
+
+            // show the Working on it dialog
+            showWorkingOnIt("&nbsp;Validating pre-requirements ...");
+
+            fetch('../home/CanProvisionPackage', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'post',
+                body: JSON.stringify({
+                    PackageId: document.getElementById('PackageId').value,
+                    TenantId: document.getElementById('TenantId').value,
+                    UserPrincipalName: document.getElementById('UserPrincipalName').value,
+                    UserIsSPOAdmin: document.getElementById('UserIsSPOAdmin').value,
+                    UserIsTenantAdmin: document.getElementById('UserIsTenantAdmin').value,
+                    SPORootSiteUrl: document.getElementById('SPORootSiteUrl').value
+                }),
+            })
+                .then(response => {
+                    return (response.json());
+                })
+                .then(data => {
+                    console.log(data);
+
+                    // enable back the Provision button
+                    enableProvisionButton();
+
+                    // hide the Working on it dialog
+                    hideWorkingOnIt();
+
+                    if (data != undefined && data.CanProvision) {
+                        // show the confirmation dialog
+                        var confirmationDialog = document.getElementById('confirmationDialog');
+                        var dialogOverlay = document.getElementById('dialogOverlay');
+                        if (confirmationDialog && confirmationDialog.classList.contains("hide") &&
+                            dialogOverlay && dialogOverlay.classList.contains("hide")) {
+                            confirmationDialog.classList.toggle("hide");
+                            confirmationDialog.classList.toggle("show");
+                            dialogOverlay.classList.toggle("hide");
+                            dialogOverlay.classList.toggle("show");
+                        }
+                    }
+                    else {
+                        alert('You cannot provision this package right now!');
+                    }
+                })
+                .catch(err => {
+
+                    // enable back the Provision button
+                    enableProvisionButton();
+
+                    // hide the Working on it dialog
+                    hideWorkingOnIt();
+
                     console.log(err);
                 });
         }
@@ -544,15 +625,9 @@
                                 e.target.classList.toggle("invalid");
                             }
 
-                            var checkingSiteDialog = document.getElementById('checkingSiteDialog');
-                            var dialogOverlay = document.getElementById('dialogOverlay');
-                            if (checkingSiteDialog && checkingSiteDialog.classList.contains('hide') &&
-                                dialogOverlay && dialogOverlay.classList.contains('hide')) {
-                                checkingSiteDialog.classList.toggle('hide');
-                                checkingSiteDialog.classList.toggle('show');
-                                dialogOverlay.classList.toggle('hide');
-                                dialogOverlay.classList.toggle('show');
-                            }
+                            // show the Working on it dialog
+                            showWorkingOnIt("&nbsp;Validating site URL...");
+
                             // check if the URL is available
                             urlIsAvailableInSPO(e.target.previousElementSibling.value + e.target.value);
 
@@ -583,12 +658,12 @@
                                 e.target.nextElementSibling.classList.toggle("invalid");
                             }
 
-                            var checkingSiteDialog = document.getElementById('checkingSiteDialog');
+                            var workingOnItSiteDialog = document.getElementById('workingOnItSiteDialog');
                             var dialogOverlay = document.getElementById('dialogOverlay');
-                            if (checkingSiteDialog && checkingSiteDialog.classList.contains('hide') &&
+                            if (workingOnItSiteDialog && workingOnItSiteDialog.classList.contains('hide') &&
                                 dialogOverlay && dialogOverlay.classList.contains('hide')) {
-                                checkingSiteDialog.classList.toggle('hide');
-                                checkingSiteDialog.classList.toggle('show');
+                                workingOnItSiteDialog.classList.toggle('hide');
+                                workingOnItSiteDialog.classList.toggle('show');
                                 dialogOverlay.classList.toggle('hide');
                                 dialogOverlay.classList.toggle('show');
                             }
@@ -720,15 +795,8 @@
                     var isValid = formIsValid();
 
                     if (isValid) {
-                        var confirmationDialog = document.getElementById('confirmationDialog');
-                        var dialogOverlay = document.getElementById('dialogOverlay');
-                        if (confirmationDialog && confirmationDialog.classList.contains("hide") &&
-                            dialogOverlay && dialogOverlay.classList.contains("hide")) {
-                            confirmationDialog.classList.toggle("hide");
-                            confirmationDialog.classList.toggle("show");
-                            dialogOverlay.classList.toggle("hide");
-                            dialogOverlay.classList.toggle("show");
-                        }
+                        // verify if the package can be provisioned onto the target tenant/site
+                        canProvisionPackage();
                     }
 
                     return (false);

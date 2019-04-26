@@ -203,7 +203,7 @@ hr.sectionTitleDivider {
 }
 
 
-.checkingSiteDialog {
+.workingOnItSiteDialog {
     position: absolute;
     background-color: white;
     text-align: center;
@@ -216,18 +216,18 @@ hr.sectionTitleDivider {
     z-index: 100;
 }
 
-.checkingSiteDialogContent {
+.workingOnItSiteDialogContent {
     margin-top: 2em;
     vertical-align: middle;
     font-size: 1.5em;
     font-family: "Segoe UI Light", "Segoe UI", Tahoma, Helvetica, Arial, sans-serif
 }
 
-.checkingSiteDialog.hide {
+.workingOnItSiteDialog.hide {
     display: none;
 }
 
-.checkingSiteDialog.show {
+.workingOnItSiteDialog.show {
     display: block;
 }
 
