@@ -346,35 +346,46 @@
             return (value.match(regex) && value.length > 0);
         }
 
+        function showDialogOverlay() {
+            var dialogOverlay = document.getElementById('dialogOverlay');
+            if (dialogOverlay && dialogOverlay.classList.contains('hide')) {
+                dialogOverlay.classList.toggle('hide');
+                dialogOverlay.classList.toggle('show');
+            }
+        }
+
+        function hideDialogOverlay() {
+            var dialogOverlay = document.getElementById('dialogOverlay');
+            if (dialogOverlay && dialogOverlay.classList.contains('show')) {
+                dialogOverlay.classList.toggle('hide');
+                dialogOverlay.classList.toggle('show');
+            }
+        }
+
         // shows the Working On It dialog
         function showWorkingOnIt(message) {
             var workingOnItSiteDialog = document.getElementById('workingOnItSiteDialog');
             var workingOnItSiteDialogMessage = document.getElementById('workingOnItSiteDialogMessage');
-            var dialogOverlay = document.getElementById('dialogOverlay');
             if (workingOnItSiteDialog && workingOnItSiteDialogMessage &&
-                workingOnItSiteDialog.classList.contains('hide') &&
-                dialogOverlay && dialogOverlay.classList.contains('hide')) {
+                workingOnItSiteDialog.classList.contains('hide')) {
 
                 workingOnItSiteDialog.classList.toggle('hide');
                 workingOnItSiteDialog.classList.toggle('show');
-                dialogOverlay.classList.toggle('hide');
-                dialogOverlay.classList.toggle('show');
 
                 workingOnItSiteDialogMessage.innerHTML = message;
+
+                showDialogOverlay();
             }
         }
 
         // hides the Working On It dialog
         function hideWorkingOnIt() {
             var workingOnItSiteDialog = document.getElementById('workingOnItSiteDialog');
-            var dialogOverlay = document.getElementById('dialogOverlay');
             if (workingOnItSiteDialog && workingOnItSiteDialog.classList.contains('show')) {
                 workingOnItSiteDialog.classList.toggle('hide');
                 workingOnItSiteDialog.classList.toggle('show');
-            }
-            if (dialogOverlay && dialogOverlay.classList.contains('show')) {
-                dialogOverlay.classList.toggle('hide');
-                dialogOverlay.classList.toggle('show');
+
+                hideDialogOverlay();
             }
         }
 
@@ -424,6 +435,8 @@
                         if (siteExistsDialog && siteExistsDialog.classList.contains('hide')) {
                             siteExistsDialog.classList.toggle('hide');
                             siteExistsDialog.classList.toggle('show');
+
+                            showDialogOverlay();
                         }
                     }
                     else {
@@ -478,23 +491,19 @@
                     if (data != undefined && data.CanProvision) {
                         // show the confirmation dialog
                         var confirmationDialog = document.getElementById('confirmationDialog');
-                        var dialogOverlay = document.getElementById('dialogOverlay');
-                        if (confirmationDialog && confirmationDialog.classList.contains("hide") &&
-                            dialogOverlay && dialogOverlay.classList.contains("hide")) {
+                        if (confirmationDialog && confirmationDialog.classList.contains("hide")) {
                             confirmationDialog.classList.toggle("hide");
                             confirmationDialog.classList.toggle("show");
-                            dialogOverlay.classList.toggle("hide");
-                            dialogOverlay.classList.toggle("show");
+
+                            showDialogOverlay();
                         }
                     }
                     else {
                         // show the pre-reqs dialog
                         var missingPreReqsDialog = document.getElementById('missingPreReqsDialog');
                         var missingPreReqsList = document.getElementById('missingPreReqsList');
-                        var dialogOverlay = document.getElementById('dialogOverlay');
                         if (missingPreReqsList && missingPreReqsDialog &&
-                            missingPreReqsDialog.classList.contains("hide") &&
-                            dialogOverlay && dialogOverlay.classList.contains("hide")) {
+                            missingPreReqsDialog.classList.contains("hide")) {
 
                             // list the pre-reqs
                             var preReqsIssues = '';
@@ -507,8 +516,8 @@
 
                             missingPreReqsDialog.classList.toggle("hide");
                             missingPreReqsDialog.classList.toggle("show");
-                            dialogOverlay.classList.toggle("hide");
-                            dialogOverlay.classList.toggle("show");
+
+                            showDialogOverlay();
                         }
                     }
                 })
@@ -901,13 +910,11 @@
             if (cancelDialogButton) {
                 cancelDialogButton.addEventListener('click', function (e) {
                     var confirmationDialog = document.getElementById('confirmationDialog');
-                    var dialogOverlay = document.getElementById('dialogOverlay');
-                    if (confirmationDialog && confirmationDialog.classList.contains("show") &&
-                        dialogOverlay && dialogOverlay.classList.contains("show")) {
+                    if (confirmationDialog && confirmationDialog.classList.contains("show")) {
                         confirmationDialog.classList.toggle("show");
                         confirmationDialog.classList.toggle("hide");
-                        dialogOverlay.classList.toggle("hide");
-                        dialogOverlay.classList.toggle("show");
+
+                        hideDialogOverlay();
                     }
                 });
             }
@@ -917,13 +924,11 @@
             if (acknowledgeDialogButton) {
                 acknowledgeDialogButton.addEventListener('click', function (e) {
                     var missingPreReqsDialog = document.getElementById('missingPreReqsDialog');
-                    var dialogOverlay = document.getElementById('dialogOverlay');
-                    if (missingPreReqsDialog && missingPreReqsDialog.classList.contains("show") &&
-                        dialogOverlay && dialogOverlay.classList.contains("show")) {
+                    if (missingPreReqsDialog && missingPreReqsDialog.classList.contains("show")) {
                         missingPreReqsDialog.classList.toggle("show");
                         missingPreReqsDialog.classList.toggle("hide");
-                        dialogOverlay.classList.toggle("hide");
-                        dialogOverlay.classList.toggle("show");
+
+                        hideDialogOverlay();
                     }
                 });
             }
@@ -933,13 +938,11 @@
             if (siteExistsConfirmDialog) {
                 siteExistsConfirmDialog.addEventListener('click', function (e) {
                     var siteExistsDialog = document.getElementById('siteExistsDialog');
-                    var dialogOverlay = document.getElementById('dialogOverlay');
-                    if (siteExistsDialog && siteExistsDialog.classList.contains("show") &&
-                        dialogOverlay && dialogOverlay.classList.contains("show")) {
+                    if (siteExistsDialog && siteExistsDialog.classList.contains("show")) {
                         siteExistsDialog.classList.toggle("show");
                         siteExistsDialog.classList.toggle("hide");
-                        dialogOverlay.classList.toggle("hide");
-                        dialogOverlay.classList.toggle("show");
+
+                        hideDialogOverlay();
                     }
                 });
             }
@@ -949,13 +952,11 @@
             if (siteExistsCancelDialogButton) {
                 siteExistsCancelDialogButton.addEventListener('click', function (e) {
                     var siteExistsDialog = document.getElementById('siteExistsDialog');
-                    var dialogOverlay = document.getElementById('dialogOverlay');
-                    if (siteExistsDialog && siteExistsDialog.classList.contains("show") &&
-                        dialogOverlay && dialogOverlay.classList.contains("show")) {
+                    if (siteExistsDialog && siteExistsDialog.classList.contains("show")) {
                         siteExistsDialog.classList.toggle("show");
                         siteExistsDialog.classList.toggle("hide");
-                        dialogOverlay.classList.toggle("hide");
-                        dialogOverlay.classList.toggle("show");
+
+                        hideDialogOverlay();
                     }
                 });
             }
