@@ -309,6 +309,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     // If we have the hierarchy
                     if (hierarchy != null)
                     {
+                        var accessTokens = new Dictionary<String, String>();
+
                         AuthenticationManager authManager = new AuthenticationManager();
                         var ptai = new ProvisioningTemplateApplyingInformation();
 
@@ -323,54 +325,58 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             ConfigurationManager.AppSettings["ida:AppUrl"]);
 
                         // Store the SPO Access Token for any further context cloning
-                        ptai.AccessTokens.Add(new Uri(rootSiteUrl).Authority, spoAccessToken);
+                        accessTokens.Add(new Uri(rootSiteUrl).Authority, spoAccessToken);
 
-                        // If the user is an admin (SPO or Tenant) we run the Tenant level CanProvision rules
-                        if (model.UserIsSPOAdmin || model.UserIsTenantAdmin)
+                        // Define a PnPProvisioningContext scope to share the security context across calls
+                        using (var pnpProvisioningContext = new PnPProvisioningContext(async (r, s) =>
                         {
-                            // Retrieve the SPO URL for the Admin Site
-                            var adminSiteUrl = model.SPORootSiteUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
-
-                            // Retrieve the SPO Access Token for the Admin Site
-                            var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                tokenId, adminSiteUrl,
-                                ConfigurationManager.AppSettings["ida:ClientId"],
-                                ConfigurationManager.AppSettings["ida:ClientSecret"],
-                                ConfigurationManager.AppSettings["ida:AppUrl"]);
-
-                            // Store the SPO Admin Access Token for any further context cloning
-                            ptai.AccessTokens.Add(new Uri(adminSiteUrl).Authority, spoAdminAccessToken);
-
-                            // Connect to SPO Admin Site and evaluate the CanProvision rules for the hierarchy
-                            using (var tenantContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAdminAccessToken))
+                            // In this scenario we just use the dictionary of access tokens
+                            // in fact the overall operation for sure will take less than 1 hour
+                            // (in fact, it's a matter of few seconds)
+                            return await Task.FromResult(accessTokens[r]);
+                        }))
+                        {
+                            // If the user is an admin (SPO or Tenant) we run the Tenant level CanProvision rules
+                            if (model.UserIsSPOAdmin || model.UserIsTenantAdmin)
                             {
-                                using (var pnpTenantContext = PnPClientContext.ConvertFrom(tenantContext))
+                                // Retrieve the SPO URL for the Admin Site
+                                var adminSiteUrl = model.SPORootSiteUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
+
+                                // Retrieve the SPO Access Token for the Admin Site
+                                var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                    tokenId, adminSiteUrl,
+                                    ConfigurationManager.AppSettings["ida:ClientId"],
+                                    ConfigurationManager.AppSettings["ida:ClientSecret"],
+                                    ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                                // Store the SPO Admin Access Token for any further context cloning
+                                accessTokens.Add(new Uri(adminSiteUrl).Authority, spoAdminAccessToken);
+
+                                // Connect to SPO Admin Site and evaluate the CanProvision rules for the hierarchy
+                                using (var tenantContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAdminAccessToken))
                                 {
-                                    // Configure the OAuth Access Tokens for the PnPClientContext, too
-                                    pnpTenantContext.PropertyBag["AccessTokens"] = ptai.AccessTokens;
+                                    using (var pnpTenantContext = PnPClientContext.ConvertFrom(tenantContext))
+                                    {
+                                        // Creat the Tenant object for the current SPO Admin Site context
+                                        TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(pnpTenantContext);
 
-                                    // Creat the Tenant object for the current SPO Admin Site context
-                                    TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(pnpTenantContext);
-
-                                    // Run the CanProvision rules against the current tenant
-                                    canProvisionResult = CanProvisionRulesManager.CanProvision(tenant, hierarchy, null, ptai);
+                                        // Run the CanProvision rules against the current tenant
+                                        canProvisionResult = CanProvisionRulesManager.CanProvision(tenant, hierarchy, null, ptai);
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            // Otherwise we run the Site level CanProvision rules
-
-                            // Connect to SPO Root Site and evaluate the CanProvision rules for the hierarchy
-                            using (var clientContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
+                            else
                             {
-                                using (var pnpContext = PnPClientContext.ConvertFrom(clientContext))
-                                {
-                                    // Configure the OAuth Access Tokens for the PnPClientContext, too
-                                    pnpContext.PropertyBag["AccessTokens"] = ptai.AccessTokens;
+                                // Otherwise we run the Site level CanProvision rules
 
-                                    // Run the CanProvision rules against the root site
-                                    canProvisionResult = CanProvisionRulesManager.CanProvision(pnpContext.Web, hierarchy.Templates[0], ptai);
+                                // Connect to SPO Root Site and evaluate the CanProvision rules for the hierarchy
+                                using (var clientContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
+                                {
+                                    using (var pnpContext = PnPClientContext.ConvertFrom(clientContext))
+                                    {
+                                        // Run the CanProvision rules against the root site
+                                        canProvisionResult = CanProvisionRulesManager.CanProvision(pnpContext.Web, hierarchy.Templates[0], ptai);
+                                    }
                                 }
                             }
                         }
