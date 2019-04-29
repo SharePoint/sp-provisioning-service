@@ -81,9 +81,6 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             // Get a reference to the data context
             ProvisioningAppDBContext dbContext = new ProvisioningAppDBContext();
 
-            // Retrieve any additional recipient for exceptions alerts
-            var additionalRecipients = dbContext.NotificationRecipients.Where(r => r.Enabled).Select(r => r.Email).ToArray();
-
             try
             {
                 // Log telemetry event
@@ -449,7 +446,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 MailHandler.SendMailNotification(
                     "ProvisioningFailed",
                     action.NotificationEmail,
-                    additionalRecipients,
+                    null,
                     new {
                         TemplateName = action.DisplayName,
                         ExceptionDetails = SimplifyException(ex),
