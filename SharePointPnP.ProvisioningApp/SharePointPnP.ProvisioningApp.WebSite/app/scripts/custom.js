@@ -1,4 +1,9 @@
-﻿// *******************************************
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+
+// *******************************************
 // Toggle Control implementation
 // *******************************************
 

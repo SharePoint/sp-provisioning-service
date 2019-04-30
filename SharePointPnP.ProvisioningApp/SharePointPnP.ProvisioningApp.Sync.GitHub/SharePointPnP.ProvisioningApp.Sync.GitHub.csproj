@@ -130,6 +130,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader">
+      <Link>SharePointPnP.ProvisioningApp.DomainModel.licenseheader</Link>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

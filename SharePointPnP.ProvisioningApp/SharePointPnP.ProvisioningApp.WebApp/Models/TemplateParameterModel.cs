@@ -1,4 +1,8 @@
-﻿using SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning;
 using System;
 using System.Collections.Generic;
 using System.Linq;

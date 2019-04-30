@@ -1,4 +1,8 @@
-﻿using System.Web;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using System.Web;
 using System.Web.Optimization;
 
 namespace SharePointPnP.ProvisioningApp.WebSite

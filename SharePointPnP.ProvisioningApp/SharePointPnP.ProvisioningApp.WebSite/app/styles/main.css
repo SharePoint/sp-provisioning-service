@@ -1,4 +1,6 @@
-﻿@charset "UTF-8";
+﻿/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT license. */
+@charset "UTF-8";
 @font-face {
   font-family: "FW-MDL2";
   src: url("//www.microsoft.com/design/fonts/FWMDL2.woff") format("woff"), url("//www.microsoft.com/design/fonts/FWMDL2.ttf") format("truetype"), url("//www.microsoft.com/design/fonts/FWMDL2.svg") format("svg"); }

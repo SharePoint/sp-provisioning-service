@@ -1,4 +1,8 @@
-﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
 using System.Collections.Generic;
 using System.Linq;

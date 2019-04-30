@@ -1,3 +1,7 @@
+//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
 using System.Linq;
 using System.Net;
 using System.Net.Http;

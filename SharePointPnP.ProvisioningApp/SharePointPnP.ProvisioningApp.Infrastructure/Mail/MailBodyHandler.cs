@@ -1,4 +1,8 @@
-﻿using RazorEngine;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using RazorEngine;
 using RazorEngine.Templating;
 using SharePointPnP.ProvisioningApp.MailTemplates;
 using System;

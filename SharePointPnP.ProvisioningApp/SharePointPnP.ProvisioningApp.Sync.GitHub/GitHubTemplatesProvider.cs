@@ -1,4 +1,8 @@
-﻿using SharePointPnP.ProvisioningApp.Sync.GitHub.ApiModels;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using SharePointPnP.ProvisioningApp.Sync.GitHub.ApiModels;
 using SharePointPnP.ProvisioningApp.Synchronization;
 using System;
 using System.Collections.Generic;

@@ -5,6 +5,9 @@
     <Configurations>Debug;Release;Site.Dev;Tenant.Dev;Dev</Configurations>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader" Link="SharePointPnP.ProvisioningApp.DomainModel.licenseheader" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>

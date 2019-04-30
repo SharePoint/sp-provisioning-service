@@ -1,4 +1,9 @@
-﻿//using OfficeDevPnP.Core.Framework.Provisioning.Model;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+
+//using OfficeDevPnP.Core.Framework.Provisioning.Model;
 //using System;
 //using System.Collections.Generic;
 //using System.Linq;

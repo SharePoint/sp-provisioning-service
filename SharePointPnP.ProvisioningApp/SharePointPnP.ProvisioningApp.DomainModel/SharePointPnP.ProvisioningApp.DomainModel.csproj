@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="SharePointPnP.ProvisioningApp.DomainModel.licenseheader" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201811161656498_Initial.resx">

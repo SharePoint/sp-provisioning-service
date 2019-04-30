@@ -1,3 +1,7 @@
+//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
 const defaultSort = 99;
 
 let clickPnpItem = (event) => {

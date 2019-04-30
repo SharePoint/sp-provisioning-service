@@ -333,6 +333,9 @@
     <Content Include="App-Dev.config" />
     <Content Include="App-Prod.config" />
     <Content Include="App-Test.config" />
+    <None Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader">
+      <Link>SharePointPnP.ProvisioningApp.DomainModel.licenseheader</Link>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />

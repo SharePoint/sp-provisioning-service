@@ -1,11 +1,7 @@
-/*!
- * jQuery Validation Plugin v1.17.0
- *
- * https://jqueryvalidation.org/
- *
- * Copyright (c) 2017 Jörn Zaefferer
- * Released under the MIT license
- */
+//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
 (function( factory ) {
 	if ( typeof define === "function" && define.amd ) {
 		define( ["jquery"], factory );

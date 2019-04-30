@@ -75,5 +75,10 @@
     <EmbeddedResource Include="Templates\ProvisioningFailed.cshtml" />
     <EmbeddedResource Include="Templates\ProvisioningCompleted.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader">
+      <Link>SharePointPnP.ProvisioningApp.DomainModel.licenseheader</Link>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

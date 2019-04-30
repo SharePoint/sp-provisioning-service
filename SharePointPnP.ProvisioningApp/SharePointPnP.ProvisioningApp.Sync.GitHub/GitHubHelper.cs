@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using Newtonsoft.Json;
 using SharePointPnP.ProvisioningApp.Sync.GitHub.ApiModels;
 using System;
 using System.Collections.Generic;

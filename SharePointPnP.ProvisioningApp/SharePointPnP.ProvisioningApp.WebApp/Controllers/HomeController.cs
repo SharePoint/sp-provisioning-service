@@ -1,4 +1,8 @@
-﻿using Microsoft.Azure;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using Microsoft.Azure;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.SharePoint.Client;
 using Microsoft.WindowsAzure.Storage;

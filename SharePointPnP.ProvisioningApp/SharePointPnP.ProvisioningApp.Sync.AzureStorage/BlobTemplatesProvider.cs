@@ -1,4 +1,8 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using SharePointPnP.ProvisioningApp.Synchronization;
 using System;

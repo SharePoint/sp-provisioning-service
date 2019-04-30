@@ -1,3 +1,8 @@
+//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+
 // generated on 2018-09-04 using generator-webapp 3.0.1
 const gulp = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');

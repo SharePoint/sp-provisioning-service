@@ -1,3 +1,7 @@
+//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
 namespace SharePointPnP.ProvisioningApp.DomainModel.Migrations
 {
     using System;

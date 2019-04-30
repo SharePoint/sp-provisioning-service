@@ -1,4 +1,8 @@
-﻿using SharePointPnP.ProvisioningApp.Synchronization;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using SharePointPnP.ProvisioningApp.Synchronization;
 using System;
 using System.Collections.Generic;
 using System.IO;

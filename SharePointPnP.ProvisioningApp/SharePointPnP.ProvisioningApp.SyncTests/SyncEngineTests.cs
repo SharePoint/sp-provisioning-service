@@ -1,4 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharePointPnP.ProvisioningApp.Sync.AzureStorage;
 using SharePointPnP.ProvisioningApp.Sync.GitHub;
 using SharePointPnP.ProvisioningApp.Synchronization;

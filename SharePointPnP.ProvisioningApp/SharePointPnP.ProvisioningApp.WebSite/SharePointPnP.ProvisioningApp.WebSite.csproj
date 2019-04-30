@@ -236,6 +236,9 @@
     <Content Include="app\styles\03-molecules\_30.detail-page.scss" />
     <Content Include="app\styles\03-molecules\_99.footer.scss" />
     <Content Include="app\categories.json" />
+    <Content Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader">
+      <Link>SharePointPnP.ProvisioningApp.DomainModel.licenseheader</Link>
+    </Content>
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
