@@ -459,7 +459,7 @@
             disableProvisionButton();
 
             // show the Working on it dialog
-            showWorkingOnIt("&nbsp;Validating pre-requirements ...");
+            showWorkingOnIt("&nbsp;Validating prerequisites ...");
 
             fetch('../home/CanProvisionPackage', {
                 headers: {
@@ -499,19 +499,19 @@
                         }
                     }
                     else {
-                        // show the pre-reqs dialog
+                        // show the prerequisites dialog
                         var missingPreReqsDialog = document.getElementById('missingPreReqsDialog');
                         var missingPreReqsList = document.getElementById('missingPreReqsList');
                         if (missingPreReqsList && missingPreReqsDialog &&
                             missingPreReqsDialog.classList.contains("hide")) {
 
-                            // list the pre-reqs
+                            // list the prerequisites
                             var preReqsIssues = '';
                             for (var i = 0; i < data.Issues.length; i++) {
                                 preReqsIssues += '<li>' + data.Issues[i].Message + '</li>'
                             }
 
-                            // show the pre-reqs
+                            // show the prerequisites
                             missingPreReqsList.innerHTML = '<ul>' + preReqsIssues + '</ul>';
 
                             missingPreReqsDialog.classList.toggle("hide");
