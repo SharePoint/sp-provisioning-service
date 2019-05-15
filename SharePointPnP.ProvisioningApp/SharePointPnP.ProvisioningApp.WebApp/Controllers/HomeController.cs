@@ -411,10 +411,13 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return Json(canProvisionResult);
         }
 
-        [HttpPost]
-        public ActionResult ProvisionContentPack(ProvisionContentPackActionModel model)
+        [HttpGet]
+        public ActionResult ProvisionContentPack(String tenantId, String userPrincipalName, String packageId, String returnUrl)
         {
-            if (model != null && ModelState.IsValid)
+            if (!String.IsNullOrEmpty(tenantId) &&
+                !String.IsNullOrEmpty(userPrincipalName) &&
+                !String.IsNullOrEmpty(packageId) &&
+                !String.IsNullOrEmpty(returnUrl))
             {
                 // Do we want to validate pre-requirements?
 
@@ -425,13 +428,13 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 request.CorrelationId = Guid.NewGuid();
                 request.CustomLogo = null;
                 request.DisplayName = "Provision Content Pack";
-                request.PackageId = model.PackageId;
+                request.PackageId = packageId;
                 request.TargetSiteAlreadyExists = false; // Do we want to check this?
                 request.TargetSiteBaseTemplateId = null;
-                request.TenantId = model.TenantId;
+                request.TenantId = tenantId;
                 request.UserIsSPOAdmin = true; // We don't use this in the job
                 request.UserIsTenantAdmin = true; // We don't use this in the job
-                request.UserPrincipalName = model.UserPrincipalName;
+                request.UserPrincipalName = userPrincipalName;
 
                 // Get a reference to the blob storage queue
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
@@ -448,7 +451,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
 
             // Return to the requested URL
-            return Redirect(model.ReturnUrl);
+            return Redirect(returnUrl);
         }
 
         private bool IsAllowedUpnTenant(string upn)

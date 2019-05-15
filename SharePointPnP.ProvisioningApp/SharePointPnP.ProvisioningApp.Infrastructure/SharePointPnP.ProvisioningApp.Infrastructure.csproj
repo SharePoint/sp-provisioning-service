@@ -318,9 +318,8 @@
     <Compile Include="ADAL\WebCacheADALCache.cs" />
     <Compile Include="DomainModel\Graph\UserRoles.cs" />
     <Compile Include="DomainModel\Provisioning\CanProvisionModel.cs" />
-    <Compile Include="DomainModel\Provisioning\ProvisioningActionModel - Copy.cs" />
+    <Compile Include="DomainModel\Provisioning\ProvisioningActionModel.cs" />
     <Compile Include="DomainModel\Provisioning\SharePointSite.cs" />
-    <Compile Include="DomainModel\Provisioning\ProvisionContentPackActionModel.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="IAccessTokenProvider.cs" />
     <Compile Include="ITemplatesProvider.cs" />
