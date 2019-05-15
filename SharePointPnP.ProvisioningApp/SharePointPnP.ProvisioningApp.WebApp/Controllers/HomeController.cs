@@ -434,7 +434,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 request.TenantId = tenantId;
                 request.UserIsSPOAdmin = true; // We don't use this in the job
                 request.UserIsTenantAdmin = true; // We don't use this in the job
-                request.UserPrincipalName = userPrincipalName;
+                request.UserPrincipalName = userPrincipalName.ToLower();
+                request.NotificationEmail = userPrincipalName.ToLower();
 
                 // Get a reference to the blob storage queue
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
