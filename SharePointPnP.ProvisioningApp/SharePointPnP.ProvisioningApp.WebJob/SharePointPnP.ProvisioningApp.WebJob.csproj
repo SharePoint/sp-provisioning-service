@@ -441,11 +441,14 @@
     <EmbeddedResource Include="known-exceptions.json" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Test.pubxml" />
     <None Include="Properties\PublishProfiles\spprovisioningappdev - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\spprovisioningappdev - Web - Dev.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />
+    <None Include="Settings.job">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.csproj">
