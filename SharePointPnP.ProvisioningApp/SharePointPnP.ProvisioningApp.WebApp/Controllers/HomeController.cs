@@ -395,6 +395,46 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return Json(canProvisionResult);
         }
 
+        [HttpPost]
+        public ActionResult ProvisionContentPack(ProvisionContentPackActionModel model)
+        {
+            if (model != null && ModelState.IsValid)
+            {
+                // Do we want to validate pre-requirements?
+
+                var request = new ProvisioningActionModel();
+                request.ActionType = ActionType.Tenant; // Do we want to support site/tenant or just one?
+                request.ApplyCustomTheme = false;
+                request.ApplyTheme = false; // Do we need to apply any special theme?
+                request.CorrelationId = Guid.NewGuid();
+                request.CustomLogo = null;
+                request.DisplayName = "Provision Content Pack";
+                request.PackageId = model.PackageId;
+                request.TargetSiteAlreadyExists = false; // Do we want to check this?
+                request.TargetSiteBaseTemplateId = null;
+                request.TenantId = model.TenantId;
+                request.UserIsSPOAdmin = true; // We don't use this in the job
+                request.UserIsTenantAdmin = true; // We don't use this in the job
+                request.UserPrincipalName = model.UserPrincipalName;
+
+                // Get a reference to the blob storage queue
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                    CloudConfigurationManager.GetSetting("SPPA:StorageConnectionString"));
+
+                // Get queue... create if does not exist.
+                CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+                CloudQueue queue = queueClient.GetQueueReference(
+                    CloudConfigurationManager.GetSetting("SPPA:StorageQueueName"));
+                queue.CreateIfNotExists();
+
+                // add message to the queue
+                queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(request)));
+            }
+
+            // Return to the requested URL
+            return Redirect(model.ReturnUrl);
+        }
+
         private bool IsAllowedUpnTenant(string upn)
         {
             if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
