@@ -334,10 +334,22 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         // Define a PnPProvisioningContext scope to share the security context across calls
                         using (var pnpProvisioningContext = new PnPProvisioningContext(async (r, s) =>
                         {
-                            // In this scenario we just use the dictionary of access tokens
-                            // in fact the overall operation for sure will take less than 1 hour
-                            // (in fact, it's a matter of few seconds)
-                            return await Task.FromResult(accessTokens[r]);
+                            if (accessTokens.ContainsKey(r))
+                            {
+                                // In this scenario we just use the dictionary of access tokens
+                                // in fact the overall operation for sure will take less than 1 hour
+                                // (in fact, it's a matter of few seconds)
+                                return await Task.FromResult(accessTokens[r]);
+                            }
+                            else
+                            {
+                                // Try to get a fresh new Access Token
+                                return await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                    tokenId, r,
+                                    ConfigurationManager.AppSettings["ida:ClientId"],
+                                    ConfigurationManager.AppSettings["ida:ClientSecret"],
+                                    ConfigurationManager.AppSettings["ida:AppUrl"]);
+                            }
                         }))
                         {
                             // If the user is an admin (SPO or Tenant) we run the Tenant level CanProvision rules
