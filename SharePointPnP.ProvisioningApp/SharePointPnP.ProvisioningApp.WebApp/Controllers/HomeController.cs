@@ -344,11 +344,15 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             else
                             {
                                 // Try to get a fresh new Access Token
-                                return await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                    tokenId, r,
+                                var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                    tokenId, $"https://{r}",
                                     ConfigurationManager.AppSettings["ida:ClientId"],
                                     ConfigurationManager.AppSettings["ida:ClientSecret"],
                                     ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                                accessTokens.Add(r, token);
+
+                                return (token);
                             }
                         }))
                         {
