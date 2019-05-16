@@ -286,6 +286,9 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                     {
                                         var tenant = new Microsoft.Online.SharePoint.TenantAdministration.Tenant(pnpTenantContext);
 
+                                        // Prepare a dictionary to hold the access tokens
+                                        var accessTokens = new Dictionary<String, String>();
+
                                         // Prepare logging for hierarchy application
                                         var ptai = new ProvisioningTemplateApplyingInformation();
                                         ptai.MessagesDelegate += delegate (string message, ProvisioningMessageType messageType) {
@@ -305,11 +308,12 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         };
 
                                         // Configure the OAuth Access Tokens for the client context
-                                        ptai.AccessTokens.Add(new Uri(tenantUrl).Authority, spoAdminAccessToken);
-                                        ptai.AccessTokens.Add(new Uri(spoTenant).Authority, spoAccessToken);
+                                        accessTokens.Add(new Uri(tenantUrl).Authority, spoAdminAccessToken);
+                                        accessTokens.Add(new Uri(spoTenant).Authority, spoAccessToken);
 
                                         // Configure the OAuth Access Tokens for the PnPClientContext, too
-                                        pnpTenantContext.PropertyBag["AccessTokens"] = ptai.AccessTokens;
+                                        pnpTenantContext.PropertyBag["AccessTokens"] = accessTokens;
+                                        ptai.AccessTokens = accessTokens;
 
                                         #region Theme handling
 
@@ -355,12 +359,37 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         // Log telemetry event
                                         telemetry?.LogEvent("ProvisioningFunction.BeginProvisioning", telemetryProperties);
 
-                                        // Apply the hierarchy
-                                        log.WriteLine($"Hierarchy Provisioning Started: {DateTime.Now:hh.mm.ss}");
-                                        tenant.ApplyProvisionHierarchy(hierarchy, hierarchy.Sequences[0].ID, ptai);
-                                        log.WriteLine($"Hierarchy Provisioning Completed: {DateTime.Now:hh.mm.ss}");
+                                        // Define a PnPProvisioningContext scope to share the security context across calls
+                                        using (var pnpProvisioningContext = new PnPProvisioningContext(async (r, s) =>
+                                        {
+                                            if (accessTokens.ContainsKey(r))
+                                            {
+                                                // In this scenario we just use the dictionary of access tokens
+                                                // in fact the overall operation for sure will take less than 1 hour
+                                                return await Task.FromResult(accessTokens[r]);
+                                            }
+                                            else
+                                            {
+                                                // Try to get a fresh new Access Token
+                                                var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                                    tokenId, $"https://{r}",
+                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
+                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
+                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
 
-                                        if(action.ApplyTheme && action.ApplyCustomTheme)
+                                                accessTokens.Add(r, token);
+
+                                                return (token);
+                                            }
+                                        }))
+                                        {
+                                            // Apply the hierarchy
+                                            log.WriteLine($"Hierarchy Provisioning Started: {DateTime.Now:hh.mm.ss}");
+                                            tenant.ApplyProvisionHierarchy(hierarchy, hierarchy.Sequences[0].ID, ptai);
+                                            log.WriteLine($"Hierarchy Provisioning Completed: {DateTime.Now:hh.mm.ss}");
+                                        }
+
+                                        if (action.ApplyTheme && action.ApplyCustomTheme)
                                         {
                                             if (!String.IsNullOrEmpty(action.ThemePrimaryColor) &&
                                                 !String.IsNullOrEmpty(action.ThemeBodyTextColor) &&
