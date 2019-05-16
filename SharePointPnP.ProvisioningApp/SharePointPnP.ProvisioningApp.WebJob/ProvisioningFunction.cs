@@ -362,14 +362,25 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         // Define a PnPProvisioningContext scope to share the security context across calls
                                         using (var pnpProvisioningContext = new PnPProvisioningContext(async (r, s) =>
                                         {
-                                            // Try to get a fresh new Access Token
-                                            var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                                tokenId, $"https://{r}",
-                                                ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
-                                                ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
-                                                ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
+                                            if (accessTokens.ContainsKey(r))
+                                            {
+                                                // In this scenario we just use the dictionary of access tokens
+                                                // in fact the overall operation for sure will take less than 1 hour
+                                                return await Task.FromResult(accessTokens[r]);
+                                            }
+                                            else
+                                            {
+                                                // Try to get a fresh new Access Token
+                                                var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                                    tokenId, $"https://{r}",
+                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
+                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
+                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
 
-                                            return (token);
+                                                accessTokens.Add(r, token);
+
+                                                return (token);
+                                            }
                                         }))
                                         {
                                             // Apply the hierarchy
