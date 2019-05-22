@@ -335,6 +335,7 @@
     <None Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader">
       <Link>SharePointPnP.ProvisioningApp.DomainModel.licenseheader</Link>
     </None>
+    <None Include="App.Model.config" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />

@@ -404,6 +404,9 @@
     <Content Include="Views\Shared\DisplayTemplates\SiteUrl.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\RegEx.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\RegEx.cshtml" />
+    <Content Include="Web-Model.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Web.Dev.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

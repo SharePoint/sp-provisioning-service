@@ -263,6 +263,7 @@
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Test.pubxml" />
     <Content Include="Views\Home\ContentPage.cshtml" />
     <None Include="Properties\PublishProfiles\spprovisioningappdev - Web - Local Dev.pubxml" />
+    <Content Include="Web-Model.config" />
     <None Include="Web.Dev.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
