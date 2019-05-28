@@ -168,13 +168,30 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
 
             public Uri DownloadUri => _blob.Uri;
 
-            public async Task<Stream> DownloadAsync()
+            /// <summary>
+            /// Downloads a stream from the GitHub provider with an optional retry logic
+            /// </summary>
+            /// <param name="retryCount">The number of retries</param>
+            /// <param name="delay">The delay between retries</param>
+            /// <returns>The resulting Stream</returns>
+            public async Task<Stream> DownloadAsync(int retryCount = 10, int delay = 500)
             {
                 var client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync(DownloadUri, HttpCompletionOption.ResponseHeadersRead);
-                response.EnsureSuccessStatusCode();
 
-                return await response.Content.ReadAsStreamAsync(); ;
+
+                for (Int32 c = 0; c < retryCount; c++)
+                {
+                    HttpResponseMessage response = await client.GetAsync(DownloadUri, HttpCompletionOption.ResponseHeadersRead);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStreamAsync(); ;
+                    }
+
+                    // Exponential back-off
+                    await Task.Delay(delay * retryCount);
+                }
+
+                return (null);
             }
         }
 

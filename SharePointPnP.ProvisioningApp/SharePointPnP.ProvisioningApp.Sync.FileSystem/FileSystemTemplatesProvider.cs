@@ -92,7 +92,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.FileSystem
 
             public Uri DownloadUri => new Uri(_file.FullName);
 
-            public Task<Stream> DownloadAsync()
+            public Task<Stream> DownloadAsync(int retryCount = 10, int delay = 500)
             {
                 return Task.FromResult<Stream>(File.OpenRead(DownloadUri.AbsolutePath));
             }

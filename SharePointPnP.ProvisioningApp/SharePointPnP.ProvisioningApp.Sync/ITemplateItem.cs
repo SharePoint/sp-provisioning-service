@@ -20,7 +20,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
     {
         Uri DownloadUri { get; }
 
-        Task<Stream> DownloadAsync();
+        Task<Stream> DownloadAsync(int retryCount = 10, int delay = 500);
     }
 
     public interface IMarkdownFile : ITemplateFile

@@ -25,6 +25,11 @@ namespace SharePointPnP.ProvisioningApp.Sync.WebJob
 
             Uri baseUrl = new Uri(ConfigurationManager.AppSettings["GitHubTemplateProvider:BaseUrl"]);
             string repositoryUrl = ConfigurationManager.AppSettings["GitHubTemplateProvider:RepositoryPath"];
+
+            // Personal Access Token requires scopes:
+            // repo
+            // read:org
+            // read:user
             string personalAccessToken = ConfigurationManager.AppSettings["GitHubTemplateProvider:PersonalAccessToken"];
 
             var sourceProvider = new GitHubTemplatesProvider(baseUrl, repositoryUrl, personalAccessToken);

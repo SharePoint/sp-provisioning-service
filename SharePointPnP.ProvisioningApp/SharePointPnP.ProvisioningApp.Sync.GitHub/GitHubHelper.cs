@@ -129,7 +129,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "PnP Templates Gallery");
+            client.DefaultRequestHeaders.Add("User-Agent", "PnP Provisioning Service");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", _personalAccessToken);
 
             return client;
@@ -140,22 +140,33 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
         /// </summary>
         /// <typeparam name="T">The Type of the response</typeparam>
         /// <param name="url">The url to get the value from</param>
+        /// <param name="retryCount">The number of retries</param>
+        /// <param name="delay">The delay between retries, with exponential back-off</param>
         /// <returns>The object returned from the request</returns>
-        private async Task<T> MakeRequestAsync<T>(string url)
+        private async Task<T> MakeRequestAsync<T>(string url, int retryCount = 10, int delay = 500)
         {
             try
             {
                 HttpClient client = GetNewHttpClient();
-                var response = await client.GetAsync(url);
 
-                string json = await response.Content.ReadAsStringAsync();
-                JsonSerializerSettings settings = new JsonSerializerSettings();
-                settings.NullValueHandling = NullValueHandling.Ignore;
-                return JsonConvert.DeserializeObject<T>(json, settings);
+                for (Int32 c = 0; c < retryCount; c++)
+                {
+                    var response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string json = await response.Content.ReadAsStringAsync();
+                        JsonSerializerSettings settings = new JsonSerializerSettings();
+                        settings.NullValueHandling = NullValueHandling.Ignore;
+                        return JsonConvert.DeserializeObject<T>(json, settings);
+                    }
+
+                    // Exponential back-off
+                    await Task.Delay(delay * retryCount);
+                }
             }
             catch (Exception e)
             {
-
+                // NOOP here
             }
 
             return default(T);
