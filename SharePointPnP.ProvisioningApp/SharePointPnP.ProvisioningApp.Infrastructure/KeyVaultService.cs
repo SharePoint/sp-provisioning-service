@@ -131,34 +131,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         /// </summary>
         /// <param name="key">The key to search for</param>
         /// <param name="version">The version of the key</param>
-        /// <returns></returns>
+        /// <returns>The values for the requested key</returns>
         public async Task<IDictionary<String, String>> GetAsync(string key, string version = null)
         {
-            KeyBundle retrievedKey = null;
-
-            try
-            {
-                if (!String.IsNullOrEmpty(version) || !String.IsNullOrEmpty(key))
-                {
-                    // If version is specified get the tags for the specific version
-                    if (!String.IsNullOrEmpty(version))
-                    {
-                        retrievedKey = await keyVaultClient.GetKeyAsync(vaultAddress, key, version);
-                    }
-                    else
-                    {
-                        // Get the tags for the latest version
-                        retrievedKey = await keyVaultClient.GetKeyAsync(vaultAddress, key);
-                    }
-                }
-            }
-            catch (KeyVaultErrorException ex)
-            {
-                if (ex.Body.Error.Code != "KeyNotFound")
-                {
-                    throw ex;
-                }
-            }
+            KeyBundle retrievedKey = await GetFullKeyAsync(key, version);
 
             if (retrievedKey == null)
             {
@@ -194,6 +170,66 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
             return retrievedKey.Tags;
         }
 
+        /// <summary>
+        /// Gets a specific key
+        /// </summary>
+        /// <param name="key">The key to search for</param>
+        /// <param name="version">The version of the key</param>
+        /// <returns>The requested key</returns>
+        public async Task<KeyBundle> GetFullKeyAsync(string key, string version = null)
+        {
+            KeyBundle retrievedKey = null;
+
+            try
+            {
+                if (!String.IsNullOrEmpty(version) || !String.IsNullOrEmpty(key))
+                {
+                    // If version is specified get the tags for the specific version
+                    if (!String.IsNullOrEmpty(version))
+                    {
+                        retrievedKey = await keyVaultClient.GetKeyAsync(vaultAddress, key, version);
+                    }
+                    else
+                    {
+                        // Get the tags for the latest version
+                        retrievedKey = await keyVaultClient.GetKeyAsync(vaultAddress, key);
+                    }
+                }
+            }
+            catch (KeyVaultErrorException ex)
+            {
+                if (ex.Body.Error.Code != "KeyNotFound")
+                {
+                    throw ex;
+                }
+            }
+
+            return (retrievedKey);
+        }
+
+
+        /// <summary>
+        /// Removes a specific key
+        /// </summary>
+        /// <param name="key">The key to search for</param>
+        public async Task RemoveKeyAsync(string key)
+        {
+            try
+            {
+                // Deletes a key
+                var deletedKey = await keyVaultClient.DeleteKeyAsync(vaultAddress, key);
+                // And purges it immediately
+                await keyVaultClient.PurgeDeletedKeyAsync(deletedKey.RecoveryId);
+            }
+            catch (KeyVaultErrorException ex)
+            {
+                if (ex.Body.Error.Code != "KeyNotFound")
+                {
+                    throw ex;
+                }
+            }
+        }
+        
         /// <summary>
         /// Gets the access token
         /// </summary>
