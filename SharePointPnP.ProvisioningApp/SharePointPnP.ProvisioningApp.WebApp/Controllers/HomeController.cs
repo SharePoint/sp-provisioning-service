@@ -19,6 +19,7 @@ using OfficeDevPnP.Core.Framework.Provisioning.Providers.Xml;
 using SharePointPnP.ProvisioningApp.DomainModel;
 using SharePointPnP.ProvisioningApp.Infrastructure;
 using SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning;
+using SharePointPnP.ProvisioningApp.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -265,150 +266,85 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 throw new ArgumentNullException("UserPrincipalName");
             }
 
-            var canProvisionResult = new CanProvisionResult();
+            CanProvisionResult canProvisionResult = await CanProvisionInternal(model);
 
-            if (IsValidUser())
+            return Json(canProvisionResult);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> ProvisionContentPack(ProvisionContentPackRequest provisionRequest)
+        {
+            var provisionResponse = new ProvisionContentPackResponse();
+
+            if (provisionRequest != null &&
+                !String.IsNullOrEmpty(provisionRequest.TenantId) &&
+                !String.IsNullOrEmpty(provisionRequest.UserPrincipalName) &&
+                !String.IsNullOrEmpty(provisionRequest.PackageId))
             {
-                String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
-                String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
-
-                var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
-                var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                    tokenId, "https://graph.microsoft.com/");
-
-                // Retrieve the provisioning package from the database and from the Blob Storage
-                var context = GetDataContext();
-                DomainModel.Package package = null;
-
-                // Get the package
-                if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
-                {
-                    // Process all packages in the test environment
-                    package = context.Packages.FirstOrDefault(p => p.Id == new Guid(model.PackageId));
-                }
-                else
-                {
-                    // Process not-preview packages in the production environment
-                    package = context.Packages.FirstOrDefault(p => p.Id == new Guid(model.PackageId) && p.Preview == false);
-                }
-
-                if (package != null)
-                {
-                    if ((package.PackageType == PackageType.Tenant &&
-                        !this.Request.Url.AbsolutePath.Contains("/tenant/")) ||
-                        (package.PackageType == PackageType.SiteCollection &&
-                        !this.Request.Url.AbsolutePath.Contains("/site/")))
+                // First of all, validate the provisioning request for pre-requirements
+                provisionResponse.CanProvisionResult = await CanProvisionInternal(
+                    new CanProvisionModel
                     {
-                        throw new ApplicationException("Invalid request, the requested package/template is not valid for the current request!");
-                    }
+                        PackageId = provisionRequest.PackageId,
+                        TenantId = provisionRequest.TenantId,
+                        UserPrincipalName = provisionRequest.UserPrincipalName,
+                        SPORootSiteUrl = provisionRequest.SPORootSiteUrl,
+                        UserIsSPOAdmin = true, // We assume that the request comes from an Admin
+                        UserIsTenantAdmin = true, // We assume that the request comes from an Admin
+                    });
 
-                    // Retrieve parameters from the package/template definition
-                    var packageFileUrl = new Uri(package.PackageUrl);
-                    var packageLocalFolder = packageFileUrl.AbsolutePath.Substring(1,
-                        packageFileUrl.AbsolutePath.LastIndexOf('/') - 1);
-                    var packageFileName = packageFileUrl.AbsolutePath.Substring(packageLocalFolder.Length + 2);
-
-                    ProvisioningHierarchy hierarchy = GetHierarchyFromStorage(packageLocalFolder, packageFileName);
-
-                    // If we have the hierarchy
-                    if (hierarchy != null)
-                    {
-                        var accessTokens = new Dictionary<String, String>();
-
-                        AuthenticationManager authManager = new AuthenticationManager();
-                        var ptai = new ProvisioningTemplateApplyingInformation();
-
-                        // Retrieve the SPO URL for the Admin Site
-                        var rootSiteUrl = model.SPORootSiteUrl;
-
-                        // Retrieve the SPO Access Token for SPO
-                        var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                            tokenId, rootSiteUrl,
-                            ConfigurationManager.AppSettings["ida:ClientId"],
-                            ConfigurationManager.AppSettings["ida:ClientSecret"],
-                            ConfigurationManager.AppSettings["ida:AppUrl"]);
-
-                        // Store the SPO Access Token for any further context cloning
-                        accessTokens.Add(new Uri(rootSiteUrl).Authority, spoAccessToken);
-
-                        // Define a PnPProvisioningContext scope to share the security context across calls
-                        using (var pnpProvisioningContext = new PnPProvisioningContext(async (r, s) =>
-                        {
-                            if (accessTokens.ContainsKey(r))
-                            {
-                                // In this scenario we just use the dictionary of access tokens
-                                // in fact the overall operation for sure will take less than 1 hour
-                                // (in fact, it's a matter of few seconds)
-                                return await Task.FromResult(accessTokens[r]);
-                            }
-                            else
-                            {
-                                // Try to get a fresh new Access Token
-                                var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                    tokenId, $"https://{r}",
-                                    ConfigurationManager.AppSettings["ida:ClientId"],
-                                    ConfigurationManager.AppSettings["ida:ClientSecret"],
-                                    ConfigurationManager.AppSettings["ida:AppUrl"]);
-
-                                accessTokens.Add(r, token);
-
-                                return (token);
-                            }
-                        }))
-                        {
-                            // If the user is an admin (SPO or Tenant) we run the Tenant level CanProvision rules
-                            if (model.UserIsSPOAdmin || model.UserIsTenantAdmin)
-                            {
-                                // Retrieve the SPO URL for the Admin Site
-                                var adminSiteUrl = model.SPORootSiteUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
-
-                                // Retrieve the SPO Access Token for the Admin Site
-                                var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                    tokenId, adminSiteUrl,
-                                    ConfigurationManager.AppSettings["ida:ClientId"],
-                                    ConfigurationManager.AppSettings["ida:ClientSecret"],
-                                    ConfigurationManager.AppSettings["ida:AppUrl"]);
-
-                                // Store the SPO Admin Access Token for any further context cloning
-                                accessTokens.Add(new Uri(adminSiteUrl).Authority, spoAdminAccessToken);
-
-                                // Connect to SPO Admin Site and evaluate the CanProvision rules for the hierarchy
-                                using (var tenantContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAdminAccessToken))
-                                {
-                                    using (var pnpTenantContext = PnPClientContext.ConvertFrom(tenantContext))
-                                    {
-                                        // Creat the Tenant object for the current SPO Admin Site context
-                                        TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(pnpTenantContext);
-
-                                        // Run the CanProvision rules against the current tenant
-                                        canProvisionResult = CanProvisionRulesManager.CanProvision(tenant, hierarchy, null, ptai);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // Otherwise we run the Site level CanProvision rules
-
-                                // Connect to SPO Root Site and evaluate the CanProvision rules for the hierarchy
-                                using (var clientContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
-                                {
-                                    using (var pnpContext = PnPClientContext.ConvertFrom(clientContext))
-                                    {
-                                        // Run the CanProvision rules against the root site
-                                        canProvisionResult = CanProvisionRulesManager.CanProvision(pnpContext.Web, hierarchy.Templates[0], ptai);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else
+                // If the package can be provisioned onto the target
+                if (provisionResponse.CanProvisionResult.CanProvision)
                 {
-                    throw new ApplicationException("Invalid request, the requested package/template is not available!");
+                    String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                    String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+
+                    // Retrieve the refresh token and store it in the KeyVault
+                    await ProvisioningAppManager.AccessTokenProvider.SetupSecurityFromAuthorizationCodeAsync(
+                        tokenId,
+                        provisionRequest.AuthorizationCode,
+                        provisionRequest.TenantId,
+                        ConfigurationManager.AppSettings["ida:ClientId"],
+                        ConfigurationManager.AppSettings["ida:ClientSecret"],
+                        "https://graph.microsoft.com/",
+                        ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                    // Prepare the provisioning request
+                    var request = new ProvisioningActionModel();
+                    request.ActionType = ActionType.Tenant; // Do we want to support site/tenant or just one?
+                    request.ApplyCustomTheme = false;
+                    request.ApplyTheme = false; // Do we need to apply any special theme?
+                    request.CorrelationId = Guid.NewGuid();
+                    request.CustomLogo = null;
+                    request.DisplayName = "Provision Content Pack";
+                    request.PackageId = provisionRequest.PackageId;
+                    request.TargetSiteAlreadyExists = false; // Do we want to check this?
+                    request.TargetSiteBaseTemplateId = null;
+                    request.TenantId = provisionRequest.TenantId;
+                    request.UserIsSPOAdmin = true; // We don't use this in the job
+                    request.UserIsTenantAdmin = true; // We don't use this in the job
+                    request.UserPrincipalName = provisionRequest.UserPrincipalName.ToLower();
+                    request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
+
+                    // Get a reference to the blob storage queue
+                    CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                        CloudConfigurationManager.GetSetting("SPPA:StorageConnectionString"));
+
+                    // Get queue... create if does not exist.
+                    CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+                    CloudQueue queue = queueClient.GetQueueReference(
+                        CloudConfigurationManager.GetSetting("SPPA:StorageQueueName"));
+                    queue.CreateIfNotExists();
+
+                    // add message to the queue
+                    queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(request)));
                 }
             }
 
-            return Json(canProvisionResult);
+            // Return to the requested URL
+            return Json(provisionResponse);
         }
 
         private bool IsAllowedUpnTenant(string upn)
@@ -676,6 +612,154 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                 model.Themes = themes.Select(t => t.Name).ToList();
             }
+        }
+
+        private async Task<CanProvisionResult> CanProvisionInternal(CanProvisionModel model, Boolean validateUser = true)
+        {
+            var canProvisionResult = new CanProvisionResult();
+
+            if (!validateUser || IsValidUser())
+            {
+                String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                    tokenId, "https://graph.microsoft.com/");
+
+                // Retrieve the provisioning package from the database and from the Blob Storage
+                var context = GetDataContext();
+                DomainModel.Package package = null;
+
+                // Get the package
+                if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
+                {
+                    // Process all packages in the test environment
+                    package = context.Packages.FirstOrDefault(p => p.Id == new Guid(model.PackageId));
+                }
+                else
+                {
+                    // Process not-preview packages in the production environment
+                    package = context.Packages.FirstOrDefault(p => p.Id == new Guid(model.PackageId) && p.Preview == false);
+                }
+
+                if (package != null)
+                {
+                    if ((package.PackageType == PackageType.Tenant &&
+                        !this.Request.Url.AbsolutePath.Contains("/tenant/")) ||
+                        (package.PackageType == PackageType.SiteCollection &&
+                        !this.Request.Url.AbsolutePath.Contains("/site/")))
+                    {
+                        throw new ApplicationException("Invalid request, the requested package/template is not valid for the current request!");
+                    }
+
+                    // Retrieve parameters from the package/template definition
+                    var packageFileUrl = new Uri(package.PackageUrl);
+                    var packageLocalFolder = packageFileUrl.AbsolutePath.Substring(1,
+                        packageFileUrl.AbsolutePath.LastIndexOf('/') - 1);
+                    var packageFileName = packageFileUrl.AbsolutePath.Substring(packageLocalFolder.Length + 2);
+
+                    ProvisioningHierarchy hierarchy = GetHierarchyFromStorage(packageLocalFolder, packageFileName);
+
+                    // If we have the hierarchy
+                    if (hierarchy != null)
+                    {
+                        var accessTokens = new Dictionary<String, String>();
+
+                        AuthenticationManager authManager = new AuthenticationManager();
+                        var ptai = new ProvisioningTemplateApplyingInformation();
+
+                        // Retrieve the SPO URL for the Admin Site
+                        var rootSiteUrl = model.SPORootSiteUrl;
+
+                        // Retrieve the SPO Access Token for SPO
+                        var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                            tokenId, rootSiteUrl,
+                            ConfigurationManager.AppSettings["ida:ClientId"],
+                            ConfigurationManager.AppSettings["ida:ClientSecret"],
+                            ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                        // Store the SPO Access Token for any further context cloning
+                        accessTokens.Add(new Uri(rootSiteUrl).Authority, spoAccessToken);
+
+                        // Define a PnPProvisioningContext scope to share the security context across calls
+                        using (var pnpProvisioningContext = new PnPProvisioningContext(async (r, s) =>
+                        {
+                            if (accessTokens.ContainsKey(r))
+                            {
+                                // In this scenario we just use the dictionary of access tokens
+                                // in fact the overall operation for sure will take less than 1 hour
+                                // (in fact, it's a matter of few seconds)
+                                return await Task.FromResult(accessTokens[r]);
+                            }
+                            else
+                            {
+                                // Try to get a fresh new Access Token
+                                var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                    tokenId, $"https://{r}",
+                                    ConfigurationManager.AppSettings["ida:ClientId"],
+                                    ConfigurationManager.AppSettings["ida:ClientSecret"],
+                                    ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                                accessTokens.Add(r, token);
+
+                                return (token);
+                            }
+                        }))
+                        {
+                            // If the user is an admin (SPO or Tenant) we run the Tenant level CanProvision rules
+                            if (model.UserIsSPOAdmin || model.UserIsTenantAdmin)
+                            {
+                                // Retrieve the SPO URL for the Admin Site
+                                var adminSiteUrl = model.SPORootSiteUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
+
+                                // Retrieve the SPO Access Token for the Admin Site
+                                var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                    tokenId, adminSiteUrl,
+                                    ConfigurationManager.AppSettings["ida:ClientId"],
+                                    ConfigurationManager.AppSettings["ida:ClientSecret"],
+                                    ConfigurationManager.AppSettings["ida:AppUrl"]);
+
+                                // Store the SPO Admin Access Token for any further context cloning
+                                accessTokens.Add(new Uri(adminSiteUrl).Authority, spoAdminAccessToken);
+
+                                // Connect to SPO Admin Site and evaluate the CanProvision rules for the hierarchy
+                                using (var tenantContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAdminAccessToken))
+                                {
+                                    using (var pnpTenantContext = PnPClientContext.ConvertFrom(tenantContext))
+                                    {
+                                        // Creat the Tenant object for the current SPO Admin Site context
+                                        TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(pnpTenantContext);
+
+                                        // Run the CanProvision rules against the current tenant
+                                        canProvisionResult = CanProvisionRulesManager.CanProvision(tenant, hierarchy, null, ptai);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Otherwise we run the Site level CanProvision rules
+
+                                // Connect to SPO Root Site and evaluate the CanProvision rules for the hierarchy
+                                using (var clientContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
+                                {
+                                    using (var pnpContext = PnPClientContext.ConvertFrom(clientContext))
+                                    {
+                                        // Run the CanProvision rules against the root site
+                                        canProvisionResult = CanProvisionRulesManager.CanProvision(pnpContext.Web, hierarchy.Templates[0], ptai);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new ApplicationException("Invalid request, the requested package/template is not available!");
+                }
+            }
+
+            return canProvisionResult;
         }
     }
 }

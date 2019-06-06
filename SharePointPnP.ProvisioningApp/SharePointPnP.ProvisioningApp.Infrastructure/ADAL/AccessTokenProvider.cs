@@ -138,5 +138,39 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.ADAL
             // Add or Update the Key Vault accordingly
             await vault.AddOrUpdateAsync(keyId, properties);
         }
+
+        public async Task SetupSecurityFromAuthorizationCodeAsync(String keyId, String authorizationCode, String tenantId, String clientId, String clientSecret, String resourceUri, String redirectUri)
+        {
+            // We need to manually retrieve a valid app-only RefreshToken from ClientId and ClientSecret
+            using (var client = new HttpClient())
+            {
+                // Prepare the AAD OAuth request URI
+                var tokenUri = new Uri($"{aadInstance}{tenantId}/oauth2/token");
+
+                // Prepare the OAuth 2.0 request for an Access Token with Authorization Code
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("grant_type", "authorization_code"),
+                    new KeyValuePair<string, string>("redirect_uri", redirectUri),
+                    new KeyValuePair<string, string>("client_id", clientId),
+                    new KeyValuePair<string, string>("client_secret", clientSecret),
+                    new KeyValuePair<string, string>("code", authorizationCode),
+                    new KeyValuePair<string, string>("resource", resourceUri),
+                });
+
+                // Make the HTTP request
+                var result = await client.PostAsync(tokenUri, content);
+                string jsonToken = await result.Content.ReadAsStringAsync();
+
+                // Get back the OAuth 2.0 response
+                var token = JsonConvert.DeserializeObject<OAuthTokenResponse>(jsonToken);
+
+                if (token != null && !String.IsNullOrEmpty(token.RefreshToken))
+                {
+                    // Save the updated and refreshed RefreshToken
+                    await this.WriteRefreshTokenAsync(keyId, token.RefreshToken);
+                }
+            }
+        }
     }
 }
