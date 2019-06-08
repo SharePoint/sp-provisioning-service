@@ -272,6 +272,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<JsonResult> ProvisionContentPack(ProvisionContentPackRequest provisionRequest)
         {
             var provisionResponse = new ProvisionContentPackResponse();
@@ -327,6 +328,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     request.UserIsTenantAdmin = true; // We don't use this in the job
                     request.UserPrincipalName = provisionRequest.UserPrincipalName.ToLower();
                     request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
+                    request.PackageProperties = provisionRequest.Parameters;
 
                     // Get a reference to the blob storage queue
                     CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
@@ -338,8 +340,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         CloudConfigurationManager.GetSetting("SPPA:StorageQueueName"));
                     queue.CreateIfNotExists();
 
-                    // add message to the queue
+                    // Add message to the queue
                     queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(request)));
+
+                    // Set the status of the provisioning request
+                    provisionResponse.ProvisioningStarted = true;
                 }
             }
 
