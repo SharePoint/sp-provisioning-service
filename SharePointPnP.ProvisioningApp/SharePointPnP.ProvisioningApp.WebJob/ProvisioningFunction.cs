@@ -307,6 +307,9 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             }
                                         };
 
+                                        // Set the default delay for sites creations to 3 mins
+                                        ptai.DelayAfterModernSiteCreation = 60 * 3;
+
                                         // Configure the OAuth Access Tokens for the client context
                                         accessTokens.Add(new Uri(tenantUrl).Authority, spoAdminAccessToken);
                                         accessTokens.Add(new Uri(spoTenant).Authority, spoAccessToken);
