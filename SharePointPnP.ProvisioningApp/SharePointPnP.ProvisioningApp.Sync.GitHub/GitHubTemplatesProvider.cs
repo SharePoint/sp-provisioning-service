@@ -57,7 +57,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
             var commits = await _helper.GetCommitsAsync(path);
 
             // Get the first commit
-            var commit = commits.OrderBy(c => c.commit.author.date).FirstOrDefault();
+            var commit = commits.OrderByDescending(c => c.commit.author.date).FirstOrDefault();
             if (commit == null) return null;
 
             User author = await _helper.GetAuthorAsync(commit.author.login);
