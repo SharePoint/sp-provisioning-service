@@ -126,6 +126,16 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         /// Defines the relative URL of the package in the source repository
         /// </summary>
         public String RepositoryRelativeUrl { get; set; }
+
+        /// <summary>
+        /// Defines a matching base template ID for the target site, if any
+        /// </summary>
+        public String MatchingSiteBaseTemplateId { get; set; }
+
+        /// <summary>
+        /// Defines whether the package should be deployed on new site collections only
+        /// </summary>
+        public Boolean ForceNewSite { get; set; }
     }
 
     /// <summary>

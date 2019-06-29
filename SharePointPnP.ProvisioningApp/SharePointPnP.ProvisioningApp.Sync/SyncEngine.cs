@@ -282,6 +282,10 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         dbPackage.RepositoryRelativeUrl = package.RepositoryRelativeUrl;
                         dbPackage.Abstract = package.Abstract;
 
+                        // New properties for Wave 6
+                        dbPackage.ForceNewSite = package.ForceNewSite;
+                        dbPackage.MatchingSiteBaseTemplateId = package.MatchingSiteBaseTemplateId;
+
                         context.Entry(dbPackage).State = EntityState.Modified;
 
                         // Add new categories
@@ -368,6 +372,8 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 promoted = false,
                 sortOrderPromoted = 0,
                 preview = false,
+                matchingSiteBaseTemplateId = "",
+                forceNewSite = false,
                 metadata = new {
                     properties = new[] { 
                         new {
@@ -403,6 +409,8 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 SortOrder = settings.sortOrder,
                 SortOrderPromoted = settings.sortOrderPromoted,
                 RepositoryRelativeUrl = folder.Path,
+                MatchingSiteBaseTemplateId = settings.matchingSiteBaseTemplateId,
+                ForceNewSite = settings.forceNewSite,
             };
 
             // Read the instructions.md and the provisioning.md files

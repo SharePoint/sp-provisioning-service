@@ -480,6 +480,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                 model.DisplayName = package.DisplayName;
                 model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
+                model.ForceNewSite = package.ForceNewSite;
+                model.MatchingSiteBaseTemplateId = package.MatchingSiteBaseTemplateId;
 
                 // Configure content for instructions
                 model.Instructions = package.Instructions;

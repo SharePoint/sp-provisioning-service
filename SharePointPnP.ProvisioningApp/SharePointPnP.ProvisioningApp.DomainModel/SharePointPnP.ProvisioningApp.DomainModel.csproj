@@ -150,6 +150,10 @@
     <Compile Include="Migrations\201903041454365_Wave5-DesignReview.Designer.cs">
       <DependentUpon>201903041454365_Wave5-DesignReview.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906210655488_Wave6-CheckSiteTemplate-20190621.cs" />
+    <Compile Include="Migrations\201906210655488_Wave6-CheckSiteTemplate-20190621.Designer.cs">
+      <DependentUpon>201906210655488_Wave6-CheckSiteTemplate-20190621.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
@@ -183,6 +187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903041454365_Wave5-DesignReview.resx">
       <DependentUpon>201903041454365_Wave5-DesignReview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906210655488_Wave6-CheckSiteTemplate-20190621.resx">
+      <DependentUpon>201906210655488_Wave6-CheckSiteTemplate-20190621.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
