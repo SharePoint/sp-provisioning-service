@@ -127,9 +127,9 @@
     <value>The URL provided is already in use and the target site is based on a template that is not valid for the current package. Please provide a different URL.</value>
   </data>
   <data name="ValidatingPreRequisites" xml:space="preserve">
-    <value>&amp;nbsp;Validating prerequisites ...</value>
+    <value>Validating prerequisites ...</value>
   </data>
   <data name="ValidatingSiteUrl" xml:space="preserve">
-    <value>&amp;nbsp;Validating site URL...</value>
+    <value>Validating site URL...</value>
   </data>
 </root>

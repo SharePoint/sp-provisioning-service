@@ -234,7 +234,7 @@
 
 <div id="siteExistsDialog" class="siteExistsDialog hide">
     <h2>Site URL already in use</h2>
-    <div class="siteExistsDialogContent"></div>
+    <div id="siteExistsDialogContent"></div>
     <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision" value="Cancel" />
     <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog ms-Button--primary" value="Confirm" />
 </div>
@@ -371,7 +371,7 @@
                 workingOnItSiteDialog.classList.toggle('hide');
                 workingOnItSiteDialog.classList.toggle('show');
 
-                workingOnItSiteDialogMessage.innerHTML = message;
+                workingOnItSiteDialogMessage.innerHTML = "&nbsp;" + message;
 
                 showDialogOverlay();
             }
@@ -395,7 +395,7 @@
                 siteExistsDialog.classList.toggle('show');
 
                 var siteExistsDialogContent = document.getElementById('siteExistsDialogContent');
-                siteExistsDialogContent.innerHTML = (message != undefined && message != "") ? message : @Resources.Messages.SiteAlreadyExists;
+                siteExistsDialogContent.innerHTML = ((message != undefined && message != "") ? message : "@Resources.Messages.TargetSiteAlreadyExists") + "<br/>&nbsp;";
 
                 showDialogOverlay();
             }
@@ -437,6 +437,11 @@
                     return (response.json());
                 })
                 .then(data => {
+
+                    // Share the resulting values back with the back-end engine
+                    document.getElementById("TargetSiteAlreadyExists").value = !data.result;
+                    document.getElementById("TargetSiteBaseTemplateId").value = data.baseTemplateId;
+
                     if (data.result != true) {
 
                         // hide the working on it dialog
@@ -461,10 +466,6 @@
                     else {
                         hideWorkingOnIt();
                     }
-
-                    // Share the resulting values back with the back-end engine
-                    document.getElementById("TargetSiteAlreadyExists").value = !data.result;
-                    document.getElementById("TargetSiteBaseTemplateId").value = data.baseTemplateId;
                 })
                 .catch(err => {
                     console.log(err);
@@ -473,14 +474,14 @@
 
         function existingSiteValidationMessage() {
 
-            var siteAlreadyExists = document.getElementById("TargetSiteAlreadyExists").value;
-            var forceNewSite = document.getElementById("ForceNewSite").value;
+            var siteAlreadyExists = document.getElementById("TargetSiteAlreadyExists").value.toLowerCase() == "true";
+            var forceNewSite = document.getElementById("ForceNewSite").value.toLowerCase() == "true";
 
             // First of all double-check if the site has to be forcibly created
             if (siteAlreadyExists && forceNewSite) {
                 return ({
-                    blockProvisioning = true,
-                    message = "@Resources.Messages.CannotProvisionOntoExistingSite"
+                    blockProvisioning : true,
+                    message: "@Resources.Messages.CannotProvisionOntoExistingSite"
                 });
             }
 
@@ -494,16 +495,16 @@
                     matchingSiteBaseTemplateId != "" &&
                     existingSiteBaseTemplateId != matchingSiteBaseTemplateId) {
                     return ({
-                        blockProvisioning = true,
-                        message = "@Resources.Messages.TargetSiteBaseTemplateIdIsInvalid"
+                        blockProvisioning: true,
+                        message: "@Resources.Messages.TargetSiteBaseTemplateIdIsInvalid"
                     });
                 }
             }
 
             // otherwise just show a kind warning
             return ({
-                blockProvisioning = false,
-                message = "@Resources.Messages.TargetSiteAlreadyExists"
+                blockProvisioning: false,
+                message: "@Resources.Messages.TargetSiteAlreadyExists"
             });
         }
 

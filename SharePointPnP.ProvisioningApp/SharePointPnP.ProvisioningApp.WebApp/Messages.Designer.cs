@@ -88,7 +88,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;nbsp;Validating prerequisites ....
+        ///   Looks up a localized string similar to Validating prerequisites ....
         /// </summary>
         public static string ValidatingPreRequisites {
             get {
@@ -97,7 +97,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;nbsp;Validating site URL....
+        ///   Looks up a localized string similar to Validating site URL....
         /// </summary>
         public static string ValidatingSiteUrl {
             get {
