@@ -154,11 +154,20 @@
     <Compile Include="Migrations\201906210655488_Wave6-CheckSiteTemplate-20190621.Designer.cs">
       <DependentUpon>201906210655488_Wave6-CheckSiteTemplate-20190621.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907011547320_Wave6-ProvisioningActionItems-20190701.cs" />
+    <Compile Include="Migrations\201907011547320_Wave6-ProvisioningActionItems-20190701.Designer.cs">
+      <DependentUpon>201907011547320_Wave6-ProvisioningActionItems-20190701.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201907011701149_Wave6-ProvisioningActionItems-2-20190701.cs" />
+    <Compile Include="Migrations\201907011701149_Wave6-ProvisioningActionItems-2-20190701.Designer.cs">
+      <DependentUpon>201907011701149_Wave6-ProvisioningActionItems-2-20190701.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
     <Compile Include="Package.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProvisioningActionItem.cs" />
     <Compile Include="ProvisioningAppDBContext.cs" />
     <Compile Include="Tenant.cs" />
   </ItemGroup>
@@ -190,6 +199,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906210655488_Wave6-CheckSiteTemplate-20190621.resx">
       <DependentUpon>201906210655488_Wave6-CheckSiteTemplate-20190621.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907011547320_Wave6-ProvisioningActionItems-20190701.resx">
+      <DependentUpon>201907011547320_Wave6-ProvisioningActionItems-20190701.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907011701149_Wave6-ProvisioningActionItems-2-20190701.resx">
+      <DependentUpon>201907011701149_Wave6-ProvisioningActionItems-2-20190701.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

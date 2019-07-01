@@ -54,6 +54,12 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
                         c.MapRightKey("CategoryId");
                         c.ToTable("PackagesCategories", "pnp");
                     });
+
+            // Let the ProvisioningActionItem Id to be forced
+            modelBuilder.Entity<ProvisioningActionItem>().Property(i => i.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+
+            // Force an index on Tenant ID and Package ID for ProvisioningActionItems
+            modelBuilder.Entity<ProvisioningActionItem>().HasIndex(i => new { i.TenantId, i.PackageId });
         }
 
         public DbSet<Category> Categories { get; set; }
@@ -65,5 +71,7 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public DbSet<ContentPage> ContentPages { get; set; }
 
         public DbSet<NotificationRecipient> NotificationRecipients { get; set; }
+
+        public DbSet<ProvisioningActionItem> ProvisioningActionItems { get; set; }
     }
 }

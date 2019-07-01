@@ -90,6 +90,11 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 // Log telemetry event
                 telemetry?.LogEvent("ProvisioningFunction.Start");
 
+                if (CheckIfActionIsAlreadyRunning(action, dbContext))
+                {
+                    throw new ApplicationException("The requested package is currently provisioning in the selected target tenant and cannot be applied in parallel. Please wait for the previous provisioning action to complete.");
+                }
+
                 var tokenId = $"{action.TenantId}-{action.UserPrincipalName.GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
 
                 // Retrieve the SPO target tenant via Microsoft Graph
@@ -291,10 +296,12 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
                                         // Prepare logging for hierarchy application
                                         var ptai = new ProvisioningTemplateApplyingInformation();
-                                        ptai.MessagesDelegate += delegate (string message, ProvisioningMessageType messageType) {
+                                        ptai.MessagesDelegate += delegate (string message, ProvisioningMessageType messageType)
+                                        {
                                             log.WriteLine($"{messageType} - {message}");
                                         };
-                                        ptai.ProgressDelegate += delegate (string message, int step, int total) {
+                                        ptai.ProgressDelegate += delegate (string message, int step, int total)
+                                        {
                                             log.WriteLine($"{step:00}/{total:00} - {message}");
                                         };
                                         ptai.SiteProvisionedDelegate += delegate (string title, string url)
@@ -497,7 +504,67 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
             finally
             {
+                // Try to cleanup the pending action item, if any
+                CleanupCurrentActionItem(action, dbContext);
+
                 telemetry?.Flush();
+            }
+        }
+
+        private static Boolean CheckIfActionIsAlreadyRunning(ProvisioningActionModel action, ProvisioningAppDBContext dbContext)
+        {
+            var result = false;
+
+            var tenantId = Guid.Parse(action.TenantId);
+            var packageId = Guid.Parse(action.PackageId);
+
+            // Check if there is already a pending action item with the same settings and not yet expired
+            var alreadyExistingItems = from i in dbContext.ProvisioningActionItems
+                                       where i.TenantId == tenantId && i.PackageId == packageId && i.ExpiresOn > DateTime.Now
+                                       select i;
+
+            // Prepare the action properties as JSON
+            var currentActionProperties = action.PackageProperties != null ? JsonConvert.SerializeObject(action.PackageProperties) : null;
+
+            // Verify if the same package, with the same properties is already running in the same tenant
+            foreach (var item in alreadyExistingItems)
+            {
+                if (item.PackageProperties == currentActionProperties)
+                {
+                    result = true;
+                    break;
+                }
+            }
+
+            if (!result)
+            {
+                // Add a ProvisioningActionItem record for tracking purposes
+                dbContext.ProvisioningActionItems.Add(new ProvisioningActionItem
+                {
+                    Id = action.CorrelationId,
+                    PackageId = packageId,
+                    TenantId = tenantId,
+                    PackageProperties = action.PackageProperties != null ? JsonConvert.SerializeObject(action.PackageProperties) : null,
+                    CreatedOn = DateTime.Now,
+                    ExpiresOn = DateTime.Now.AddHours(2),
+                });
+                dbContext.SaveChanges();
+            }
+
+            return (result);
+        }
+
+        private static void CleanupCurrentActionItem(ProvisioningActionModel action, ProvisioningAppDBContext dbContext)
+        {
+            // Check if there is the action item for the current action
+            var existingItem = dbContext.ProvisioningActionItems.FirstOrDefault(i => i.Id == action.CorrelationId);
+
+            // And in case it does exist
+            if (existingItem != null)
+            {
+                // Delete it
+                dbContext.ProvisioningActionItems.Remove(existingItem);
+                dbContext.SaveChanges();
             }
         }
 
