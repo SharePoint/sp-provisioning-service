@@ -764,6 +764,16 @@
                         e.target.nextElementSibling.value = e.target.previousElementSibling.value + e.target.value;
                     });
                     siteUrlControls[i].addEventListener('focusout', function (e) {
+
+                        // local state variable
+                        var focusingOutToProvision = false;
+
+                        // if we lost the focus because the user clicked on the Provision button
+                        if (e.relatedTarget.id == "provisionButton") {
+                            // store it in the state variable
+                            focusingOutToProvision = true;
+                        }
+
                         if (urlIsValidForSPO(e.target.value)) {
                             // remove the validation exception, if any
                             if (e.target.classList.contains("invalid")) {
@@ -788,6 +798,14 @@
 
                         // toggle the Provision button accordingly
                         toggleFormSubmitStatus();
+
+                        // if the user clicked on the Provision button
+                        if (focusingOutToProvision) {
+                            var provisionButton = document.getElementById('provisionButton');
+                            if (provisionButton != null) {
+                                provisionButton.click();
+                            }
+                        }
                     });
                 }
             }

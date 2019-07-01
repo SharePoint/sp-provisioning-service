@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
 using SharePointPnP.ProvisioningApp.Infrastructure;
 
 namespace SharePointPnP.ProvisioningApp.CleanupJob
@@ -32,7 +31,17 @@ namespace SharePointPnP.ProvisioningApp.CleanupJob
                     {
                         // The key is expired, let's remove it
                         await vault.RemoveKeyAsync(key);
+
+                        // Log the action
+                        Console.WriteLine($"Deleted key {key} that expired on {currentKey.Attributes.Expires}");
                     }
+                    else
+                    {
+                        Console.WriteLine($"Key {key} is not yet expired");
+                    }
+
+                    // Delay to avoid throttling
+                    System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }).GetAwaiter().GetResult();
         }

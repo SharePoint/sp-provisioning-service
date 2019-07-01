@@ -219,7 +219,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
                 // Deletes a key
                 var deletedKey = await keyVaultClient.DeleteKeyAsync(vaultAddress, key);
                 // And purges it immediately
-                await keyVaultClient.PurgeDeletedKeyAsync(deletedKey.RecoveryId);
+                if (deletedKey.RecoveryId != null)
+                {
+                    await keyVaultClient.PurgeDeletedKeyAsync(deletedKey.RecoveryId);
+                }
             }
             catch (KeyVaultErrorException ex)
             {
