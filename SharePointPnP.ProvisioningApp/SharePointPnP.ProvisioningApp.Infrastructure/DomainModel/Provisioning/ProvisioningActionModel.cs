@@ -139,6 +139,12 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public String MissingPreReqsFooter { get; set; }
+
+        [JsonIgnore]
+        public String MatchingSiteBaseTemplateId { get; set; }
+
+        [JsonIgnore]
+        public Boolean ForceNewSite { get; set; }
     }
 
     /// <summary>
