@@ -260,6 +260,9 @@
 
     <script>
 
+        // global state variable
+        var focusingOutToProvision = false;
+
         // defines whether the field is disabled or not
         function fieldIsDisabled(field) {
             return (field.hasAttribute('disabled'));
@@ -465,6 +468,14 @@
                     }
                     else {
                         hideWorkingOnIt();
+
+                        // if the user clicked on the Provision button
+                        if (focusingOutToProvision) {
+                            var provisionButton = document.getElementById('provisionButton');
+                            if (provisionButton != null) {
+                                provisionButton.click();
+                            }
+                        }
                     }
                 })
                 .catch(err => {
@@ -765,9 +776,6 @@
                     });
                     siteUrlControls[i].addEventListener('focusout', function (e) {
 
-                        // local state variable
-                        var focusingOutToProvision = false;
-
                         // if we lost the focus because the user clicked on the Provision button
                         if (e.relatedTarget.id == "provisionButton") {
                             // store it in the state variable
@@ -798,14 +806,6 @@
 
                         // toggle the Provision button accordingly
                         toggleFormSubmitStatus();
-
-                        // if the user clicked on the Provision button
-                        if (focusingOutToProvision) {
-                            var provisionButton = document.getElementById('provisionButton');
-                            if (provisionButton != null) {
-                                provisionButton.click();
-                            }
-                        }
                     });
                 }
             }
