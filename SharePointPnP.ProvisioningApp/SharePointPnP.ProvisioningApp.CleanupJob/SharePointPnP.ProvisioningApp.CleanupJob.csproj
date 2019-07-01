@@ -225,9 +225,9 @@
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />
-    <None Include="Settings.job">
+    <Content Include="Settings.job">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.csproj">
