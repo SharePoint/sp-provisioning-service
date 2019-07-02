@@ -39,5 +39,10 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Models
         /// Optionally provides the URL of the SPO Root Site
         /// </summary>
         public String SPORootSiteUrl { get; set; }
+
+        /// <summary>
+        /// Optionally provides the Correlation ID for the current provisioning action
+        /// </summary>
+        public String CorrelationId { get; set; }
     }
 }

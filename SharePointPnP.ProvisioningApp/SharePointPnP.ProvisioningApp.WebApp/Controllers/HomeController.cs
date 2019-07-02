@@ -271,6 +271,27 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return Json(canProvisionResult);
         }
 
+        [HttpGet]
+        public JsonResult IsProvisioningCompleted(String correlationId)
+        {
+            bool result = false;
+
+            if (IsValidUser())
+            {
+                // Get the DB context
+                var context = GetDataContext();
+
+                // Check if there is the action item for the current action
+                var targetId = Guid.Parse(correlationId);
+                var existingItem = context.ProvisioningActionItems.FirstOrDefault(i => i.Id == targetId);
+
+                // And in case it does exist return that the action is still running
+                result = (existingItem != null);
+            }
+
+            return (Json(new { result = !result }, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet));
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<JsonResult> ProvisionContentPack(ProvisionContentPackRequest provisionRequest)

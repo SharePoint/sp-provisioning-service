@@ -298,3 +298,19 @@ hr.sectionTitleDivider {
     border-color: #0078d7;
     color: #fff;
 }
+
+.siteUrlLink.hide {
+    display: none;
+}
+
+.siteUrlLink.show {
+    display: block;
+}
+
+.provisioningSiteUrlLink.hide {
+    display: none;
+}
+
+.provisioningSiteUrlLink.show {
+    display: block;
+}

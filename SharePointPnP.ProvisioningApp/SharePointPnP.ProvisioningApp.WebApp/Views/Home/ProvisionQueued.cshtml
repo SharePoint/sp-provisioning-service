@@ -44,7 +44,7 @@
                                             }
                                             else
                                             {
-                                                @Html.Partial($"DisplayTemplates/{Model.MetadataProperties[parameter.Key].Editor}", new TemplateParameterModel { Index = i, ParameterKey = parameter.Key, ParameterValue = parameter.Value, MetadataProperty = Model.MetadataProperties[parameter.Key], SPORootSiteUrl = Model.SPORootSiteUrl })
+                                                @Html.Partial($"DisplayTemplates/{Model.MetadataProperties[parameter.Key].Editor}", new TemplateParameterModel { Index = i, ParameterKey = parameter.Key, ParameterValue = parameter.Value, MetadataProperty = Model.MetadataProperties[parameter.Key], SPORootSiteUrl = Model.SPORootSiteUrl, CorrelationId = Model.CorrelationId.ToString() })
                                             }
                                         </td>
                                     </tr>
@@ -110,6 +110,50 @@
 
     <script>
 
+        function toggleUrlLinks() {
+
+            // get a reference to the URL elements
+            var siteUrlLinks = document.getElementsByClassName('siteUrlLink');
+            var provisioningSiteUrlLinks = document.getElementsByClassName('provisioningSiteUrlLink');
+
+            // show those that are hidden, and hide those that are visible
+            if (siteUrlLinks && siteUrlLinks.length > 0 &&
+                provisioningSiteUrlLinks && provisioningSiteUrlLinks.length > 0) {
+                for (var i = 0; i < siteUrlLinks.length; i++) {
+                    siteUrlLinks[i].classList.toggle('hide');
+                    siteUrlLinks[i].classList.toggle('show');
+                }
+                for (var i = 0; i < provisioningSiteUrlLinks.length; i++) {
+                    provisioningSiteUrlLinks[i].classList.toggle('hide');
+                    provisioningSiteUrlLinks[i].classList.toggle('show');
+                }
+            }
+        }
+
+        function checkProvisioningStatus() {
+            fetch('../home/IsProvisioningCompleted?correlationId=' + encodeURI("@Html.ValueFor(m => m.CorrelationId)"), {
+                method: 'get'
+            })
+                .then(response => {
+                    return (response.json());
+                })
+                .then(data => {
+
+                    // if the provisioning is completed
+                    if (data.result) {
+                        // toggle the URLs visibility
+                        toggleUrlLinks();
+                    }
+                    else {
+                        // try again in 10 seconds
+                        setTimeout(checkProvisioningStatus, 10000);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
 
             // allow the body to be shorter than usual
@@ -125,6 +169,9 @@
                 !wrapperElements[0].classList.contains("wrapper-inner-short")) {
                 wrapperElements[0].classList.add("wrapper-inner-short");
             }
+
+            // check the provisioning status
+            setTimeout(checkProvisioningStatus, 90000);
         });
 
     </script>
