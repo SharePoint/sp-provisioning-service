@@ -35,5 +35,10 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         /// Date and time of expiration
         /// </summary>
         public DateTime ExpiresOn { get; set; }
+
+        /// <summary>
+        /// Date and time of the failure, if any
+        /// </summary>
+        public DateTime? FailedOn { get; set; }
     }
 }

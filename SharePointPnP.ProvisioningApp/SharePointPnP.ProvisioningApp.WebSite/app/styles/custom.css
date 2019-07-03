@@ -314,3 +314,11 @@ hr.sectionTitleDivider {
 .provisioningSiteUrlLink.show {
     display: block;
 }
+
+.failedSiteUrlLink.hide {
+    display: none;
+}
+
+.failedSiteUrlLink.show {
+    display: block;
+}

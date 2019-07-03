@@ -500,6 +500,9 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 // Log reporting event (2 = Failed)
                 logReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
 
+                // Track the failure in the local action log
+                MarkCurrentActionItemAsFailed(action, dbContext);
+
                 throw ex;
             }
             finally
@@ -554,13 +557,29 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             return (result);
         }
 
-        private static void CleanupCurrentActionItem(ProvisioningActionModel action, ProvisioningAppDBContext dbContext)
+        private static void MarkCurrentActionItemAsFailed(ProvisioningActionModel action, ProvisioningAppDBContext dbContext)
         {
             // Check if there is the action item for the current action
             var existingItem = dbContext.ProvisioningActionItems.FirstOrDefault(i => i.Id == action.CorrelationId);
 
             // And in case it does exist
             if (existingItem != null)
+            {
+                // Set the failure date and time
+                existingItem.FailedOn = DateTime.Now;
+
+                // Update the persistence storage
+                dbContext.SaveChanges();
+            }
+        }
+
+        private static void CleanupCurrentActionItem(ProvisioningActionModel action, ProvisioningAppDBContext dbContext)
+        {
+            // Check if there is the action item for the current action
+            var existingItem = dbContext.ProvisioningActionItems.FirstOrDefault(i => i.Id == action.CorrelationId);
+
+            // And in case it does exist and it is not failed
+            if (existingItem != null && !existingItem.FailedOn.HasValue)
             {
                 // Delete it
                 dbContext.ProvisioningActionItems.Remove(existingItem);

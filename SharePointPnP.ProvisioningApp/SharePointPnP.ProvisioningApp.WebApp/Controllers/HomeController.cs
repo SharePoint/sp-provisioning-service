@@ -274,7 +274,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         [HttpGet]
         public JsonResult IsProvisioningCompleted(String correlationId)
         {
-            bool result = false;
+            bool running = false;
+            bool failed = false;
 
             if (IsValidUser())
             {
@@ -286,10 +287,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 var existingItem = context.ProvisioningActionItems.FirstOrDefault(i => i.Id == targetId);
 
                 // And in case it does exist return that the action is still running
-                result = (existingItem != null);
+                running = (existingItem != null) && (existingItem.FailedOn == null || !existingItem.FailedOn.HasValue);
+                failed = (existingItem != null) && (existingItem.FailedOn != null && existingItem.FailedOn.HasValue);
             }
 
-            return (Json(new { result = !result }, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet));
+            return (Json(new { running, failed }, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet));
         }
 
         [HttpPost]

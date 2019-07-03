@@ -110,22 +110,37 @@
 
     <script>
 
-        function toggleUrlLinks() {
+        function toggleUrlLinks(failed) {
 
             // get a reference to the URL elements
             var siteUrlLinks = document.getElementsByClassName('siteUrlLink');
             var provisioningSiteUrlLinks = document.getElementsByClassName('provisioningSiteUrlLink');
+            var failedSiteUrlLinks = document.getElementsByClassName('failedSiteUrlLink');
 
             // show those that are hidden, and hide those that are visible
             if (siteUrlLinks && siteUrlLinks.length > 0 &&
-                provisioningSiteUrlLinks && provisioningSiteUrlLinks.length > 0) {
-                for (var i = 0; i < siteUrlLinks.length; i++) {
-                    siteUrlLinks[i].classList.toggle('hide');
-                    siteUrlLinks[i].classList.toggle('show');
-                }
+                provisioningSiteUrlLinks && provisioningSiteUrlLinks.length > 0 &&
+                failedSiteUrlLinks && failedSiteUrlLinks.length > 0) {
+
+                // hide the links with the workig on it animation
                 for (var i = 0; i < provisioningSiteUrlLinks.length; i++) {
                     provisioningSiteUrlLinks[i].classList.toggle('hide');
                     provisioningSiteUrlLinks[i].classList.toggle('show');
+                }
+
+                if (!failed) {
+                    // if it is not failed, show the URL links
+                    for (var i = 0; i < siteUrlLinks.length; i++) {
+                        siteUrlLinks[i].classList.toggle('hide');
+                        siteUrlLinks[i].classList.toggle('show');
+                    }
+                }
+                else {
+                    // if it is failed, show the URL with the red cross
+                    for (var i = 0; i < failedSiteUrlLinks.length; i++) {
+                        failedSiteUrlLinks[i].classList.toggle('hide');
+                        failedSiteUrlLinks[i].classList.toggle('show');
+                    }
                 }
             }
         }
@@ -140,13 +155,14 @@
                 .then(data => {
 
                     // if the provisioning is completed
-                    if (data.result) {
+                    if (!data.running) {
                         // toggle the URLs visibility
-                        toggleUrlLinks();
+                        toggleUrlLinks(data.failed);
                     }
+                    // or in any other scenario
                     else {
-                        // try again in 10 seconds
-                        setTimeout(checkProvisioningStatus, 10000);
+                        // try again in 15 seconds
+                        setTimeout(checkProvisioningStatus, 15000);
                     }
                 })
                 .catch(err => {

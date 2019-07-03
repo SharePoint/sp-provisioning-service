@@ -217,6 +217,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.Model.config" />
     <None Include="App-Dev.config" />
     <None Include="App-Prod.config" />
     <None Include="App-Test.config" />
