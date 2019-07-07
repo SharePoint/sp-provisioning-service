@@ -120,6 +120,18 @@
   <data name="CannotProvisionOntoExistingSite" xml:space="preserve">
     <value>The URL provided is already in use and the current package cannot be provisioned onto an already existing site. Please provide a different URL.</value>
   </data>
+  <data name="ProvisioningCompleted" xml:space="preserve">
+    <value>Provisioning completed.</value>
+  </data>
+  <data name="ProvisioningFailed" xml:space="preserve">
+    <value>Unfortunately your site provisioning at least partially failed!</value>
+  </data>
+  <data name="ProvisioningInProgress" xml:space="preserve">
+    <value>Provisioning in progress ...</value>
+  </data>
+  <data name="ProvisioningStatusTitle" xml:space="preserve">
+    <value>Provisioning status</value>
+  </data>
   <data name="TargetSiteAlreadyExists" xml:space="preserve">
     <value>The URL provided is already in use. If you will proceed, the template will be applied on top of the already existing site and its contents might be replaced.</value>
   </data>

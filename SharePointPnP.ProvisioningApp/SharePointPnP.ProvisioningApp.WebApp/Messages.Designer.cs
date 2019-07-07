@@ -70,6 +70,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provisioning completed..
+        /// </summary>
+        public static string ProvisioningCompleted {
+            get {
+                return ResourceManager.GetString("ProvisioningCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unfortunately your site provisioning at least partially failed!.
+        /// </summary>
+        public static string ProvisioningFailed {
+            get {
+                return ResourceManager.GetString("ProvisioningFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provisioning in progress ....
+        /// </summary>
+        public static string ProvisioningInProgress {
+            get {
+                return ResourceManager.GetString("ProvisioningInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provisioning status.
+        /// </summary>
+        public static string ProvisioningStatusTitle {
+            get {
+                return ResourceManager.GetString("ProvisioningStatusTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The URL provided is already in use. If you will proceed, the template will be applied on top of the already existing site and its contents might be replaced..
         /// </summary>
         public static string TargetSiteAlreadyExists {

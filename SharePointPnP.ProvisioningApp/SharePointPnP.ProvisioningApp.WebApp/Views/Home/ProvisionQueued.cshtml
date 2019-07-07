@@ -95,6 +95,12 @@
                                 </tr>
                             }
                         }
+                        <tr>
+                            <th>@Resources.Messages.ProvisioningStatusTitle</th>
+                            <td>
+                                <div id="ProvisioningStatus">@Resources.Messages.ProvisioningInProgress</div>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -109,6 +115,18 @@
     <!-- endbuild -->
 
     <script>
+
+        function toggleProvisioningStatus(message) {
+
+            // get a reference to the provisioning status message
+            var provisioningStatus = document.getElementById('ProvisioningStatus');
+
+            // if the element is available
+            if (provisioningStatus) {
+                // update its status
+                provisioningStatus.innerText = message;
+            }
+        }
 
         function toggleUrlLinks(failed) {
 
@@ -158,6 +176,12 @@
                     if (!data.running) {
                         // toggle the URLs visibility
                         toggleUrlLinks(data.failed);
+
+                        if (data.failed) {
+                            toggleProvisioningStatus('@Resources.Messages.ProvisioningFailed');
+                        } else {
+                            toggleProvisioningStatus('@Resources.Messages.ProvisioningCompleted');
+                        }
                     }
                     // or in any other scenario
                     else {
