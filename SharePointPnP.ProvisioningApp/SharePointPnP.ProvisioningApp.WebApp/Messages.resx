@@ -130,7 +130,7 @@
     <value>Provisioning in progress ...</value>
   </data>
   <data name="ProvisioningStatusTitle" xml:space="preserve">
-    <value>Provisioning status</value>
+    <value>Provisioning Status</value>
   </data>
   <data name="TargetSiteAlreadyExists" xml:space="preserve">
     <value>The URL provided is already in use. If you will proceed, the template will be applied on top of the already existing site and its contents might be replaced.</value>

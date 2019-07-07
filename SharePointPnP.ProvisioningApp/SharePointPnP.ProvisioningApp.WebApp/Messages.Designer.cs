@@ -97,7 +97,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provisioning status.
+        ///   Looks up a localized string similar to Provisioning Status.
         /// </summary>
         public static string ProvisioningStatusTitle {
             get {
