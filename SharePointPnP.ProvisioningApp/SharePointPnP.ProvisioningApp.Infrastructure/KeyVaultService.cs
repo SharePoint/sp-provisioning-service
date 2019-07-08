@@ -6,6 +6,7 @@ using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Azure.KeyVault.WebKey;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Rest.Azure;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -123,8 +124,13 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
             var attributes = new KeyAttributes(recoveryLevel: "Purgeable");
             attributes.Expires = DateTime.UtcNow.AddHours(12);
 
-            var createdKey = await keyVaultClient.CreateKeyAsync(vaultAddress, key, JsonWebKeyType.Rsa, keyAttributes: attributes, tags: tags);
+            var retry = new RetryWithExponentialBackoff();
+            await retry.RunAsync(async () =>
+            {
+                var createdKey = await keyVaultClient.CreateKeyAsync(vaultAddress, key, JsonWebKeyType.Rsa, keyAttributes: attributes, tags: tags);
+            });
         }
+
 
         /// <summary>
         /// Gets the dictionary values for a specific key
@@ -182,19 +188,23 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
 
             try
             {
-                if (!String.IsNullOrEmpty(version) || !String.IsNullOrEmpty(key))
+                var retry = new RetryWithExponentialBackoff();
+                await retry.RunAsync(async () =>
                 {
-                    // If version is specified get the tags for the specific version
-                    if (!String.IsNullOrEmpty(version))
+                    if (!String.IsNullOrEmpty(version) || !String.IsNullOrEmpty(key))
                     {
-                        retrievedKey = await keyVaultClient.GetKeyAsync(vaultAddress, key, version);
+                        // If version is specified get the tags for the specific version
+                        if (!String.IsNullOrEmpty(version))
+                        {
+                            retrievedKey = await keyVaultClient.GetKeyAsync(vaultAddress, key, version);
+                        }
+                        else
+                        {
+                            // Get the tags for the latest version
+                            retrievedKey = await keyVaultClient.GetKeyAsync(vaultAddress, key);
+                        }
                     }
-                    else
-                    {
-                        // Get the tags for the latest version
-                        retrievedKey = await keyVaultClient.GetKeyAsync(vaultAddress, key);
-                    }
-                }
+                });
             }
             catch (KeyVaultErrorException ex)
             {
@@ -216,13 +226,17 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         {
             try
             {
-                // Deletes a key
-                var deletedKey = await keyVaultClient.DeleteKeyAsync(vaultAddress, key);
-                // And purges it immediately
-                if (deletedKey.RecoveryId != null)
+                var retry = new RetryWithExponentialBackoff();
+                await retry.RunAsync(async () =>
                 {
-                    await keyVaultClient.PurgeDeletedKeyAsync(deletedKey.RecoveryId);
-                }
+                    // Deletes a key
+                    var deletedKey = await keyVaultClient.DeleteKeyAsync(vaultAddress, key);
+                    // And purges it immediately
+                    if (deletedKey.RecoveryId != null)
+                    {
+                        await keyVaultClient.PurgeDeletedKeyAsync(deletedKey.RecoveryId);
+                    }
+                });
             }
             catch (KeyVaultErrorException ex)
             {
@@ -232,7 +246,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the access token
         /// </summary>
@@ -255,15 +269,24 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         public async Task<List<String>> ListKeysAsync()
         {
             var result = new List<String>();
+            IPage<KeyItem> keysPage = null;
 
-            var keysPage = await keyVaultClient.GetKeysAsync(vaultAddress);
+            var retry = new RetryWithExponentialBackoff();
+            await retry.RunAsync(async () =>
+            {
+                keysPage = await keyVaultClient.GetKeysAsync(vaultAddress);
+            });
+
             String nextPageLink = null;
 
             do
             {
                 if (!String.IsNullOrEmpty(nextPageLink))
                 {
-                    keysPage = await keyVaultClient.GetKeysNextAsync(nextPageLink);
+                    await retry.RunAsync(async () =>
+                    {
+                        keysPage = await keyVaultClient.GetKeysNextAsync(nextPageLink);
+                    });
                 }
 
                 nextPageLink = keysPage.NextPageLink;

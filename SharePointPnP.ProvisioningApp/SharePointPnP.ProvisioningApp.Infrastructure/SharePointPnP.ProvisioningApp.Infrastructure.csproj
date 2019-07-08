@@ -329,6 +329,7 @@
     <Compile Include="Mail\MailHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvisioningAppManager.cs" />
+    <Compile Include="RetryWithExponentialBackoff.cs" />
     <Compile Include="Telemetry\TelemetryUtility.cs" />
     <Compile Include="UrlUtilities.cs" />
     <Compile Include="Utilities.cs" />
