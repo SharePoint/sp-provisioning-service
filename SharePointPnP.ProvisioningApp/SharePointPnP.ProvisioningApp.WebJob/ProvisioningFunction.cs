@@ -523,7 +523,9 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
             // Check if there is already a pending action item with the same settings and not yet expired
             var alreadyExistingItems = from i in dbContext.ProvisioningActionItems
-                                       where i.TenantId == tenantId && i.PackageId == packageId && i.ExpiresOn > DateTime.Now
+                                       where i.TenantId == tenantId && i.PackageId == packageId 
+                                            && i.ExpiresOn > DateTime.Now 
+                                            && i.FailedOn == null
                                        select i;
 
             // Prepare the action properties as JSON

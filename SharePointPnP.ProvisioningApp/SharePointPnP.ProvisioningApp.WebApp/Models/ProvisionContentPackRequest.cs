@@ -16,6 +16,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Models
         public String AuthorizationCode { get; set; }
 
         /// <summary>
+        /// The OAuth2 Redirect URI provided while requesting the Authorization Code
+        /// </summary>
+        public String RedirectUri { get; set; }
+
+        /// <summary>
         /// The target tenant ID
         /// </summary>
         public String TenantId { get; set; }

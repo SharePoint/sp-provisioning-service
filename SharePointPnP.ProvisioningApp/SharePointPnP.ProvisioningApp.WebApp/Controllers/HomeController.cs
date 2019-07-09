@@ -333,7 +333,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         ConfigurationManager.AppSettings["ida:ClientId"],
                         ConfigurationManager.AppSettings["ida:ClientSecret"],
                         "https://graph.microsoft.com/",
-                        ConfigurationManager.AppSettings["ida:AppUrl"]);
+                        provisionRequest.RedirectUri);
 
                     // Prepare the provisioning request
                     var request = new ProvisioningActionModel();
