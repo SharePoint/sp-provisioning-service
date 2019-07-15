@@ -286,6 +286,9 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         dbPackage.ForceNewSite = package.ForceNewSite;
                         dbPackage.MatchingSiteBaseTemplateId = package.MatchingSiteBaseTemplateId;
 
+                        // New properties for Wave 7
+                        dbPackage.Visible = package.Visible;
+
                         context.Entry(dbPackage).State = EntityState.Modified;
 
                         // Add new categories
@@ -374,6 +377,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 preview = false,
                 matchingSiteBaseTemplateId = "",
                 forceNewSite = false,
+                visible = true,
                 metadata = new {
                     properties = new[] { 
                         new {
@@ -411,6 +415,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 RepositoryRelativeUrl = folder.Path,
                 MatchingSiteBaseTemplateId = settings.matchingSiteBaseTemplateId,
                 ForceNewSite = settings.forceNewSite,
+                Visible = settings.visible,
             };
 
             // Read the instructions.md and the provisioning.md files

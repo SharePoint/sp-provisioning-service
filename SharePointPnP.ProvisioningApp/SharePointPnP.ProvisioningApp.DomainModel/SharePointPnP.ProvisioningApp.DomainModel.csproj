@@ -166,6 +166,10 @@
     <Compile Include="Migrations\201907031344517_Wave6-ProvisioningActionItems-3-20190703.Designer.cs">
       <DependentUpon>201907031344517_Wave6-ProvisioningActionItems-3-20190703.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907151025570_Wave7-PackageVisibility-20190715.cs" />
+    <Compile Include="Migrations\201907151025570_Wave7-PackageVisibility-20190715.Designer.cs">
+      <DependentUpon>201907151025570_Wave7-PackageVisibility-20190715.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
@@ -212,6 +216,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907031344517_Wave6-ProvisioningActionItems-3-20190703.resx">
       <DependentUpon>201907031344517_Wave6-ProvisioningActionItems-3-20190703.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907151025570_Wave7-PackageVisibility-20190715.resx">
+      <DependentUpon>201907151025570_Wave7-PackageVisibility-20190715.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

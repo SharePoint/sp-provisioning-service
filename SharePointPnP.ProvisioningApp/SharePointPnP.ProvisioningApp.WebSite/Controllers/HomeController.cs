@@ -26,12 +26,12 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Controllers
             if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
             {
                 // Show all packages in the test environment
-                model.Packages = context.Packages.Include("Categories").ToList();
+                model.Packages = context.Packages.Include("Categories").Where(p => p.Visible == true).ToList();
             }
             else
             {
                 // Show not-preview packages in the production environment
-                model.Packages = context.Packages.Include("Categories").Where(p => p.Preview == false).ToList();
+                model.Packages = context.Packages.Include("Categories").Where(p => p.Preview == false && p.Visible == true).ToList();
             }
 
             // Get the service description content
