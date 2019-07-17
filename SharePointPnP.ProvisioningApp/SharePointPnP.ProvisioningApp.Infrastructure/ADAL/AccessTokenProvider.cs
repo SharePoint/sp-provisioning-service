@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net.Http;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -169,6 +170,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.ADAL
                 {
                     // Save the updated and refreshed RefreshToken
                     await this.WriteRefreshTokenAsync(keyId, token.RefreshToken);
+                }
+                else
+                {
+                    throw new SecurityException("Cannot retrieve valid Access Token and Refresh Token for current user!");
                 }
             }
         }

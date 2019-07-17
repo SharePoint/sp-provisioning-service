@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ using System.Web.Mvc;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using TenantAdmin = Microsoft.Online.SharePoint.TenantAdministration;
+
 
 namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 {
@@ -296,83 +298,185 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<JsonResult> ProvisionContentPack(ProvisionContentPackRequest provisionRequest)
+        public async Task<ActionResult> ProvisionContentPack(ProvisionContentPackRequest provisionRequest)
         {
             var provisionResponse = new ProvisionContentPackResponse();
+
+            // If the input paramenters are missing, raise a BadRequest response
+            if (provisionRequest == null)
+            {
+                return ThrowEmptyRequest();
+            }
+
+            // If the TenantId input argument is missing, raise a BadRequest response
+            if (String.IsNullOrEmpty(provisionRequest.TenantId))
+            {
+                return ThrowMissingArgument("TenantId");
+            }
+
+            // If the UserPrincipalName input argument is missing, raise a BadRequest response
+            if (String.IsNullOrEmpty(provisionRequest.UserPrincipalName))
+            {
+                return ThrowMissingArgument("UserPrincipalName");
+            }
+
+            // If the PackageId input argument is missing, raise a BadRequest response
+            if (String.IsNullOrEmpty(provisionRequest.PackageId))
+            {
+                return ThrowMissingArgument("PackageId");
+            }
 
             if (provisionRequest != null &&
                 !String.IsNullOrEmpty(provisionRequest.TenantId) &&
                 !String.IsNullOrEmpty(provisionRequest.UserPrincipalName) &&
                 !String.IsNullOrEmpty(provisionRequest.PackageId))
             {
-                // First of all, validate the provisioning request for pre-requirements
-                provisionResponse.CanProvisionResult = await CanProvisionInternal(
-                    new CanProvisionModel
+                try
+                {
+                    // Validate the Package ID
+                    var context = GetDataContext();
+                    DomainModel.Package package = null;
+
+                    // Get the package
+                    if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
                     {
-                        PackageId = provisionRequest.PackageId,
-                        TenantId = provisionRequest.TenantId,
-                        UserPrincipalName = provisionRequest.UserPrincipalName,
-                        SPORootSiteUrl = provisionRequest.SPORootSiteUrl,
-                        UserIsSPOAdmin = true, // We assume that the request comes from an Admin
+                        // Process all packages in the test environment
+                        package = context.Packages.FirstOrDefault(p => p.Id == new Guid(provisionRequest.PackageId));
+                    }
+                    else
+                    {
+                        // Process not-preview packages in the production environment
+                        package = context.Packages.FirstOrDefault(p => p.Id == new Guid(provisionRequest.PackageId) && p.Preview == false);
+                    }
+
+                    // If the package is not valid
+                    if (package == null)
+                    {
+                        // Throw an exception accordingly
+                        throw new ArgumentException("Invalid Package Id!");
+                    }
+
+                    // First of all, validate the provisioning request for pre-requirements
+                    provisionResponse.CanProvisionResult = await CanProvisionInternal(
+                        new CanProvisionModel
+                        {
+                            PackageId = provisionRequest.PackageId,
+                            TenantId = provisionRequest.TenantId,
+                            UserPrincipalName = provisionRequest.UserPrincipalName,
+                            SPORootSiteUrl = provisionRequest.SPORootSiteUrl,
+                            UserIsSPOAdmin = true, // We assume that the request comes from an Admin
                         UserIsTenantAdmin = true, // We assume that the request comes from an Admin
                     });
 
-                // If the package can be provisioned onto the target
-                if (provisionResponse.CanProvisionResult.CanProvision)
+                    // If the package can be provisioned onto the target
+                    if (provisionResponse.CanProvisionResult.CanProvision)
+                    {
+                        String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                        String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                        var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+
+                        try
+                        {
+                            // Retrieve the refresh token and store it in the KeyVault
+                            await ProvisioningAppManager.AccessTokenProvider.SetupSecurityFromAuthorizationCodeAsync(
+                                tokenId,
+                                provisionRequest.AuthorizationCode,
+                                provisionRequest.TenantId,
+                                ConfigurationManager.AppSettings["ida:ClientId"],
+                                ConfigurationManager.AppSettings["ida:ClientSecret"],
+                                "https://graph.microsoft.com/",
+                                provisionRequest.RedirectUri);
+                        }
+                        catch (Exception ex)
+                        {
+                            // In case of any authorization exception, raise an Unauthorized exception
+                            return ThrowUnauthorized(ex);
+                        }
+
+                        // Prepare the provisioning request
+                        var request = new ProvisioningActionModel();
+                        request.ActionType = ActionType.Tenant; // Do we want to support site/tenant or just one?
+                        request.ApplyCustomTheme = false;
+                        request.ApplyTheme = false; // Do we need to apply any special theme?
+                        request.CorrelationId = Guid.NewGuid();
+                        request.CustomLogo = null;
+                        request.DisplayName = "Provision Content Pack";
+                        request.PackageId = provisionRequest.PackageId;
+                        request.TargetSiteAlreadyExists = false; // Do we want to check this?
+                        request.TargetSiteBaseTemplateId = null;
+                        request.TenantId = provisionRequest.TenantId;
+                        request.UserIsSPOAdmin = true; // We don't use this in the job
+                        request.UserIsTenantAdmin = true; // We don't use this in the job
+                        request.UserPrincipalName = provisionRequest.UserPrincipalName.ToLower();
+                        request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
+                        request.PackageProperties = provisionRequest.Parameters;
+
+                        // Get a reference to the blob storage queue
+                        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                            CloudConfigurationManager.GetSetting("SPPA:StorageConnectionString"));
+
+                        // Get queue... create if does not exist.
+                        CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+                        CloudQueue queue = queueClient.GetQueueReference(
+                            CloudConfigurationManager.GetSetting("SPPA:StorageQueueName"));
+                        queue.CreateIfNotExists();
+
+                        // Add message to the queue
+                        queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(request)));
+
+                        // Set the status of the provisioning request
+                        provisionResponse.ProvisioningStarted = true;
+                    }
+                }
+                catch (Exception ex)
                 {
-                    String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
-                    String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
-
-                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
-
-                    // Retrieve the refresh token and store it in the KeyVault
-                    await ProvisioningAppManager.AccessTokenProvider.SetupSecurityFromAuthorizationCodeAsync(
-                        tokenId,
-                        provisionRequest.AuthorizationCode,
-                        provisionRequest.TenantId,
-                        ConfigurationManager.AppSettings["ida:ClientId"],
-                        ConfigurationManager.AppSettings["ida:ClientSecret"],
-                        "https://graph.microsoft.com/",
-                        provisionRequest.RedirectUri);
-
-                    // Prepare the provisioning request
-                    var request = new ProvisioningActionModel();
-                    request.ActionType = ActionType.Tenant; // Do we want to support site/tenant or just one?
-                    request.ApplyCustomTheme = false;
-                    request.ApplyTheme = false; // Do we need to apply any special theme?
-                    request.CorrelationId = Guid.NewGuid();
-                    request.CustomLogo = null;
-                    request.DisplayName = "Provision Content Pack";
-                    request.PackageId = provisionRequest.PackageId;
-                    request.TargetSiteAlreadyExists = false; // Do we want to check this?
-                    request.TargetSiteBaseTemplateId = null;
-                    request.TenantId = provisionRequest.TenantId;
-                    request.UserIsSPOAdmin = true; // We don't use this in the job
-                    request.UserIsTenantAdmin = true; // We don't use this in the job
-                    request.UserPrincipalName = provisionRequest.UserPrincipalName.ToLower();
-                    request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
-                    request.PackageProperties = provisionRequest.Parameters;
-
-                    // Get a reference to the blob storage queue
-                    CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-                        CloudConfigurationManager.GetSetting("SPPA:StorageConnectionString"));
-
-                    // Get queue... create if does not exist.
-                    CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-                    CloudQueue queue = queueClient.GetQueueReference(
-                        CloudConfigurationManager.GetSetting("SPPA:StorageQueueName"));
-                    queue.CreateIfNotExists();
-
-                    // Add message to the queue
-                    queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(request)));
-
-                    // Set the status of the provisioning request
-                    provisionResponse.ProvisioningStarted = true;
+                    // In case of any other exception, raise an InternalServerError exception
+                    return ThrowInternalServerError(ex);
                 }
             }
-
+            
             // Return to the requested URL
             return Json(provisionResponse);
+        }
+
+        /// <summary>
+        /// Throws a BadRequest exception for an empty request
+        /// </summary>
+        private HttpStatusCodeResult ThrowEmptyRequest()
+        {
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest,
+                "The request is empty. Please provide proper JSON content for the request!");
+        }
+
+        /// <summary>
+        /// Throws a BadRequest exception for a missing input argument
+        /// </summary>
+        /// <param name="argument">The name of the missing argument</param>
+        private HttpStatusCodeResult ThrowMissingArgument(String argument)
+        {
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest,
+                $"Missing {argument} argument in the request!");
+        }
+
+        /// <summary>
+        /// Throws an Unauthorized exception
+        /// </summary>
+        /// <param name="ex">The exception that occurred</param>
+        private HttpStatusCodeResult ThrowUnauthorized(Exception ex)
+        {
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.Forbidden,
+                $"Unauthorized request! {ex.Message}");
+        }
+
+        /// <summary>
+        /// Throws an Unauthorized exception
+        /// </summary>
+        /// <param name="ex">The exception that occurred</param>
+        private HttpStatusCodeResult ThrowInternalServerError(Exception ex)
+        {
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError,
+                ex.Message);
         }
 
         private bool IsAllowedUpnTenant(string upn)

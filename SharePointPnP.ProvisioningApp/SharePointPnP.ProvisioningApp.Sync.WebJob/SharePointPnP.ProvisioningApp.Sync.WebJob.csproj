@@ -339,9 +339,9 @@
     <None Include="App.Model.config" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Test.pubxml" />
-    <None Include="Properties\PublishProfiles\spprovisioningappdev - Web - Dev.pubxml" />
     <Content Include="settings.job">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
