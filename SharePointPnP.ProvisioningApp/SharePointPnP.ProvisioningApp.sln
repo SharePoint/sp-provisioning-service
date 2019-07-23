@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharePointPnP.ProvisioningA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.CleanupJob", "SharePointPnP.ProvisioningApp.CleanupJob\SharePointPnP.ProvisioningApp.CleanupJob.csproj", "{3B113E3F-9B4D-4B07-BAAE-B914C8338280}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.WebApi", "SharePointPnP.ProvisioningApp.WebApi\SharePointPnP.ProvisioningApp.WebApi.csproj", "{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -383,6 +385,30 @@ Global
 		{3B113E3F-9B4D-4B07-BAAE-B914C8338280}.Tenant|Any CPU.Build.0 = Release|Any CPU
 		{3B113E3F-9B4D-4B07-BAAE-B914C8338280}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{3B113E3F-9B4D-4B07-BAAE-B914C8338280}.Test|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Dev|Any CPU.Build.0 = Debug|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Site.Dev|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Site.Dev|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Site.Prod|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Site.Prod|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Site.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Site.Test|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Site|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Site|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Tenant.Dev|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Tenant.Dev|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Tenant.Prod|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Tenant.Prod|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Tenant.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Tenant.Test|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Tenant|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Tenant|Any CPU.Build.0 = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38030B-D04F-4596-8CD1-83D3BBE80BEC}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
