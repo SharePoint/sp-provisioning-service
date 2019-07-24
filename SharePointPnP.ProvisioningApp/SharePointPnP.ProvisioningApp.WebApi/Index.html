@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>SharePoint PnP Provisioning Service API</title>
+</head>
+<body>
+
+    <h1>SharePoint PnP Provisioning Service API</h1>
+    <p>
+        This is the entry point for the multi-tenant SharePoint PnP Provisioning Service API.
+        Here you can find two different kind of API endpoints:
+        <ul>
+            <li>
+                Catalog API: provides access to provisioning packages (templates), and categories. Requires OAuth App-Only authentication through Azure Active Directory. Supports OData v. 4.0 protocol and is available at the following URLs:
+                <ul>
+                    <li><a href="./odata/Categories">Categories OData endpoint</a></li>
+                    <li><a href="./odata/Packages">Packages OData endpoint</a></li>
+                </ul>
+            </li>
+            <li>
+                Provisioning API: provides access to the provisioning service. Requires OAuth delegated access tokens authentication through Azure Active Directory. Is document at the following URL: <a href="./swagger">Swagger Documentation</a>.
+            </li>
+        </ul>
+    </p>
+
+    <h2>API Registration in your tenant</h2>
+    <p>If you plan to consume the API from your tenant, you need to register it. In order to accomplis this task, you can just follow <a href="https://login.microsoftonline.com/common/adminconsent?client_id=???">this link</a>.</p>
+
+</body>
+</html>
