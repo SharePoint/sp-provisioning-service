@@ -38,5 +38,16 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
 
             return new string[] { "value1", "value2" };
         }
+
+        /// <summary>
+        /// Returns a single value
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        // GET api/<controller>/5
+        public string Get(int id)
+        {
+            return "value";
+        }
     }
 }
