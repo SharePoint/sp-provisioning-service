@@ -646,13 +646,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     packageFileUrl.AbsolutePath.LastIndexOf('/') - 1);
                 var packageFileName = packageFileUrl.AbsolutePath.Substring(packageLocalFolder.Length + 2);
 
-                ProvisioningHierarchy hierarchy = GetHierarchyFromStorage(packageLocalFolder, packageFileName);
-
-                // If we have the hierarchy and its parameters
-                if (hierarchy != null && hierarchy.Parameters != null)
+                // If we have the package properties
+                if (package.PackageProperties != null && package.PackageProperties.Length > 0)
                 {
                     // Use them
-                    model.PackageProperties = hierarchy.Parameters;
+                    model.PackageProperties = JsonConvert.DeserializeObject<Dictionary<String, String>>(package.PackageProperties);
                 }
                 else
                 {

@@ -9,7 +9,7 @@ using SharePointPnP.ProvisioningApp.DomainModel;
 
 namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class PackagesController : ODataController
     {
         ProvisioningAppDBContext dbContext = new ProvisioningAppDBContext();
