@@ -1,3 +1,7 @@
+//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
 using System.Web.Http;
 using WebActivatorEx;
 using SharePointPnP.ProvisioningApp.WebApi;

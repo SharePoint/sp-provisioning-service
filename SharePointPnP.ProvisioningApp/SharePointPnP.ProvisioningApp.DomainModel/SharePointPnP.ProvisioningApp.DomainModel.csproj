@@ -121,6 +121,7 @@
   <ItemGroup>
     <Compile Include="BaseModel.cs" />
     <Compile Include="Category.cs" />
+    <Compile Include="ConsumerApp.cs" />
     <Compile Include="ContentPage.cs" />
     <Compile Include="Migrations\201811161656498_Initial.cs" />
     <Compile Include="Migrations\201811161656498_Initial.Designer.cs">
@@ -174,6 +175,10 @@
     <Compile Include="Migrations\201907251439290_Wave8-PackageProperties-20190725.Designer.cs">
       <DependentUpon>201907251439290_Wave8-PackageProperties-20190725.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907300935043_Wave9-OAuthConsumerApps-20190730.cs" />
+    <Compile Include="Migrations\201907300935043_Wave9-OAuthConsumerApps-20190730.Designer.cs">
+      <DependentUpon>201907300935043_Wave9-OAuthConsumerApps-20190730.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
@@ -226,6 +231,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907251439290_Wave8-PackageProperties-20190725.resx">
       <DependentUpon>201907251439290_Wave8-PackageProperties-20190725.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907300935043_Wave9-OAuthConsumerApps-20190730.resx">
+      <DependentUpon>201907300935043_Wave9-OAuthConsumerApps-20190730.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

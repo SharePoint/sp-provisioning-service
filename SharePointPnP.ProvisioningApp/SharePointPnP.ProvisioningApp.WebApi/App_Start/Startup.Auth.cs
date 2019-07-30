@@ -1,4 +1,8 @@
-﻿using System;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -17,10 +21,11 @@ namespace SharePointPnP.ProvisioningApp.WebApi
             app.UseWindowsAzureActiveDirectoryBearerAuthentication(
                 new WindowsAzureActiveDirectoryBearerAuthenticationOptions
                 {
-                    Tenant = ConfigurationManager.AppSettings["ida:Tenant"],
+                    Tenant = "common", // To support multi-tenant
                     TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidAudience = ConfigurationManager.AppSettings["ida:Audience"]
+                        ValidAudience = ConfigurationManager.AppSettings["ida:Audience"],
+                        ValidateIssuer = false, // To support multi-tenant
                     }
                 });
         }

@@ -142,54 +142,21 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         {
             if (model != null && ModelState.IsValid)
             {
-                if (!String.IsNullOrEmpty(model.MetadataPropertiesJson))
+                // Enqueue the provisioning request
+                await ProvisioningAppManager.EnqueueProvisioningRequest(
+                    model,
+                    (Request.Files != null && Request.Files.Count > 0 && Request.Files[0].ContentLength > 0) ? Request.Files[0].FileName : null,
+                    (Request.Files != null && Request.Files.Count > 0 && Request.Files[0].ContentLength > 0) ? Request.Files[0].InputStream : null
+                    );
+
+                // Get the service description content
+                var context = GetDataContext();
+                var contentPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/ProvisioningScheduled.md");
+
+                if (contentPage != null)
                 {
-                    model.MetadataProperties = JsonConvert.DeserializeObject<Dictionary<String, MetadataProperty>>(model.MetadataPropertiesJson);
+                    model.ProvisionDescription = contentPage.Content;
                 }
-
-                // If there is an input file for the logo
-                if (Request.Files != null && Request.Files.Count > 0 && Request.Files[0].ContentLength > 0)
-                {
-                    // Generate a random file name
-                    model.CustomLogo = $"{Guid.NewGuid()}-{Request.Files[0].FileName}";
-
-                    // Get a reference to the blob storage account
-                    var blobLogosConnectionString = ConfigurationManager.AppSettings["BlobLogosProvider:ConnectionString"];
-                    var blobLogosContainerName = ConfigurationManager.AppSettings["BlobLogosProvider:ContainerName"];
-
-                    CloudStorageAccount csaLogos;
-                    if (!CloudStorageAccount.TryParse(blobLogosConnectionString, out csaLogos))
-                        throw new ArgumentException("Cannot create cloud storage account from given connection string.");
-
-                    CloudBlobClient blobLogosClient = csaLogos.CreateCloudBlobClient();
-                    CloudBlobContainer containerLogos = blobLogosClient.GetContainerReference(blobLogosContainerName);
-
-                    // Store the file in the blob storage
-                    CloudBlockBlob blobLogo = containerLogos.GetBlockBlobReference(model.CustomLogo);
-                    await blobLogo.UploadFromStreamAsync(Request.Files[0].InputStream);
-                }
-
-                // Get a reference to the blob storage queue
-                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-                    CloudConfigurationManager.GetSetting("SPPA:StorageConnectionString"));
-
-                // Get queue... create if does not exist.
-                CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-                CloudQueue queue = queueClient.GetQueueReference(
-                    CloudConfigurationManager.GetSetting("SPPA:StorageQueueName"));
-                queue.CreateIfNotExists();
-
-                // add message to the queue
-                queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(model)));
-            }
-
-            // Get the service description content
-            var context = GetDataContext();
-            var contentPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/ProvisioningScheduled.md");
-
-            if (contentPage != null)
-            {
-                model.ProvisionDescription = contentPage.Content;
             }
 
             return View("ProvisionQueued", model);
@@ -338,7 +305,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     DomainModel.Package package = null;
 
                     // Get the package
-                    if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
+                    if (ProvisioningAppManager.IsTestingEnvironment)
                     {
                         // Process all packages in the test environment
                         package = context.Packages.FirstOrDefault(p => p.Id == new Guid(provisionRequest.PackageId));
@@ -356,6 +323,29 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         throw new ArgumentException("Invalid Package Id!");
                     }
 
+                    String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                    String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+
+                    try
+                    {
+                        // Retrieve the refresh token and store it in the KeyVault
+                        await ProvisioningAppManager.AccessTokenProvider.SetupSecurityFromAuthorizationCodeAsync(
+                            tokenId,
+                            provisionRequest.AuthorizationCode,
+                            provisionRequest.TenantId,
+                            ConfigurationManager.AppSettings["ida:ClientId"],
+                            ConfigurationManager.AppSettings["ida:ClientSecret"],
+                            "https://graph.microsoft.com/",
+                            provisionRequest.RedirectUri);
+                    }
+                    catch (Exception ex)
+                    {
+                        // In case of any authorization exception, raise an Unauthorized exception
+                        return ThrowUnauthorized(ex);
+                    }
+
                     // First of all, validate the provisioning request for pre-requirements
                     provisionResponse.CanProvisionResult = await CanProvisionInternal(
                         new CanProvisionModel
@@ -365,35 +355,12 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             UserPrincipalName = provisionRequest.UserPrincipalName,
                             SPORootSiteUrl = provisionRequest.SPORootSiteUrl,
                             UserIsSPOAdmin = true, // We assume that the request comes from an Admin
-                        UserIsTenantAdmin = true, // We assume that the request comes from an Admin
-                    });
+                            UserIsTenantAdmin = true, // We assume that the request comes from an Admin
+                        });
 
                     // If the package can be provisioned onto the target
                     if (provisionResponse.CanProvisionResult.CanProvision)
                     {
-                        String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
-                        String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
-
-                        var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
-
-                        try
-                        {
-                            // Retrieve the refresh token and store it in the KeyVault
-                            await ProvisioningAppManager.AccessTokenProvider.SetupSecurityFromAuthorizationCodeAsync(
-                                tokenId,
-                                provisionRequest.AuthorizationCode,
-                                provisionRequest.TenantId,
-                                ConfigurationManager.AppSettings["ida:ClientId"],
-                                ConfigurationManager.AppSettings["ida:ClientSecret"],
-                                "https://graph.microsoft.com/",
-                                provisionRequest.RedirectUri);
-                        }
-                        catch (Exception ex)
-                        {
-                            // In case of any authorization exception, raise an Unauthorized exception
-                            return ThrowUnauthorized(ex);
-                        }
-
                         // Prepare the provisioning request
                         var request = new ProvisioningActionModel();
                         request.ActionType = ActionType.Tenant; // Do we want to support site/tenant or just one?
@@ -412,18 +379,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
                         request.PackageProperties = provisionRequest.Parameters;
 
-                        // Get a reference to the blob storage queue
-                        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-                            CloudConfigurationManager.GetSetting("SPPA:StorageConnectionString"));
-
-                        // Get queue... create if does not exist.
-                        CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-                        CloudQueue queue = queueClient.GetQueueReference(
-                            CloudConfigurationManager.GetSetting("SPPA:StorageQueueName"));
-                        queue.CreateIfNotExists();
-
-                        // Add message to the queue
-                        queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(request)));
+                        // Enqueue the provisioning request
+                        await ProvisioningAppManager.EnqueueProvisioningRequest(request);
 
                         // Set the status of the provisioning request
                         provisionResponse.ProvisioningStarted = true;
@@ -481,7 +438,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
         private bool IsAllowedUpnTenant(string upn)
         {
-            if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
+            if (ProvisioningAppManager.IsTestingEnvironment)
             {
                 // In test we support white-listed tenants only
                 var context = GetDataContext();
@@ -584,7 +541,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             DomainModel.Package package = null;
 
             // Get the package
-            if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
+            if (ProvisioningAppManager.IsTestingEnvironment)
             {
                 // Process all packages in the test environment
                 package = context.Packages.FirstOrDefault(p => p.Id == new Guid(packageId));
@@ -764,7 +721,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 DomainModel.Package package = null;
 
                 // Get the package
-                if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
+                if (ProvisioningAppManager.IsTestingEnvironment)
                 {
                     // Process all packages in the test environment
                     package = context.Packages.FirstOrDefault(p => p.Id == new Guid(model.PackageId));

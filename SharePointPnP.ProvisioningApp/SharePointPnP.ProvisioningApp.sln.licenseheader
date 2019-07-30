@@ -1,0 +1,23 @@
+﻿extensions: designer.cs generated.cs
+extensions: .cs .cpp .h .js
+//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+extensions: .aspx .ascx
+<%-- 
+
+Copyright (c) Microsoft Corporation.
+Licensed under the MIT license.
+
+--%>
+extensions:  .xml .config .xsd
+<!--
+
+Copyright (c) Microsoft Corporation.
+Licensed under the MIT license.
+
+-->
+extensions: .css .scss
+/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT license. */

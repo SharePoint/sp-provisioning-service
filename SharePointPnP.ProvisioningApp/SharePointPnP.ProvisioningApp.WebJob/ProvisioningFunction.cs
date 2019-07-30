@@ -393,6 +393,22 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             }
                                         }))
                                         {
+                                            // Configure the webhooks, if any
+                                            if (action.Webhooks != null && action.Webhooks.Count > 0)
+                                            {
+                                                foreach (var t in hierarchy.Templates)
+                                                {
+                                                    foreach (var wh in action.Webhooks)
+                                                    {
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ProvisioningStarted);
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ObjectHandlerProvisioningStarted);
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ObjectHandlerProvisioningCompleted);
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ProvisioningCompleted);
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ExceptionOccurred);
+                                                    }
+                                                }
+                                            }
+
                                             // Apply the hierarchy
                                             log.WriteLine($"Hierarchy Provisioning Started: {DateTime.Now:hh.mm.ss}");
                                             tenant.ApplyProvisionHierarchy(hierarchy, hierarchy.Sequences[0].ID, ptai);
@@ -468,6 +484,22 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
                         #endregion
 
+                        #region Process any children items
+
+                        // If there are children items
+                        if (action.ChildrenItems != null && action.ChildrenItems.Count > 0)
+                        {
+                            // Prepare any further child provisioning request
+                            action.PackageId = action.ChildrenItems[0].PackageId;
+                            action.PackageProperties = action.ChildrenItems[0].Parameters;
+                            action.ChildrenItems.RemoveAt(0);
+
+                            // Enqueue any further child provisioning request
+                            await ProvisioningAppManager.EnqueueProvisioningRequest(action);
+                        }
+
+                        #endregion
+
                         log.WriteLine($"Function successfully executed!");
                         // Log telemetry event
                         telemetry?.LogEvent("ProvisioningFunction.End", telemetryProperties);
@@ -490,7 +522,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     "ProvisioningFailed",
                     action.NotificationEmail,
                     null,
-                    new {
+                    new
+                    {
                         TemplateName = action.DisplayName,
                         ExceptionDetails = SimplifyException(ex),
                         PnPCorrelationId = action.CorrelationId.ToString(),
@@ -514,6 +547,19 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
         }
 
+        private static void AddProvisioningWebhook(ProvisioningTemplate template, ProvisioningWebhook webhook, ProvisioningTemplateWebhookKind kind)
+        {
+            template.ProvisioningTemplateWebhooks.Add(new ProvisioningTemplateWebhook
+            {
+                Kind = kind,
+                Url = webhook.Url,
+                Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
+                BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
+                Async = true, // force async webhooks
+                Parameters = webhook.Parameters,
+            });
+        }
+
         private static Boolean CheckIfActionIsAlreadyRunning(ProvisioningActionModel action, ProvisioningAppDBContext dbContext)
         {
             var result = false;
@@ -523,8 +569,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
             // Check if there is already a pending action item with the same settings and not yet expired
             var alreadyExistingItems = from i in dbContext.ProvisioningActionItems
-                                       where i.TenantId == tenantId && i.PackageId == packageId 
-                                            && i.ExpiresOn > DateTime.Now 
+                                       where i.TenantId == tenantId && i.PackageId == packageId
+                                            && i.ExpiresOn > DateTime.Now
                                             && i.FailedOn == null
                                        select i;
 
