@@ -557,7 +557,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 Url = webhook.Url,
                 Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
                 BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
-                Async = false, // force sync webhooks
+                Async = true, // force sync webhooks
                 Parameters = webhook.Parameters,
             });
         }
