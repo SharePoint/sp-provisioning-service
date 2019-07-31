@@ -314,8 +314,10 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             }
                                         };
 
+#if !DEBUG
                                         // Set the default delay for sites creations to 3 mins
                                         ptai.DelayAfterModernSiteCreation = 60 * 3;
+#endif
 
                                         // Configure the OAuth Access Tokens for the client context
                                         accessTokens.Add(new Uri(tenantUrl).Authority, spoAdminAccessToken);
@@ -325,7 +327,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         pnpTenantContext.PropertyBag["AccessTokens"] = accessTokens;
                                         ptai.AccessTokens = accessTokens;
 
-                                        #region Theme handling
+#region Theme handling
 
                                         // Process the graphical Theme
                                         if (action.ApplyTheme)
@@ -345,7 +347,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             }
                                         }
 
-                                        #endregion
+#endregion
 
                                         // Configure provisioning parameters
                                         if (action.PackageProperties != null)
@@ -423,14 +425,14 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             {
                                                 log.WriteLine($"Applying custom Theme to provisioned sites");
 
-                                                #region Palette generation for Theme
+#region Palette generation for Theme
 
                                                 var jsonPalette = ThemeUtility.GetThemeAsJSON(
                                                     action.ThemePrimaryColor,
                                                     action.ThemeBodyTextColor,
                                                     action.ThemeBodyBackgroundColor);
 
-                                                #endregion
+#endregion
 
                                                 // Apply the custom theme to all of the provisioned sites
                                                 foreach (var ps in provisionedSites)
@@ -475,16 +477,16 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                 throw new ApplicationException($"The requested package does not contain a valid PnP Hierarchy!");
                             }
 
-                            #endregion
+#endregion
                         }
                         else
                         {
                             throw new ApplicationException($"Cannot find the package with ID: {action.PackageId}");
                         }
 
-                        #endregion
+#endregion
 
-                        #region Process any children items
+#region Process any children items
 
                         // If there are children items
                         if (action.ChildrenItems != null && action.ChildrenItems.Count > 0)
@@ -498,7 +500,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                             await ProvisioningAppManager.EnqueueProvisioningRequest(action);
                         }
 
-                        #endregion
+#endregion
 
                         log.WriteLine($"Function successfully executed!");
                         // Log telemetry event
@@ -555,7 +557,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 Url = webhook.Url,
                 Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
                 BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
-                Async = true, // force async webhooks
+                Async = false, // force sync webhooks
                 Parameters = webhook.Parameters,
             });
         }
