@@ -48,6 +48,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                 {
                     ClientId = clientId,
                     Authority = authority,
+                    RedirectUri = ConfigurationManager.AppSettings["ida:AppUrl"],
                     TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
                         // instead of using the default validation (validating against a single issuer value, as we do in line of business apps), 
