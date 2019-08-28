@@ -777,7 +777,7 @@
                     siteUrlControls[i].addEventListener('focusout', function (e) {
 
                         // if we lost the focus because the user clicked on the Provision button
-                        if (e.relatedTarget.id == "provisionButton") {
+                        if (e.relatedTarget != null && e.relatedTarget.id == "provisionButton") {
                             // store it in the state variable
                             focusingOutToProvision = true;
                         }
