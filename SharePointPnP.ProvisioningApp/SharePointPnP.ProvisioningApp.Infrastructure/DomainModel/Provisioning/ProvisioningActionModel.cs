@@ -145,6 +145,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public Boolean ForceNewSite { get; set; }
+
+        public List<ProvisioningItemModel> ChildrenItems { get; set; }
+
+        public List<ProvisioningWebhook> Webhooks { get; set; }
     }
 
     /// <summary>

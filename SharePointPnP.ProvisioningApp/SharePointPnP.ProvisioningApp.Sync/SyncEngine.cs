@@ -289,6 +289,9 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         // New properties for Wave 7
                         dbPackage.Visible = package.Visible;
 
+                        // New properties for Wave 8
+                        dbPackage.PackageProperties = package.PackageProperties;
+
                         context.Entry(dbPackage).State = EntityState.Modified;
 
                         // Add new categories
@@ -503,6 +506,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                     package.ImagePreviewUrl = ChangeUri(packageFile.DownloadUri, hierarchy?.ImagePreviewUrl ?? String.Empty);
                     package.Description = await GetDescriptionAsync(packageFile.GetDirectoryPath()) ?? hierarchy?.Description ?? "";
                     package.Version = hierarchy?.Version.ToString();
+                    package.PackageProperties = JsonConvert.SerializeObject(hierarchy.Parameters);
                 }
             }
         }

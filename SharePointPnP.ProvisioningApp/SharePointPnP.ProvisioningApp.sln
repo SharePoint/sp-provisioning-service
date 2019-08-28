@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.Infrastructure", "SharePointPnP.ProvisioningApp.Infrastructure\SharePointPnP.ProvisioningApp.Infrastructure.csproj", "{94821355-D352-4230-A3D8-884C2A4DD1F7}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharePointPnP.ProvisioningApp.ReportingFunction", "SharePointPnP.ProvisioningApp.ReportingFunction\SharePointPnP.ProvisioningApp.ReportingFunction.csproj", "{F1AC3B0C-0D19-4172-AACD-DA339FDF5913}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.CleanupJob", "SharePointPnP.ProvisioningApp.CleanupJob\SharePointPnP.ProvisioningApp.CleanupJob.csproj", "{3B113E3F-9B4D-4B07-BAAE-B914C8338280}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.WebApi", "SharePointPnP.ProvisioningApp.WebApi\SharePointPnP.ProvisioningApp.WebApi.csproj", "{74F745D6-6EC4-40B7-978C-635D77BF9302}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -383,6 +385,30 @@ Global
 		{3B113E3F-9B4D-4B07-BAAE-B914C8338280}.Tenant|Any CPU.Build.0 = Release|Any CPU
 		{3B113E3F-9B4D-4B07-BAAE-B914C8338280}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{3B113E3F-9B4D-4B07-BAAE-B914C8338280}.Test|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Dev|Any CPU.ActiveCfg = Dev|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Dev|Any CPU.Build.0 = Dev|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site.Dev|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site.Dev|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site.Prod|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site.Prod|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site.Test|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Dev|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Dev|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Prod|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Prod|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Test|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant|Any CPU.ActiveCfg = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Test|Any CPU.Build.0 = Test|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

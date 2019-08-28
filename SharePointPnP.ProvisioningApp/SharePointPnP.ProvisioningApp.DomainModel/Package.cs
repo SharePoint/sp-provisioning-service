@@ -141,6 +141,11 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         /// Defines whether the package should be visible on the public web site or not
         /// </summary>
         public Boolean Visible { get; set; } = true;
+
+        /// <summary>
+        /// Defines the parameters of the underlying template as a JSON string
+        /// </summary>
+        public String PackageProperties { get; set; }
     }
 
     /// <summary>

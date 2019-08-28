@@ -73,5 +73,7 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public DbSet<NotificationRecipient> NotificationRecipients { get; set; }
 
         public DbSet<ProvisioningActionItem> ProvisioningActionItems { get; set; }
+
+        public DbSet<ConsumerApp> ConsumerApps { get; set; }
     }
 }

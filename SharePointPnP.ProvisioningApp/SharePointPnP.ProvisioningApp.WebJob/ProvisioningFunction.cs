@@ -314,8 +314,10 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             }
                                         };
 
+#if !DEBUG
                                         // Set the default delay for sites creations to 3 mins
                                         ptai.DelayAfterModernSiteCreation = 60 * 3;
+#endif
 
                                         // Configure the OAuth Access Tokens for the client context
                                         accessTokens.Add(new Uri(tenantUrl).Authority, spoAdminAccessToken);
@@ -325,7 +327,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         pnpTenantContext.PropertyBag["AccessTokens"] = accessTokens;
                                         ptai.AccessTokens = accessTokens;
 
-                                        #region Theme handling
+#region Theme handling
 
                                         // Process the graphical Theme
                                         if (action.ApplyTheme)
@@ -345,7 +347,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             }
                                         }
 
-                                        #endregion
+#endregion
 
                                         // Configure provisioning parameters
                                         if (action.PackageProperties != null)
@@ -393,6 +395,22 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             }
                                         }))
                                         {
+                                            // Configure the webhooks, if any
+                                            if (action.Webhooks != null && action.Webhooks.Count > 0)
+                                            {
+                                                foreach (var t in hierarchy.Templates)
+                                                {
+                                                    foreach (var wh in action.Webhooks)
+                                                    {
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ProvisioningStarted);
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ObjectHandlerProvisioningStarted);
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ObjectHandlerProvisioningCompleted);
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ProvisioningCompleted);
+                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ExceptionOccurred);
+                                                    }
+                                                }
+                                            }
+
                                             // Apply the hierarchy
                                             log.WriteLine($"Hierarchy Provisioning Started: {DateTime.Now:hh.mm.ss}");
                                             tenant.ApplyProvisionHierarchy(hierarchy, hierarchy.Sequences[0].ID, ptai);
@@ -407,14 +425,14 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             {
                                                 log.WriteLine($"Applying custom Theme to provisioned sites");
 
-                                                #region Palette generation for Theme
+#region Palette generation for Theme
 
                                                 var jsonPalette = ThemeUtility.GetThemeAsJSON(
                                                     action.ThemePrimaryColor,
                                                     action.ThemeBodyTextColor,
                                                     action.ThemeBodyBackgroundColor);
 
-                                                #endregion
+#endregion
 
                                                 // Apply the custom theme to all of the provisioned sites
                                                 foreach (var ps in provisionedSites)
@@ -459,14 +477,30 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                 throw new ApplicationException($"The requested package does not contain a valid PnP Hierarchy!");
                             }
 
-                            #endregion
+#endregion
                         }
                         else
                         {
                             throw new ApplicationException($"Cannot find the package with ID: {action.PackageId}");
                         }
 
-                        #endregion
+#endregion
+
+#region Process any children items
+
+                        // If there are children items
+                        if (action.ChildrenItems != null && action.ChildrenItems.Count > 0)
+                        {
+                            // Prepare any further child provisioning request
+                            action.PackageId = action.ChildrenItems[0].PackageId;
+                            action.PackageProperties = action.ChildrenItems[0].Parameters;
+                            action.ChildrenItems.RemoveAt(0);
+
+                            // Enqueue any further child provisioning request
+                            await ProvisioningAppManager.EnqueueProvisioningRequest(action);
+                        }
+
+#endregion
 
                         log.WriteLine($"Function successfully executed!");
                         // Log telemetry event
@@ -490,7 +524,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     "ProvisioningFailed",
                     action.NotificationEmail,
                     null,
-                    new {
+                    new
+                    {
                         TemplateName = action.DisplayName,
                         ExceptionDetails = SimplifyException(ex),
                         PnPCorrelationId = action.CorrelationId.ToString(),
@@ -514,6 +549,19 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
         }
 
+        private static void AddProvisioningWebhook(ProvisioningTemplate template, ProvisioningWebhook webhook, ProvisioningTemplateWebhookKind kind)
+        {
+            template.ProvisioningTemplateWebhooks.Add(new ProvisioningTemplateWebhook
+            {
+                Kind = kind,
+                Url = webhook.Url,
+                Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
+                BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
+                Async = true, // force sync webhooks
+                Parameters = webhook.Parameters,
+            });
+        }
+
         private static Boolean CheckIfActionIsAlreadyRunning(ProvisioningActionModel action, ProvisioningAppDBContext dbContext)
         {
             var result = false;
@@ -523,8 +571,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
             // Check if there is already a pending action item with the same settings and not yet expired
             var alreadyExistingItems = from i in dbContext.ProvisioningActionItems
-                                       where i.TenantId == tenantId && i.PackageId == packageId 
-                                            && i.ExpiresOn > DateTime.Now 
+                                       where i.TenantId == tenantId && i.PackageId == packageId
+                                            && i.ExpiresOn > DateTime.Now
                                             && i.FailedOn == null
                                        select i;
 
