@@ -92,7 +92,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
                 if (CheckIfActionIsAlreadyRunning(action, dbContext))
                 {
-                    throw new ApplicationException("The requested package is currently provisioning in the selected target tenant and cannot be applied in parallel. Please wait for the previous provisioning action to complete.");
+                    throw new ConcurrentProvisioningException("The requested package is currently provisioning in the selected target tenant and cannot be applied in parallel. Please wait for the previous provisioning action to complete.");
                 }
 
                 var tokenId = $"{action.TenantId}-{action.UserPrincipalName.GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
@@ -315,8 +315,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         };
 
 #if !DEBUG
-                                        // Set the default delay for sites creations to 3 mins
-                                        ptai.DelayAfterModernSiteCreation = 60 * 3;
+                                        // Set the default delay for sites creations to 5 mins
+                                        ptai.DelayAfterModernSiteCreation = 60 * 5;
 #endif
 
                                         // Configure the OAuth Access Tokens for the client context
@@ -516,8 +516,17 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
             catch (Exception ex)
             {
-                // Log telemetry event
-                telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
+                // Skip logging exception for Concurrent Provisioning 
+                if (!(ex is ConcurrentProvisioningException))
+                {
+                    // Log telemetry event
+                    telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
+                }
+                else
+                {
+                    // rather log an event
+                    telemetry?.LogEvent("ProvisioningFunction.ConcurrentProvisioning", telemetryProperties);
+                }
 
                 // Notify user about the provisioning outcome
                 MailHandler.SendMailNotification(
