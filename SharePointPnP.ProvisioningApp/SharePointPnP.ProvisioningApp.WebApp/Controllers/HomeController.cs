@@ -119,10 +119,17 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                         #endregion
 
+                        // Determine the URL of the root SPO site for the current tenant
+                        var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
+                        SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
+
+                        // Store the SPO Root Site URL in the Model
+                        model.SPORootSiteUrl = rootSite.WebUrl;
+
                         // If the current user is an admin, we can get the available Themes
                         if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
                         {
-                            await LoadThemesFromTenant(model, tokenId, graphAccessToken);
+                            await LoadThemesFromTenant(model, tokenId, rootSite, graphAccessToken);
                         }
 
                         LoadPackageDataIntoModel(packageId, model);
@@ -671,14 +678,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
         }
 
-        private static async Task LoadThemesFromTenant(ProvisioningActionModel model, string tokenId, string graphAccessToken)
+        private static async Task LoadThemesFromTenant(ProvisioningActionModel model, string tokenId, SharePointSite rootSite, string graphAccessToken)
         {
-            // Determine the URL of the root SPO site for the current tenant
-            var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
-            SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
-
-            // Store the SPO Root Site URL in the Model
-            model.SPORootSiteUrl = rootSite.WebUrl;
 
             // Retrieve the SPO URL for the Admin Site
             var adminSiteUrl = rootSite.WebUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
