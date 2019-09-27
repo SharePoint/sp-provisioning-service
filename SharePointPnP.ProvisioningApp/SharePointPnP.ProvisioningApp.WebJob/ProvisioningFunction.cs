@@ -402,12 +402,18 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                                 {
                                                     foreach (var wh in action.Webhooks)
                                                     {
-                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ProvisioningStarted);
-                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ObjectHandlerProvisioningStarted);
-                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ObjectHandlerProvisioningCompleted);
-                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ProvisioningCompleted);
-                                                        AddProvisioningWebhook(t, wh, ProvisioningTemplateWebhookKind.ExceptionOccurred);
+                                                        AddProvisioningTemplateWebhook(t, wh, ProvisioningTemplateWebhookKind.ProvisioningTemplateStarted);
+                                                        AddProvisioningTemplateWebhook(t, wh, ProvisioningTemplateWebhookKind.ObjectHandlerProvisioningStarted);
+                                                        AddProvisioningTemplateWebhook(t, wh, ProvisioningTemplateWebhookKind.ObjectHandlerProvisioningCompleted);
+                                                        AddProvisioningTemplateWebhook(t, wh, ProvisioningTemplateWebhookKind.ProvisioningTemplateCompleted);
+                                                        AddProvisioningTemplateWebhook(t, wh, ProvisioningTemplateWebhookKind.ExceptionOccurred);
                                                     }
+                                                }
+
+                                                foreach (var wh in action.Webhooks)
+                                                {
+                                                    AddProvisioningWebhook(hierarchy, wh, ProvisioningTemplateWebhookKind.ProvisioningStarted);
+                                                    AddProvisioningWebhook(hierarchy, wh, ProvisioningTemplateWebhookKind.ProvisioningCompleted);
                                                 }
                                             }
 
@@ -558,9 +564,24 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
         }
 
-        private static void AddProvisioningWebhook(ProvisioningTemplate template, ProvisioningWebhook webhook, ProvisioningTemplateWebhookKind kind)
+        private static void AddProvisioningTemplateWebhook(ProvisioningTemplate template, 
+            Infrastructure.DomainModel.Provisioning.ProvisioningWebhook webhook, ProvisioningTemplateWebhookKind kind)
         {
             template.ProvisioningTemplateWebhooks.Add(new ProvisioningTemplateWebhook
+            {
+                Kind = kind,
+                Url = webhook.Url,
+                Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
+                BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
+                Async = true, // force sync webhooks
+                Parameters = webhook.Parameters,
+            });
+        }
+
+        private static void AddProvisioningWebhook(ProvisioningHierarchy hierarchy,
+            Infrastructure.DomainModel.Provisioning.ProvisioningWebhook webhook, ProvisioningTemplateWebhookKind kind)
+        {
+            hierarchy.ProvisioningWebhooks.Add(new OfficeDevPnP.Core.Framework.Provisioning.Model.ProvisioningWebhook
             {
                 Kind = kind,
                 Url = webhook.Url,

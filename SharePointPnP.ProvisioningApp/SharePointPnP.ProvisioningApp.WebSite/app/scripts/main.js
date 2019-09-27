@@ -142,9 +142,7 @@ let startProvisioningFlow = event => {
     var btnPressed = event.currentTarget;
     var provisionUrl = btnPressed.dataset.provisionUrl;
 
-    console.log(provisionUrl);
-
-    window.open(provisionUrl);
+    location.href = provisionUrl;
 };
 
 let provisionBtns = document.querySelectorAll('.pnp-button');

@@ -330,7 +330,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         throw new ArgumentException("Invalid Package Id!");
                     }
 
-                    String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                    String provisioningScope = package.PackageType == PackageType.Tenant ? "tenant" : "site";
                     String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
                     var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
