@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -31,13 +32,14 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
             _container = blobClient.GetContainerReference(containerName);
         }
 
-        public async Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log)
+        public async Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log, string exclusionRules = null)
         {
+            Regex exclusionRegex = new Regex(exclusionRules, RegexOptions.Compiled);
             IEnumerable<ITemplateItem> items = await sourceProvider.GetAsync("", log);
-            await CloneAsync(sourceProvider, "", items, log);
+            await CloneAsync(sourceProvider, "", items, log, exclusionRegex);
         }
 
-        private async Task CloneAsync(ITemplatesProvider sourceProvider, string path, IEnumerable<ITemplateItem> items, Action<string> log)
+        private async Task CloneAsync(ITemplatesProvider sourceProvider, string path, IEnumerable<ITemplateItem> items, Action<string> log, Regex exclusionRegex)
         {
             HashSet<ITemplateItem> existingItems = new HashSet<ITemplateItem>(await GetAsync(path, log));
 
@@ -54,10 +56,17 @@ namespace SharePointPnP.ProvisioningApp.Sync.AzureStorage
 
                 if (item is ITemplateFolder folder)
                 {
-
-                    // Get the children and clone the entire folder
-                    IEnumerable<ITemplateItem> folderItems = await sourceProvider.GetAsync(folder.Path, log);
-                    await CloneAsync(sourceProvider, folder.Path, folderItems, log);
+                    // If the target folder is not excluded
+                    if (!exclusionRegex.IsMatch(folder.Path))
+                    {
+                        // Get the children and clone the entire folder
+                        IEnumerable<ITemplateItem> folderItems = await sourceProvider.GetAsync(folder.Path, log);
+                        await CloneAsync(sourceProvider, folder.Path, folderItems, log, exclusionRegex);
+                    }
+                    else
+                    {
+                        log?.Invoke($"Skipped: {folder.Path}");
+                    }
                 }
                 else if (item is ITemplateFile file)
                 {

@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SharePointPnP.ProvisioningApp.Sync.GitHub
@@ -24,7 +25,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
             _helper = new GitHubHelper(baseUrl, repositoryPath, personalAccessToken);
         }
 
-        public async Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log)
+        public async Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log, string exclusionRules = null)
         {
             throw new NotSupportedException();
         }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SharePointPnP.ProvisioningApp.Sync.FileSystem
@@ -26,7 +27,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.FileSystem
             _root = new DirectoryInfo(root);
         }
 
-        public Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log)
+        public Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log, string exclusionRules = null)
         {
             throw new NotImplementedException();
         }

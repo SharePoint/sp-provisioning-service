@@ -146,6 +146,11 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         /// Defines the parameters of the underlying template as a JSON string
         /// </summary>
         public String PackageProperties { get; set; }
+
+        /// <summary>
+        /// Defines the ID of the Page Template to use for rendering the current package in the UI
+        /// </summary>
+        public String PageTemplateId { get; set; }
     }
 
     /// <summary>

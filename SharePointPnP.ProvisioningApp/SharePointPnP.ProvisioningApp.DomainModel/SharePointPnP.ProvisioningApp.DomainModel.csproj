@@ -182,13 +182,23 @@
     <Compile Include="Migrations\201907300935043_Wave9-OAuthConsumerApps-20190730.Designer.cs">
       <DependentUpon>201907300935043_Wave9-OAuthConsumerApps-20190730.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909301419175_Wave10-LookBookSite.cs" />
+    <Compile Include="Migrations\201909301419175_Wave10-LookBookSite.Designer.cs">
+      <DependentUpon>201909301419175_Wave10-LookBookSite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910030702118_Wave11-LookBookSite-Step2.cs" />
+    <Compile Include="Migrations\201910030702118_Wave11-LookBookSite-Step2.Designer.cs">
+      <DependentUpon>201910030702118_Wave11-LookBookSite-Step2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
     <Compile Include="Package.cs" />
+    <Compile Include="PageTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvisioningActionItem.cs" />
     <Compile Include="ProvisioningAppDBContext.cs" />
+    <Compile Include="TemplateSettings.cs" />
     <Compile Include="Tenant.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +247,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907300935043_Wave9-OAuthConsumerApps-20190730.resx">
       <DependentUpon>201907300935043_Wave9-OAuthConsumerApps-20190730.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909301419175_Wave10-LookBookSite.resx">
+      <DependentUpon>201909301419175_Wave10-LookBookSite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910030702118_Wave11-LookBookSite-Step2.resx">
+      <DependentUpon>201910030702118_Wave11-LookBookSite-Step2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

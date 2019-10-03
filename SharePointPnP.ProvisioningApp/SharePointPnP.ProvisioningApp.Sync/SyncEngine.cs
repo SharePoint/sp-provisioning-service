@@ -20,6 +20,7 @@ using OfficeDevPnP.Core.Framework.Provisioning.Connectors;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using HtmlAgilityPack;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace SharePointPnP.ProvisioningApp.Synchronization
 {
@@ -31,6 +32,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
         private Uri _baseCloneUri;
         private const string SYSTEM_PATH = "system";
         private const string CONTENT_PATH = "system/pages";
+        private const string PAGE_TEMPLATES_PATH = "system/pageTemplates";
         private const string SITE_PATH = "site";
         private const string TENANT_PATH = "tenant";
         private const string CATEGORIES_NAME = "categories.json";
@@ -48,6 +50,8 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
         public Action<string> Log { get; set; }
 
+        public string ExclusionRules { get; set; }
+
         public async Task RunAsync(bool clone)
         {
             if (clone)
@@ -55,7 +59,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 bool enableDiagnostics;
                 bool.TryParse(ConfigurationManager.AppSettings["EnableDiagnostics"], out enableDiagnostics);
                 WriteLog("Cloning source...");
-                await _cloneProvider.CloneAsync(_sourceProvider, enableDiagnostics ? (Action<String>)WriteLog : (s) => { });
+                await _cloneProvider.CloneAsync(_sourceProvider, enableDiagnostics ? (Action<String>)WriteLog : (s) => { }, this.ExclusionRules);
             }
 
             // Where all source resources are based
@@ -67,6 +71,9 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
             WriteLog("Synchonizing pages...");
             await SyncContentPages();
+
+            WriteLog("Synchonizing page templates...");
+            await SyncPageTemplates();
 
             WriteLog("Synchonizing categories...");
             await SyncCategories();
@@ -144,7 +151,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 {
                     // Get the file content
                     String fileContent = await GetHtmlContentAsync(CONTENT_PATH, file.Path.Substring(file.Path.LastIndexOf('/') + 1));
-    
+
                     // Update Content Page, if already exists
                     if (existingDbContentPages.TryGetValue(file.Path, out ContentPage dbContentPage))
                     {
@@ -170,6 +177,79 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 foreach (var dbContentPage in existingDbContentPages)
                 {
                     context.Entry(dbContentPage.Value).State = EntityState.Deleted;
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+
+        private async Task SyncPageTemplates()
+        {
+            using (ProvisioningAppDBContext context = GetContext())
+            {
+                // Find the category file
+                var pageTemplatesFolders = await _cloneProvider.GetAsync(PAGE_TEMPLATES_PATH, WriteLog);
+                if (pageTemplatesFolders == null || pageTemplatesFolders.Count() == 0) throw new InvalidOperationException($"Cannot find Page Template folders in folder {PAGE_TEMPLATES_PATH}");
+
+                var existingDbPageTemplates = context.PageTemplates.ToDictionary(cp => cp.Id, StringComparer.OrdinalIgnoreCase);
+                foreach (ITemplateFolder pageTemplateFolder in pageTemplatesFolders)
+                {
+                    // Prepare content variables
+                    String htmlContent = null;
+                    String cssContent = null;
+
+                    // Get the page template folder content files
+                    var pageTemplateFiles = await _cloneProvider.GetAsync(pageTemplateFolder.Path, WriteLog);
+                    if (pageTemplateFiles == null || pageTemplateFiles.Count() == 0) throw new InvalidOperationException($"Cannot find template files in Page Template folder {pageTemplateFolder.Path}");
+
+                    foreach (ITemplateFile pageTemplateFile in pageTemplateFiles)
+                    {
+                        // If the content file is an HTML file
+                        if (pageTemplateFile.Path.EndsWith(".html", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            // Set the HTML content
+                            htmlContent = await GetFileContentAsync(pageTemplateFolder.Path, pageTemplateFile.Path.Substring(pageTemplateFile.Path.LastIndexOf('/') + 1));
+                        }
+                        else if (pageTemplateFile.Path.EndsWith(".css", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            // Set the CSS content
+                            cssContent = await GetFileContentAsync(pageTemplateFolder.Path, pageTemplateFile.Path.Substring(pageTemplateFile.Path.LastIndexOf('/') + 1));
+                        }
+
+                        if (!String.IsNullOrEmpty(htmlContent) && !String.IsNullOrEmpty(cssContent))
+                        {
+                            // If we have both HTML and CSS content, just break the foreach loop
+                            break;
+                        }
+                    }
+
+                    // Update Page Template, if already exists
+                    if (existingDbPageTemplates.TryGetValue(pageTemplateFolder.Path, out PageTemplate dbPageTemplate))
+                    {
+                        dbPageTemplate.Html = htmlContent;
+                        dbPageTemplate.Css = cssContent;
+                        context.Entry(dbPageTemplate).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        // Add new Content Page
+                        dbPageTemplate = new PageTemplate
+                        {
+                            Id = pageTemplateFolder.Path,
+                            Html = htmlContent,
+                            Css = cssContent,
+                        };
+                        context.Entry(dbPageTemplate).State = EntityState.Added;
+                    }
+
+                    existingDbPageTemplates.Remove(pageTemplateFolder.Path);
+                }
+
+                // Remove exceed categories
+                var objectStateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
+                foreach (var dbPageTemplate in existingDbPageTemplates)
+                {
+                    context.Entry(dbPageTemplate.Value).State = EntityState.Deleted;
                 }
 
                 await context.SaveChangesAsync();
@@ -369,30 +449,73 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 return null;
             }
 
-            var settings = await settingsFile.DownloadAsJsonAsync(new
-            {
-                @abstract = "",
-                sortOrder = 0,
-                categories = new string[0],
-                packageFile = "",
-                promoted = false,
-                sortOrderPromoted = 0,
-                preview = false,
-                matchingSiteBaseTemplateId = "",
-                forceNewSite = false,
-                visible = true,
-                metadata = new {
-                    properties = new[] { 
-                        new {
-                            name = "",
-                            caption = "",
-                            description = "",
-                            editor = "",
-                            editorSettings = "",
-                        }
-                    }
-                }
-            });
+            #region Prepare the settings file and its outline
+
+            var settings = await settingsFile.DownloadAsJsonAsync(new TemplateSettings());
+            //var settings = await settingsFile.DownloadAsJsonAsync(new
+            //{
+            //    @abstract = "",
+            //    sortOrder = 0,
+            //    categories = new string[0],
+            //    packageFile = "",
+            //    promoted = false,
+            //    sortOrderPromoted = 0,
+            //    preview = false,
+            //    matchingSiteBaseTemplateId = "",
+            //    forceNewSite = false,
+            //    visible = true,
+            //    metadata = new
+            //    {
+            //        properties = new[] {
+            //            new {
+            //                name = "",
+            //                caption = "",
+            //                description = "",
+            //                editor = "",
+            //                editorSettings = "",
+            //            }
+            //        },
+            //        displayInfo = new
+            //        {
+            //            pageTemplateId = "",
+            //            descriptionParagraphs = new String[] { },
+            //            previewImages = new[] {
+            //                new {
+            //                    type = "",
+            //                    altText = "",
+            //                    url = "",
+            //                }
+            //            },
+            //            detailItemCategories = new[]
+            //            {
+            //                new {
+            //                    name = "",
+            //                    items = new[]
+            //                    {
+            //                        new
+            //                        {
+            //                            name = "",
+            //                            description = "",
+            //                            url ="",
+            //                            badgeText = "",
+            //                            previewImage = "",
+            //                        }
+            //                    }
+            //                }
+            //            },
+            //            systemRequirements = new[]
+            //            {
+            //                new
+            //                {
+            //                    name = "",
+            //                    value = "",
+            //                }
+            //            }
+            //        }
+            //    }
+            //});
+
+            #endregion
 
             // Read the package file
             ITemplateFile packageFile = items.FindFile(settings.packageFile);
@@ -401,6 +524,43 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 WriteLog($"Cannot find file {settings.packageFile}");
                 return null;
             }
+
+            #region Fix the Preview Image URLs
+
+            // Fix the URLs in the metadata settings
+            if (settings?.metadata?.displayInfo?.previewImages != null)
+            {
+                int previewImagesCount = settings.metadata.displayInfo.previewImages.Length;
+                for (var n = 0; n < previewImagesCount; n++)
+                {
+                    var previewImageUrl = settings.metadata.displayInfo.previewImages[n].url;
+                    settings.metadata.displayInfo.previewImages[n].url = 
+                        ChangeUri(packageFile.DownloadUri, previewImageUrl);
+                }
+            }
+
+            if (settings?.metadata?.displayInfo?.detailItemCategories != null)
+            {
+                int detailItemCategoriesCount = settings.metadata.displayInfo.detailItemCategories.Length;
+                for (var n = 0; n < detailItemCategoriesCount; n++)
+                {
+                    if (settings.metadata.displayInfo.detailItemCategories[n].items != null)
+                    {
+                        var detailItemCategoryItemsCount = settings.metadata.displayInfo.detailItemCategories[n].items.Length;
+                        for (var m = 0; m < detailItemCategoryItemsCount; m++)
+                        {
+                            var detailItemCategoryItemPreviewImageUrl = settings.metadata.displayInfo.detailItemCategories[n].items[m].previewImage;
+                            if (!String.IsNullOrEmpty(detailItemCategoryItemPreviewImageUrl))
+                            {
+                                settings.metadata.displayInfo.detailItemCategories[n].items[m].previewImage = 
+                                    ChangeUri(packageFile.DownloadUri, detailItemCategoryItemPreviewImageUrl);
+                            }
+                        }
+                    }
+                }
+            }
+
+            #endregion
 
             var package = new DomainModel.Package
             {
@@ -419,6 +579,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 MatchingSiteBaseTemplateId = settings.matchingSiteBaseTemplateId,
                 ForceNewSite = settings.forceNewSite,
                 Visible = settings.visible,
+                PageTemplateId = settings.metadata?.displayInfo?.pageTemplateId,
             };
 
             // Read the instructions.md and the provisioning.md files
@@ -546,6 +707,28 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             }
         }
 
+        private async Task<string> GetFileContentAsync(string path, string fileName)
+        {
+            ITemplateFile contentFile = (await _sourceProvider.GetAsync(path, WriteLog)).FindFile(fileName);
+            if (contentFile == null) return null;
+
+            ITemplateFile cloneContentFile = (await _cloneProvider.GetAsync(path, WriteLog)).FindFile(fileName);
+
+            // Get the file content
+            using (var httpClient = new HttpClient())
+            {
+                // Get the content
+                var contentStream = await contentFile.DownloadAsync();
+                using (var sr = new StreamReader(contentStream))
+                {
+                    var content = await sr.ReadToEndAsync();
+
+                    // Change relative uris
+                    return ChangeUris(cloneContentFile.DownloadUri, content);
+                }
+            }
+        }
+
         private async Task<string> GetHtmlContentAsync(string path, string fileName)
         {
             IMarkdownFile contentFile = (await _sourceProvider.GetAsync(path, WriteLog)).FindFile(fileName) as IMarkdownFile;
@@ -576,6 +759,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
         private string ChangeUris(Uri relativeTo, string html)
         {
             var htmlDoc = new HtmlDocument();
+            htmlDoc.OptionOutputOriginalCase = true;
             htmlDoc.LoadHtml(html);
 
             relativeTo = FixRelativeTo(relativeTo);

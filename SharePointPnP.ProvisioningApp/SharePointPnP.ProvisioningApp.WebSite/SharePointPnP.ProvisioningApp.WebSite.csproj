@@ -174,8 +174,10 @@
     <Content Include="app\images\beta-tag.png" />
     <Content Include="app\images\failure.png" />
     <Content Include="app\images\height-test.jpg" />
-    <Content Include="app\images\hero\old-hero-bg.jpg" />
     <Content Include="app\images\hero\hero-bg.jpg" />
+    <Content Include="app\images\hero\old-hero-bg.jpg" />
+    <Content Include="app\images\hero\hero-bg-people.jpg" />
+    <Content Include="app\images\ms-logo.png" />
     <Content Include="app\images\pnp-provision-300.png" />
     <Content Include="app\images\success.png" />
     <Content Include="app\images\userphoto.jpeg" />
@@ -189,6 +191,8 @@
     <Content Include="app\scripts\custom.js" />
     <Content Include="app\styles\color-picker.min.css" />
     <Content Include="app\styles\custom.css" />
+    <Content Include="app\styles\lookbook\styles.css" />
+    <Content Include="app\styles\lookbook\styles.min.css" />
     <Content Include="app\styles\main.css">
       <DependentUpon>main.scss</DependentUpon>
     </Content>
@@ -265,6 +269,8 @@
     <None Include="Properties\PublishProfiles\sppnpprovisioningappv2 - Web - 3Sharp.pubxml" />
     <None Include="Properties\PublishProfiles\spprovisioningappdev - Web - Local Dev.pubxml" />
     <Content Include="Web-Model.config" />
+    <Content Include="Views\Shared\_Header-Old.cshtml" />
+    <Content Include="Views\Shared\_Footer-Old.cshtml" />
     <None Include="Web.3Sharp.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

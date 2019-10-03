@@ -14,7 +14,6 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
     {
         Task<IEnumerable<ITemplateItem>> GetAsync(string path, Action<string> log);
 
-        Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log);
-
+        Task CloneAsync(ITemplatesProvider sourceProvider, Action<string> log, string exclusionRules = null);
     }
 }

@@ -36,7 +36,12 @@ namespace SharePointPnP.ProvisioningApp.Sync.WebJob
 
             var sync = new SyncEngine(sourceProvider, cloneProvider);
             sync.Log = Console.WriteLine;
+            sync.ExclusionRules = @"[\w|\/]*\/source[\w|\/]*";
+#if DEBUG
+            await sync.RunAsync(false);
+#else
             await sync.RunAsync(true);
+#endif
         }
     }
 }

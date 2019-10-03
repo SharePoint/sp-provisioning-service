@@ -75,5 +75,7 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public DbSet<ProvisioningActionItem> ProvisioningActionItems { get; set; }
 
         public DbSet<ConsumerApp> ConsumerApps { get; set; }
+
+        public DbSet<PageTemplate> PageTemplates { get; set; }
     }
 }
