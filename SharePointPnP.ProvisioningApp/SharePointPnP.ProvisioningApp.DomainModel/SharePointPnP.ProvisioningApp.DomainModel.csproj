@@ -190,6 +190,10 @@
     <Compile Include="Migrations\201910030702118_Wave11-LookBookSite-Step2.Designer.cs">
       <DependentUpon>201910030702118_Wave11-LookBookSite-Step2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910071521270_Wave11-LookBookSite-Step3.cs" />
+    <Compile Include="Migrations\201910071521270_Wave11-LookBookSite-Step3.Designer.cs">
+      <DependentUpon>201910071521270_Wave11-LookBookSite-Step3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
@@ -253,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910030702118_Wave11-LookBookSite-Step2.resx">
       <DependentUpon>201910030702118_Wave11-LookBookSite-Step2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910071521270_Wave11-LookBookSite-Step3.resx">
+      <DependentUpon>201910071521270_Wave11-LookBookSite-Step3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

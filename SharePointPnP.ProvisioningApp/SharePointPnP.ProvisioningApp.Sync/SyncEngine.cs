@@ -273,6 +273,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         }
                 });
 
+                int categoryOrder = 0;
                 var existingDbCategories = context.Categories.ToDictionary(c => c.Id, StringComparer.OrdinalIgnoreCase);
                 foreach (var category in categories.categories)
                 {
@@ -280,6 +281,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                     if (existingDbCategories.TryGetValue(category.id, out Category dbCategory))
                     {
                         dbCategory.DisplayName = category.displayName;
+                        dbCategory.Order = categoryOrder;
                         context.Entry(dbCategory).State = EntityState.Modified;
                     }
                     else
@@ -288,11 +290,13 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         dbCategory = new Category
                         {
                             Id = category.id,
-                            DisplayName = category.displayName
+                            DisplayName = category.displayName,
+                            Order = categoryOrder,
                         };
                         context.Entry(dbCategory).State = EntityState.Added;
                     }
 
+                    categoryOrder++;
                     existingDbCategories.Remove(category.id);
                 }
 

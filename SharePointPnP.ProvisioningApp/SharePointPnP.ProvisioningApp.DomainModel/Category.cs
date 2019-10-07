@@ -24,6 +24,11 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public String DisplayName { get; set; }
 
         /// <summary>
+        /// Defines the ordinal position of the category
+        /// </summary>
+        public int Order { get; set; }
+
+        /// <summary>
         /// The Packages associated with the Category (many to many)
         /// </summary>
         public List<Package> Packages { get; set; }
