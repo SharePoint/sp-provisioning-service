@@ -32,6 +32,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public bool visible { get; set; }
 
         public TemplateSettingsMetadata metadata { get; set; }
+
+        public String[] platforms { get; set; }
     }
 
     public class TemplateSettingsMetadata

@@ -36,6 +36,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
         private const string SITE_PATH = "site";
         private const string TENANT_PATH = "tenant";
         private const string CATEGORIES_NAME = "categories.json";
+        private const string PLATFORMS_NAME = "platforms.json";
         private const string TENANTS_NAME = "tenants.json";
         private const string SETTINGS_NAME = "settings.json";
         private const string INSTRUCTIONS_NAME = "instructions.md";
@@ -77,6 +78,9 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
             WriteLog("Synchonizing categories...");
             await SyncCategories();
+
+            WriteLog("Synchonizing platforms...");
+            await SyncPlatforms();
 
             WriteLog("Synchonizing templates...");
             await SyncTemplatesAsync(SITE_PATH, PackageType.SiteCollection);
@@ -318,6 +322,64 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             }
         }
 
+        private async Task SyncPlatforms()
+        {
+            using (ProvisioningAppDBContext context = GetContext())
+            {
+                // Find the platforms file
+                ITemplateFile file = (await _cloneProvider.GetAsync(SYSTEM_PATH, WriteLog)).FindFile(PLATFORMS_NAME);
+                if (file == null) throw new InvalidOperationException($"Cannot find file {PLATFORMS_NAME}");
+
+                // Deserialize the json
+                var platforms = await file.DownloadAsJsonAsync(new
+                {
+                    platforms = new[]
+                        {
+                            new {id = "", displayName = ""}
+                        }
+                });
+
+                var existingDbPlatforms = context.Platforms.ToDictionary(c => c.Id, StringComparer.OrdinalIgnoreCase);
+                foreach (var platform in platforms.platforms)
+                {
+                    // Update platform, if already exists
+                    if (existingDbPlatforms.TryGetValue(platform.id, out Platform dbPlatform))
+                    {
+                        dbPlatform.DisplayName = platform.displayName;
+                        context.Entry(dbPlatform).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        // Add new platform
+                        dbPlatform = new Platform
+                        {
+                            Id = platform.id,
+                            DisplayName = platform.displayName,
+                        };
+                        context.Entry(dbPlatform).State = EntityState.Added;
+                    }
+
+                    existingDbPlatforms.Remove(platform.id);
+                }
+
+                // Remove exceed platforms
+                var objectStateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
+                foreach (var dbPlatform in existingDbPlatforms)
+                {
+                    await context.Entry(dbPlatform.Value).Collection(p => p.Packages).LoadAsync();
+
+                    foreach (var dbPackage in dbPlatform.Value.Packages.ToArray())
+                    {
+                        objectStateManager.ChangeRelationshipState(dbPlatform.Value, dbPackage, p => p.Packages, EntityState.Deleted);
+                    }
+
+                    context.Entry(dbPlatform.Value).State = EntityState.Deleted;
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         private async Task SyncTemplatesAsync(string path, PackageType type)
         {
             using (ProvisioningAppDBContext context = GetContext())
@@ -330,6 +392,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
                 var existingDbPackages = context.Packages
                     .Include(c => c.Categories)
+                    .Include(c => c.TargetPlatforms)
                     .Where(p => p.PackageType == type)
                     .ToDictionary(c => c.PackageUrl, StringComparer.OrdinalIgnoreCase);
                 foreach (DomainModel.Package package in packages)
@@ -387,6 +450,17 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         foreach (var c in dbPackage.Categories.Except(package.Categories).ToArray())
                         {
                             objectStateManager.ChangeRelationshipState(dbPackage, c, d => d.Categories, EntityState.Deleted);
+                        }
+
+                        // Add new platforms
+                        foreach (var c in package.TargetPlatforms.Except(dbPackage.TargetPlatforms).ToArray())
+                        {
+                            objectStateManager.ChangeRelationshipState(dbPackage, c, d => d.TargetPlatforms, EntityState.Added);
+                        }
+                        // Remove old platforms
+                        foreach (var c in dbPackage.TargetPlatforms.Except(package.TargetPlatforms).ToArray())
+                        {
+                            objectStateManager.ChangeRelationshipState(dbPackage, c, d => d.TargetPlatforms, EntityState.Deleted);
                         }
 
                         existingDbPackages.Remove(dbPackage.PackageUrl);
@@ -456,68 +530,6 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             #region Prepare the settings file and its outline
 
             var settings = await settingsFile.DownloadAsJsonAsync(new TemplateSettings());
-            //var settings = await settingsFile.DownloadAsJsonAsync(new
-            //{
-            //    @abstract = "",
-            //    sortOrder = 0,
-            //    categories = new string[0],
-            //    packageFile = "",
-            //    promoted = false,
-            //    sortOrderPromoted = 0,
-            //    preview = false,
-            //    matchingSiteBaseTemplateId = "",
-            //    forceNewSite = false,
-            //    visible = true,
-            //    metadata = new
-            //    {
-            //        properties = new[] {
-            //            new {
-            //                name = "",
-            //                caption = "",
-            //                description = "",
-            //                editor = "",
-            //                editorSettings = "",
-            //            }
-            //        },
-            //        displayInfo = new
-            //        {
-            //            pageTemplateId = "",
-            //            descriptionParagraphs = new String[] { },
-            //            previewImages = new[] {
-            //                new {
-            //                    type = "",
-            //                    altText = "",
-            //                    url = "",
-            //                }
-            //            },
-            //            detailItemCategories = new[]
-            //            {
-            //                new {
-            //                    name = "",
-            //                    items = new[]
-            //                    {
-            //                        new
-            //                        {
-            //                            name = "",
-            //                            description = "",
-            //                            url ="",
-            //                            badgeText = "",
-            //                            previewImage = "",
-            //                        }
-            //                    }
-            //                }
-            //            },
-            //            systemRequirements = new[]
-            //            {
-            //                new
-            //                {
-            //                    name = "",
-            //                    value = "",
-            //                }
-            //            }
-            //        }
-            //    }
-            //});
 
             #endregion
 
@@ -594,17 +606,36 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             package.ProvisionRecap = provisioningContent;
 
             // Find the categories to apply
-            var dbCategories = settings.categories.Select(c =>
+            if (settings.categories != null && settings.categories.Length > 0)
             {
-                Category dbCategory = context.Categories.Find(c);
-                if (dbCategory == null)
+                var dbCategories = settings.categories.Select(c =>
                 {
-                    WriteLog($"Cannot find category with id {c}");
-                }
+                    Category dbCategory = context.Categories.Find(c);
+                    if (dbCategory == null)
+                    {
+                        WriteLog($"Cannot find category with id {c}");
+                    }
 
-                return dbCategory;
-            }).ToArray();
-            package.Categories.AddRange(dbCategories);
+                    return dbCategory;
+                }).ToArray();
+                package.Categories.AddRange(dbCategories);
+            }
+
+            // Find the platforms to apply
+            if (settings.platforms != null && settings.platforms.Length > 0)
+            {
+                var dbPlatforms = settings.platforms.Select(p =>
+                {
+                    Platform dbPlatform = context.Platforms.Find(p);
+                    if (dbPlatform == null)
+                    {
+                        WriteLog($"Cannot find platform with id {p}");
+                    }
+
+                    return dbPlatform;
+                }).ToArray();
+                package.TargetPlatforms.AddRange(dbPlatforms);
+            }
 
             // Find then author and fill his informations
             await FillAuthorAsync(package, packageFile.Path);

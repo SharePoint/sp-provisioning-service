@@ -60,6 +60,17 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
 
             // Force an index on Tenant ID and Package ID for ProvisioningActionItems
             modelBuilder.Entity<ProvisioningActionItem>().HasIndex(i => new { i.TenantId, i.PackageId });
+
+            // Define the many-to-many relationship between Packages and Platforms
+            modelBuilder.Entity<Package>()
+                .HasMany<Platform>(p => p.TargetPlatforms) // One Package can have many Platforms
+                .WithMany(p => p.Packages) // One Platform can have many Packages
+                    .Map(c => // Define the DB model matching objects' names
+                    {
+                        c.MapLeftKey("PackageId");
+                        c.MapRightKey("PlatformId");
+                        c.ToTable("PackagesPlatforms", "pnp");
+                    });
         }
 
         public DbSet<Category> Categories { get; set; }
@@ -77,5 +88,7 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public DbSet<ConsumerApp> ConsumerApps { get; set; }
 
         public DbSet<PageTemplate> PageTemplates { get; set; }
+
+        public DbSet<Platform> Platforms { get; set; }
     }
 }

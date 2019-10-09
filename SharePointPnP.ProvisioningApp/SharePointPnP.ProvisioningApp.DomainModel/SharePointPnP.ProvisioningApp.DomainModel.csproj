@@ -194,11 +194,20 @@
     <Compile Include="Migrations\201910071521270_Wave11-LookBookSite-Step3.Designer.cs">
       <DependentUpon>201910071521270_Wave11-LookBookSite-Step3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910091539399_Wave11-LookBookSite-Step4.cs" />
+    <Compile Include="Migrations\201910091539399_Wave11-LookBookSite-Step4.Designer.cs">
+      <DependentUpon>201910091539399_Wave11-LookBookSite-Step4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910091854580_Wave11-LookBookSite-Step5.cs" />
+    <Compile Include="Migrations\201910091854580_Wave11-LookBookSite-Step5.Designer.cs">
+      <DependentUpon>201910091854580_Wave11-LookBookSite-Step5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
     <Compile Include="Package.cs" />
     <Compile Include="PageTemplate.cs" />
+    <Compile Include="Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvisioningActionItem.cs" />
     <Compile Include="ProvisioningAppDBContext.cs" />
@@ -260,6 +269,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910071521270_Wave11-LookBookSite-Step3.resx">
       <DependentUpon>201910071521270_Wave11-LookBookSite-Step3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910091539399_Wave11-LookBookSite-Step4.resx">
+      <DependentUpon>201910091539399_Wave11-LookBookSite-Step4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910091854580_Wave11-LookBookSite-Step5.resx">
+      <DependentUpon>201910091854580_Wave11-LookBookSite-Step5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

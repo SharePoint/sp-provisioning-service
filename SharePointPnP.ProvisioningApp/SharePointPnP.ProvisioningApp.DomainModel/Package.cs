@@ -151,6 +151,11 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         /// Defines the ID of the Page Template to use for rendering the current package in the UI
         /// </summary>
         public String PageTemplateId { get; set; }
+
+        /// <summary>
+        /// The Target Platforms for the Package (many to many)
+        /// </summary>
+        public List<Platform> TargetPlatforms { get; set; } = new List<Platform>();
     }
 
     /// <summary>
