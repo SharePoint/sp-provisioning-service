@@ -415,6 +415,7 @@
     <Content Include="Web-Model.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Views\Shared\_TopHeader.cshtml" />
     <None Include="Web.Dev.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

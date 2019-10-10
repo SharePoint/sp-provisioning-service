@@ -9,3 +9,13 @@
 .wrapper-inner {
     display: inherit !important;
 }
+
+@media (min-width:768px) {
+    .shortTitle {
+        padding: 16px 8px 16px 12px !important;
+    }
+}
+
+.pnp-svcteaser {
+    border-bottom: 2px #038387 solid !important;
+}

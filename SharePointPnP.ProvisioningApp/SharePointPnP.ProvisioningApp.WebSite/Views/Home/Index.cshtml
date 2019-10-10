@@ -36,7 +36,7 @@
             {
                 <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
                     <div class="pnp-img">
-                        <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
+                        <img src="@GetTemplatePreviewImage(package)" alt="@package.DisplayName" class="pnp-item-img">
                         @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
                             {
                                 <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
@@ -55,6 +55,7 @@
                 </a>
             }
         </div>
+        <a name="templates"></a>
         <div>
             <section class="categories-section">
                 <div class="container-fluid">
