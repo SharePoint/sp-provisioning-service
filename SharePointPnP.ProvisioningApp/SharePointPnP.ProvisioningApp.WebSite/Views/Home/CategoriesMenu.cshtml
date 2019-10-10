@@ -1,0 +1,25 @@
+﻿@model SharePointPnP.ProvisioningApp.WebSite.Models.CategoriesMenuViewModel
+<div>
+    @foreach (var c in Model.Categories)
+    {
+        <li>
+            <div>
+                <button class="menuButton has-glyph"><span>@c.DisplayName</span></button>
+                <div class="menu-panel" role="menu">
+                    <ul>
+                        @foreach (var p in c.Packages)
+                        {
+                            <li>
+                                <div>
+                                    <a href="/home/details?packageId=@p.Id">
+                                        <span>@p.DisplayName</span>
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </li>
+    }
+</div>

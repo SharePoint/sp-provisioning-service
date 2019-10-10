@@ -155,6 +155,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CategoriesMenuViewModel.cs" />
     <Compile Include="Models\ContentPageViewModel.cs" />
     <Compile Include="Models\DetailsViewModel.cs" />
     <Compile Include="Models\IndexViewModel.cs" />
@@ -210,6 +211,32 @@
     <Content Include="app\images\office365.svg" />
     <Content Include="app\images\weather-wp-squared.jpg" />
     <Content Include="app\images\weather-wp.jpg" />
+    <Content Include="lookbook\assets\favicon.ico" />
+    <Content Include="lookbook\assets\images\card-contosobrand.jpg" />
+    <Content Include="lookbook\assets\images\card-contosonews.jpg" />
+    <Content Include="lookbook\assets\images\card-contosoworks.jpg" />
+    <Content Include="lookbook\assets\images\card-droneproducttraining.jpg" />
+    <Content Include="lookbook\assets\images\card-flysafeconference.jpg" />
+    <Content Include="lookbook\assets\images\card-give.jpg" />
+    <Content Include="lookbook\assets\images\card-globalmarketing.jpg" />
+    <Content Include="lookbook\assets\images\card-globalsales.jpg" />
+    <Content Include="lookbook\assets\images\card-leadershipconnection.jpg" />
+    <Content Include="lookbook\assets\images\card-mark8projectteam.jpg" />
+    <Content Include="lookbook\assets\images\card-productsupport.jpg" />
+    <Content Include="lookbook\assets\images\card-thelanding.jpg" />
+    <Content Include="lookbook\assets\images\card-theperspective.jpg" />
+    <Content Include="lookbook\assets\images\facebook.png" />
+    <Content Include="lookbook\assets\images\feed-hero-background-1.png" />
+    <Content Include="lookbook\assets\images\feed-hero-background-2.png" />
+    <Content Include="lookbook\assets\images\homepage-top-image.png" />
+    <Content Include="lookbook\assets\images\linkedin.png" />
+    <Content Include="lookbook\assets\images\logo.png" />
+    <Content Include="lookbook\assets\images\twitter.png" />
+    <Content Include="lookbook\assets\scripts\partial.js" />
+    <Content Include="lookbook\assets\style\icon.css" />
+    <Content Include="lookbook\assets\style\lookbook-custom.css" />
+    <Content Include="lookbook\assets\style\lookbook.css" />
+    <Content Include="lookbook\assets\style\styles.css" />
     <Content Include="package.json" />
     <Content Include="app\scripts\iframe.js" />
     <Content Include="app\scripts\main.js" />
@@ -230,6 +257,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Categories\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".babelrc" />
@@ -247,6 +275,8 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="lookbook\api\categories" />
+    <Content Include="lookbook\api\settings" />
     <None Include="packages.config" />
     <Content Include="app\styles\01-base\_00.base.variables.scss" />
     <Content Include="app\styles\01-base\_00.webfonts.scss" />
@@ -269,9 +299,8 @@
     <None Include="Properties\PublishProfiles\sppnpprovisioningappv2 - Web - 3Sharp.pubxml" />
     <None Include="Properties\PublishProfiles\spprovisioningappdev - Web - Local Dev.pubxml" />
     <Content Include="Web-Model.config" />
-    <Content Include="Views\Shared\_Header-Old.cshtml" />
-    <Content Include="Views\Shared\_Footer-Old.cshtml" />
     <Content Include="Views\Shared\_TopHeader.cshtml" />
+    <Content Include="Views\Home\CategoriesMenu.cshtml" />
     <None Include="Web.3Sharp.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

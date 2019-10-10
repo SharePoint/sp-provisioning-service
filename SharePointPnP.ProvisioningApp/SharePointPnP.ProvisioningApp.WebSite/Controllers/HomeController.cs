@@ -26,12 +26,12 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Controllers
             if (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]))
             {
                 // Show all packages in the test environment
-                model.Packages = context.Packages.Include("Categories").Where(p => p.Visible == true).ToList();
+                model.Packages = context.Packages.Include("Categories").Include("TargetPlatforms").Where(p => p.Visible == true).ToList();
             }
             else
             {
                 // Show not-preview packages in the production environment
-                model.Packages = context.Packages.Include("Categories").Where(p => p.Preview == false && p.Visible == true).ToList();
+                model.Packages = context.Packages.Include("Categories").Include("TargetPlatforms").Where(p => p.Preview == false && p.Visible == true).ToList();
             }
 
             // Get the service description content
@@ -43,7 +43,7 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Controllers
             }
 
             // Get the categories
-            model.Categories = context.Categories.ToDictionary(c => c.Id, c => c.DisplayName);
+            model.Categories = context.Categories.OrderBy(c => c.Order).ToList();
 
             return View(model);
         }
@@ -92,6 +92,19 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Controllers
             return View("ContentPage", model);
         }
 
+        [HttpPost]
+        public ActionResult CategoriesMenu()
+        {
+            CategoriesMenuViewModel model = new CategoriesMenuViewModel();
 
+            // Get all the Categories together with the Packages
+            ProvisioningAppDBContext context = new ProvisioningAppDBContext();
+            model.Categories = context.Categories
+                .Include("Packages")
+                .OrderBy(c => c.Order)
+                .ToList();
+
+            return PartialView("CategoriesMenu", model);
+        }
     }
 }

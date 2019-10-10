@@ -1,0 +1,11 @@
+﻿.slb-tab-label-item.hide {
+    display: none;
+}
+
+.pnp-logo-beta {
+    height: 50px;
+}
+
+.wrapper-inner {
+    display: inherit !important;
+}

@@ -1,0 +1,101 @@
+﻿.app-footer {
+    margin-top: auto;
+}
+
+.top-section {
+    height: 600px;
+}
+
+    .top-section .container-fluid {
+        height: 100%;
+    }
+
+        .top-section .container-fluid .top-section-area {
+            background-image: url(/lookbook/assets/images/homepage-top-image.png);
+            background-size: cover;
+            background-position: center center;
+            height: 100%;
+        }
+
+            .top-section .container-fluid .top-section-area h3 {
+                color: #038387;
+            }
+
+            .top-section .container-fluid .top-section-area .section-text {
+                align-self: flex-end;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 15px;
+                width: 100%;
+            }
+
+@media (min-width: 768px) {
+    .top-section .container-fluid .top-section-area .section-text {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: auto;
+    }
+}
+
+.categories-section .description-text {
+    max-width: 540px;
+    margin: auto;
+    margin-bottom: 48px;
+    text-align: center;
+}
+
+.aspect-ratio-wrapper {
+    padding-bottom: 56.20155039%;
+    position: relative;
+    overflow: hidden;
+}
+
+    .aspect-ratio-wrapper .aspect-ratio-image-wrapper {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+        .aspect-ratio-wrapper .aspect-ratio-image-wrapper img {
+            width: 100%;
+        }
+
+a {
+    color: inherit;
+    display: block;
+}
+
+    a .hero-image {
+        background: #e0e0e0;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        overflow: hidden;
+        transition: opacity 0.3s, box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    a:hover,
+    a:focus {
+        color: inherit;
+        text-decoration: none;
+    }
+
+        a:hover .hero-image,
+        a:focus .hero-image {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+            opacity: 0.9;
+        }
+
+    a:focus {
+        outline: none;
+    }
+
+        a:focus .hero-image {
+            outline: 1px dashed #000;
+        }
+
+[hidden] {
+    display: none;
+}

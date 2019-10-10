@@ -8,75 +8,43 @@
         return (regex.Replace(content, String.Empty));
     }
 
+    String GetTemplatePreviewImage(SharePointPnP.ProvisioningApp.DomainModel.Package package)
+    {
+        var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<SharePointPnP.ProvisioningApp.DomainModel.TemplateSettingsMetadata>(package.PropertiesMetadata);
+        if (settings?.displayInfo?.previewImages != null &&
+            settings?.displayInfo?.previewImages.Length > 0)
+        {
+            var cardPreview = settings.displayInfo.previewImages.FirstOrDefault(p => p.type == "cardpreview");
+            if (cardPreview != null)
+            {
+                return (cardPreview.url);
+            }
+        }
+
+        return (package.ImagePreviewUrl);
+    }
+
 }
 
 @Html.Partial("_TopHeader")
 
 <!-- Inner Content Wrapper -->
-<div class="wrapper">
+<div class="">
     <div class="wrapper-inner">
-        @*<div class="pnp-hero-divider">&nbsp;</div>*@
-        @*<div class="pnp-svcteaser">
-            <div class="pnp-svcteaser-inner">
-                @(Html.Raw(Model.ServiceDescription))
-                <a href="/home/contentPage?contentPageId=ServiceDescriptionLong" class="read-more">Read more</a>
-            </div>
-        </div>*@
-        @*<div class="pnp-filter">
-            <div class="pnp-search">
-                <input type="text" class="pnp-search-input">
-                <button class="pnp-search-button"></button>
-            </div>
-            <div class="pnp-filter-btn">
-                <button class="pnp-filter-toggle active">Filter</button>
-            </div>
-        </div>*@
-    <div class="pnp-hightlight-sm">
-        @foreach (var package in Model.Packages.Where(p => p.Promoted).OrderByDescending(p => p.SortOrderPromoted))
-        {
-            <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
-                <div class="pnp-img">
-                    <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
-                    @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
-                        {
-                            <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
-                        }
-                        else
-                        {
-                            <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
-                        }*@
-                </div>
-                <div class="pnp-item-desc">
-                    <div class="pnp-item-title">@package.DisplayName</div>
-                    <div class="pnp-item-content">
-                        <p>@Html.Raw(package.Abstract)</p>
-                    </div>
-                </div>
-            </a>
-        }
-    </div>
-        <div class="pnp-categoryTabs">
-            @{
-                foreach (var category in Model.Categories)
-                {
-                    <div id="@("category-" + category.Key.ToLower())" onclick="selectCategory('@category.Key.ToLower()')" class="pnp-categoryTitle">@category.Value</div>
-                }
-            }
-        </div>
-        <div class="pnp-hightlight-reg">
-            @foreach (var package in Model.Packages.OrderByDescending(p => p.SortOrder))
+        <div class="pnp-hightlight-sm">
+            @foreach (var package in Model.Packages.Where(p => p.Promoted).OrderByDescending(p => p.SortOrderPromoted))
             {
-                <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-regular @(package.Categories.Aggregate("", (a, c) => a += $" category-{c.Id.ToLower()}"))">
+                <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
                     <div class="pnp-img">
                         <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
                         @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
-                        {
-                            <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
-                        }
-                        else
-                        {
-                            <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
-                        }*@
+                            {
+                                <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
+                            }
+                            else
+                            {
+                                <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
+                            }*@
                     </div>
                     <div class="pnp-item-desc">
                         <div class="pnp-item-title">@package.DisplayName</div>
@@ -87,6 +55,67 @@
                 </a>
             }
         </div>
+        <div>
+            <section class="categories-section">
+                <div class="container-fluid">
+                    <div class="description-text">
+                        <h3>Discover the modern experiences</h3>
+                        <p>
+                            Reinvent the intranet with solutions for collaboration, communication,
+                            engagement, and knowledge management. Today it's simple for any user to create beautiful, fast sites and
+                            pages that look great on any device or screen
+                        </p>
+                    </div>
+                </div>
+                <div id="templates">
+                    <div alignlabels="center" class="slb-tab-group">
+                        <div class="slb-tab-label-wrapper align-center" role="tablist">
+                            @{
+                                foreach (var category in Model.Categories)
+                                {
+                                    <div id="@("category-" + category.Id.ToLower())" onclick="selectCategory('@category.Id.ToLower()')" role="tab" class="slb-tab-label" tabindex="0">
+                                        <span> @category.DisplayName </span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="slb-tab-body-wrapper">
+                            <div class="slb-tab-body">
+                                <div>
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            @foreach (var package in Model.Packages.OrderByDescending(p => p.SortOrder))
+                                            {
+                                                if (package.TargetPlatforms.Any(p => p.Id == "SPPNP"))
+                                                {
+                                                    <div class="col-sm-6 col-lg-4 mt-5 slb-tab-label-item hide @(package.Categories.Aggregate("", (a, c) => a += $" category-{c.Id.ToLower()}"))">
+                                                        <div class="div">
+                                                            <a href="/home/details?packageId=@package.Id">
+                                                                <div class="hero-image aspect-ratio-wrapper">
+                                                                    <div class="aspect-ratio-image-wrapper">
+                                                                        <img src="@GetTemplatePreviewImage(package)"
+                                                                             alt="@package.DisplayName">
+                                                                    </div>
+                                                                </div>
+                                                                <h5> @package.DisplayName </h5>
+                                                            </a>
+                                                            <div>
+                                                                @Html.Raw(package.Abstract)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
     </div>
 </div>
 
@@ -103,22 +132,22 @@
         function selectCategory(categoryId) {
 
             // unselect the selected item
-            var previouslySelectedCategoryItems = document.getElementsByClassName('pnp-categoryTitle selected');
+            var previouslySelectedCategoryItems = document.getElementsByClassName('slb-tab-label isActive');
             if (previouslySelectedCategoryItems &&
                 previouslySelectedCategoryItems.length > 0) {
-                previouslySelectedCategoryItems[0].classList.remove('selected');
+                previouslySelectedCategoryItems[0].classList.remove('isActive');
             }
 
             // highlight the the currently selected item
             var categoryItem = document.getElementById('category-' + categoryId);
             if (categoryItem) {
-                if (!categoryItem.classList.contains('selected')) {
-                    categoryItem.classList.add('selected');
+                if (!categoryItem.classList.contains('isActive')) {
+                    categoryItem.classList.add('isActive');
                 }
             }
 
             // play with show/hide against the real template items
-            var packages = document.getElementsByClassName('pnp-item pnp-item-regular');
+            var packages = document.getElementsByClassName('slb-tab-label-item');
             if (packages) {
                 for (var i = 0; i < packages.length; i++) {
                     // if the package belongs to the currently selected category
@@ -137,7 +166,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            selectCategory('@Model.Categories.First().Key.ToLower()');
+            selectCategory('@Model.Categories.First().Id.ToLower()');
         });
 
     </script>

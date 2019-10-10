@@ -32,6 +32,6 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Models
 
         public String ServiceDescription { get; set; }
 
-        public Dictionary<String, String> Categories { get; set; }
+        public List<Category> Categories { get; set; }
     }
 }
