@@ -5,28 +5,17 @@
     String StripHtml(String content)
     {
         var regex = new System.Text.RegularExpressions.Regex("\\<[^\\>]*\\>");
-        return(regex.Replace(content, String.Empty));
+        return (regex.Replace(content, String.Empty));
     }
 
 }
 
-<section class="header-img">
-    <div class="header-img-inner"></div>
-</section>
-<section class="pnp-hero">
-    <div class="pnp-hero-inner">
-        <div class="pnp-hero-title">
-            <h1 class="pnp-hero-head">See the possibilities</h1>
-            <div class="pnp-hero-subtl">
-                Deploy &gt; Demonstrate &gt; Test
-            </div>
-        </div>
-    </div>
-</section>
+@Html.Partial("_TopHeader")
+
 <!-- Inner Content Wrapper -->
 <div class="wrapper">
     <div class="wrapper-inner">
-        <div class="pnp-hero-divider">&nbsp;</div>
+        @*<div class="pnp-hero-divider">&nbsp;</div>*@
         @*<div class="pnp-svcteaser">
             <div class="pnp-svcteaser-inner">
                 @(Html.Raw(Model.ServiceDescription))
@@ -42,13 +31,13 @@
                 <button class="pnp-filter-toggle active">Filter</button>
             </div>
         </div>*@
-        <div class="pnp-hightlight-sm">
-            @foreach (var package in Model.Packages.Where(p => p.Promoted).OrderByDescending(p => p.SortOrderPromoted))
-            {
-                <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
-                    <div class="pnp-img">
-                        <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
-                        @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
+    <div class="pnp-hightlight-sm">
+        @foreach (var package in Model.Packages.Where(p => p.Promoted).OrderByDescending(p => p.SortOrderPromoted))
+        {
+            <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
+                <div class="pnp-img">
+                    <img src="@package.ImagePreviewUrl" alt="@package.DisplayName" class="pnp-item-img">
+                    @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
                         {
                             <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
                         }
@@ -56,16 +45,16 @@
                         {
                             <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
                         }*@
+                </div>
+                <div class="pnp-item-desc">
+                    <div class="pnp-item-title">@package.DisplayName</div>
+                    <div class="pnp-item-content">
+                        <p>@Html.Raw(package.Abstract)</p>
                     </div>
-                    <div class="pnp-item-desc">
-                        <div class="pnp-item-title">@package.DisplayName</div>
-                        <div class="pnp-item-content">
-                            <p>@Html.Raw(package.Abstract)</p>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
+                </div>
+            </a>
+        }
+    </div>
         <div class="pnp-categoryTabs">
             @{
                 foreach (var category in Model.Categories)
