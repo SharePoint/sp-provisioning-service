@@ -1,7 +1,21 @@
 ﻿@model SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ProvisioningActionModel
 @using SharePointPnP.ProvisioningApp.WebApp.Models
 
-@Html.Partial("_TopHeader")
+    <section class="top-section">
+        <div class="container-fluid">
+            <div class="top-section-area dark-bg d-flex align-items-center">
+                <div class="section-text">
+                    <div>
+                        <h1 class="mb-4">SharePoint Provisioning Service</h1>
+                        <h3 class="mb-3">You are all set!</h3>
+                        <p class="mb-3">
+                            You just need to wait for your template to be provisioned.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 <!-- Inner Content Wrapper -->
 <div class="">
@@ -90,6 +104,12 @@
                             </td>
                         </tr>
                     </table>
+                    @if (ViewBag.HeaderData != null && !String.IsNullOrEmpty(ViewBag.HeaderData.RootSiteUrl))
+                    {
+                        <div>
+                            <input type="button" id="goBackButton" class="pnp-btn-provision slb-primary-button" value="Go back" />
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -200,6 +220,16 @@
 
             // check the provisioning status
             setTimeout(checkProvisioningStatus, 90000);
+
+            var goBackUrl = '@ViewBag.HeaderData.RootSiteUrl';
+            if (goBackUrl && goBackUrl !== '') {
+                var goBackButton = document.getElementById("goBackButton");
+                if (goBackButton) {
+                    goBackButton.addEventListener('click', function (e) {
+                        location.href = goBackUrl;
+                    });
+                }
+            }
         });
 
     </script>

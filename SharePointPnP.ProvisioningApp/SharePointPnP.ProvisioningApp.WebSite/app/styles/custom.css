@@ -91,8 +91,8 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .ms-Toggle .ms-Toggle-field.is-selected {
-    background-color: #0078d7;
-    border-color: #0078d7;
+    background-color: #038387;
+    border-color: #038387;
 }
 
 .ms-Toggle.is-disabled .ms-Toggle-field {
@@ -103,8 +103,8 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .pnp-btn-provision.ms-Button--primary {
-    background-color: #0078d7;
-    border-color: #0078d7;
+    background-color: #038387;
+    border-color: #038387;
     color: #fff;
     margin-left: 118px;
 }
@@ -156,7 +156,7 @@ hr.sectionTitleDivider {
 }
 
 .confirmationDialog {
-    position: absolute;
+    position: fixed;
     background-color: white;
     text-align: center;
     top: 50%;
@@ -184,7 +184,7 @@ hr.sectionTitleDivider {
 }
 
 .missingPreReqsDialog {
-    position: absolute;
+    position: fixed;
     background-color: white;
     text-align: center;
     top: 50%;
@@ -239,11 +239,11 @@ hr.sectionTitleDivider {
 
 
 .workingOnItSiteDialog {
-    position: absolute;
+    position: fixed;
     background-color: white;
     text-align: center;
-    top: 50%;
     left: 50%;
+    top: 50%;
     width: 24em;
     height: 9em;
     margin-top: -4.5em;
@@ -267,7 +267,7 @@ hr.sectionTitleDivider {
 }
 
 .siteExistsDialog {
-    position: absolute;
+    position: fixed;
     background-color: white;
     text-align: center;
     top: 50%;
@@ -293,8 +293,8 @@ hr.sectionTitleDivider {
 }
 
 .okDialog {
-    background-color: #0078d7;
-    border-color: #0078d7;
+    background-color: #038387;
+    border-color: #038387;
     color: #fff;
 }
 

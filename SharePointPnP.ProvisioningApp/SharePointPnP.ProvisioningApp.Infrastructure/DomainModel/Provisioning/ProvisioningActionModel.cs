@@ -149,6 +149,9 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         public List<ProvisioningItemModel> ChildrenItems { get; set; }
 
         public List<ProvisioningWebhook> Webhooks { get; set; }
+
+        [JsonIgnore]
+        public String ReturnUrl { get; set; }
     }
 
     /// <summary>

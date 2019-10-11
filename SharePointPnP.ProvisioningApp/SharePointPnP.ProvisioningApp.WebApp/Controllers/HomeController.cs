@@ -61,7 +61,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return Redirect("/");
         }
 
         [AllowAnonymous]
@@ -77,12 +77,14 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Provision(String packageId = null)
+        public async Task<ActionResult> Provision(String packageId = null, String returnUrl = null)
         {
             if (String.IsNullOrEmpty(packageId))
             {
                 throw new ArgumentNullException("packageId");
             }
+
+            PrepareHeaderData(returnUrl);
 
             ProvisioningActionModel model = new ProvisioningActionModel();
 
@@ -117,6 +119,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
                         model.NotificationEmail = upn;
 
+                        model.ReturnUrl = returnUrl;
+
                         #endregion
 
                         // Determine the URL of the root SPO site for the current tenant
@@ -144,9 +148,34 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return View("Provision", model);
         }
 
+        private void PrepareHeaderData(String returnUrl)
+        {
+            var headerData = new SharePointPnP.ProvisioningApp.WebApp.Models.HeaderDataViewModel();
+            var slbHost = System.Configuration.ConfigurationManager.AppSettings["SPLBSiteHost"];
+
+            if (!String.IsNullOrEmpty(returnUrl) &&
+                !String.IsNullOrEmpty(slbHost) &&
+                returnUrl.Contains(slbHost))
+            {
+                headerData.SiteTitle = "SharePoint Look Book";
+                headerData.RootSiteUrl = returnUrl;
+                headerData.ShowServiceDescription = false;
+            }
+            else
+            {
+                headerData.SiteTitle = "SharePoint Provisioning Service";
+                headerData.RootSiteUrl = "/";
+                headerData.ShowServiceDescription = true;
+            }
+
+            ViewBag.HeaderData = headerData;
+        }
+
         [HttpPost]
         public async Task<ActionResult> Provision(ProvisioningActionModel model)
         {
+            PrepareHeaderData(model.ReturnUrl);
+
             if (model != null && ModelState.IsValid)
             {
                 // Enqueue the provisioning request

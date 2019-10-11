@@ -353,6 +353,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
+    <Compile Include="Models\HeaderDataViewModel.cs" />
     <Compile Include="Models\ProvisionContentPackRequest.cs" />
     <Compile Include="Models\ProvisionContentPackResponse.cs" />
     <Compile Include="Models\TemplateParameterModel.cs" />

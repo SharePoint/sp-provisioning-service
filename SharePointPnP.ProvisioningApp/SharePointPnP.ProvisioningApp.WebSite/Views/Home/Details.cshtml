@@ -1,6 +1,6 @@
 ﻿@model SharePointPnP.ProvisioningApp.WebSite.Models.DetailsViewModel
 
-@Html.Partial("_TopHeader")
+@Html.Partial("_TopHeaderSmall")
 
 <div class="">
     <div class="wrapper-inner">
@@ -12,11 +12,11 @@
                 @*<h3 class="pnp-tag-header">Try it and </h3>*@
                 @if (Model.Package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
                 {
-                    <button class="pnp-button" data-provision-url="/site/home/provision?packageId=@Model.Package.Id"> Add to your site</button>
+                    <button class="call-to-action slb-primary-button pnp-start-provisioning" data-provision-url="/site/home/provision?packageId=@Model.Package.Id"> Add to your site</button>
                 }
                 else
                 {
-                    <button class="pnp-button" data-provision-url="/tenant/home/provision?packageId=@Model.Package.Id"> Add to your tenant</button>
+                    <button class="call-to-action slb-primary-button pnp-start-provisioning" data-provision-url="/tenant/home/provision?packageId=@Model.Package.Id"> Add to your tenant</button>
                 }
                 <div class="permission">
                     <h3 class="pnp-tag-header">

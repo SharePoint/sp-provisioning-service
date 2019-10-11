@@ -301,6 +301,7 @@
     <Content Include="Web-Model.config" />
     <Content Include="Views\Shared\_TopHeader.cshtml" />
     <Content Include="Views\Home\CategoriesMenu.cshtml" />
+    <Content Include="Views\Shared\_TopHeaderSmall.cshtml" />
     <None Include="Web.3Sharp.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

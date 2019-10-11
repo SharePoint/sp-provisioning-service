@@ -51,7 +51,7 @@
         </a>
         <div class="expanded-home-nav-item expanded-nav-item">
             <a aria-label="Microsoft 365" class="logo" routerlink="/"
-               href="/">
+               href="@ViewBag.HeaderData.RootSiteUrl">
                 <span>Microsoft 365</span>
             </a>
         </div>
@@ -67,13 +67,27 @@
                         <img src="/app/images/beta-tag.png" alt="Beta" class="pnp-logo-beta">
                     </li>
                     <li class="collapsed-nav-item menuButton">
-                        <a href="/">Home</a>
+                        <a href="@ViewBag.HeaderData.RootSiteUrl">Home</a>
                     </li>
-                    <li><a href="/" class="shortTitle"><span>SharePoint Provisioning Service</span></a></li>
+                    <li><a href="@ViewBag.HeaderData.RootSiteUrl" class="shortTitle"><span>@ViewBag.HeaderData.SiteTitle</span></a></li>
                 </ul>
             </nav>
         </div>
         <div class="right-nav">
+            @if (ViewBag.HeaderData.ShowServiceDescription)
+            {
+                <nav class="menu">
+                    <ul>
+                        <li>
+                            <img src="/app/images/beta-tag.png" alt="Beta" class="pnp-logo-beta">
+                        </li>
+                        <li class="collapsed-nav-item menuButton">
+                            <a href="/">Home</a>
+                        </li>
+                        <li><a href="/" class="shortTitle"><span>Service description</span></a></li>
+                    </ul>
+                </nav>
+            }
             <nav class="menu">
                 <div>
                     <button aria-label="All Microsoft expand to see list of Microsoft products and services" class="expanded-nav-item has-glyph microsoftNav" type="button" aria-expanded="false"><span>All Microsoft</span></button>
@@ -216,8 +230,8 @@
                 </div>
             </nav>
             @*<div class="me-control"><button class="me-control-trigger"><span class="me-control-text">Sign in</span>
-                    <div class="profile-pic glyph_signIn_circle"></div>
-                </button></div>*@
+            <div class="profile-pic glyph_signIn_circle"></div>
+        </button></div>*@
         </div>
     </div>
 </div>

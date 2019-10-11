@@ -1,6 +1,10 @@
 ﻿@model SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ProvisioningActionModel
 @using SharePointPnP.ProvisioningApp.WebApp.Models
 
+@{ 
+    ViewBag.ReturnUrl = ViewContext.HttpContext.Request.QueryString["returnUrl"];
+}
+
 @functions {
     public IEnumerable<SelectListItem> GetAvailableThemes()
     {
@@ -22,7 +26,21 @@
     }
 }
 
-@Html.Partial("_TopHeader")
+<section class="top-section">
+    <div class="container-fluid">
+        <div class="top-section-area dark-bg d-flex align-items-center">
+            <div class="section-text">
+                <div>
+                    <h1 class="mb-4">SharePoint Provisioning Service</h1>
+                    <h3 class="mb-3">Great choice!</h3>
+                    <p class="mb-3">
+                        We just need a bit of information before the site can be provisioned.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- Inner Content Wrapper -->
 <div class="">
@@ -56,6 +74,7 @@
                     @Html.HiddenFor(m => m.TargetSiteBaseTemplateId)
                     @Html.HiddenFor(m => m.ForceNewSite)
                     @Html.HiddenFor(m => m.MatchingSiteBaseTemplateId)
+                    @Html.HiddenFor(m => m.ReturnUrl)
 
                     <table>
                         <tr>
@@ -192,7 +211,7 @@
                                 <input type="button" id="cancelButton" class="pnp-btn-provision" value="Cancel" />
                             </td>
                             <td>
-                                <input type="button" id="provisionButton" class="pnp-btn-provision ms-Button--primary" value="Provision" />
+                                <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="Provision" />
                             </td>
                         </tr>
 
@@ -210,7 +229,7 @@
     </div>
     <br />
     <input type="button" id="cancelDialog" class="pnp-btn-provision" value="Cancel" />
-    <input type="button" id="confirmDialog" class="pnp-btn-provision ms-Button--primary" value="Confirm" />
+    <input type="button" id="confirmDialog" class="pnp-btn-provision slb-primary-button" value="Confirm" />
 </div>
 
 <div id="workingOnItSiteDialog" class="workingOnItSiteDialog hide">
@@ -224,7 +243,7 @@
     <h2>Site URL already in use</h2>
     <div id="siteExistsDialogContent" class="siteExistsDialogContent"></div>
     <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision" value="Cancel" />
-    <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog ms-Button--primary" value="Confirm" />
+    <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="Confirm" />
 </div>
 
 <div id="missingPreReqsDialog" class="missingPreReqsDialog hide">
@@ -234,7 +253,7 @@
         @(Html.Raw(Model.MissingPreReqsFooter))
     </div>
     <br />
-    <input type="button" id="acknowledgeDialog" class="pnp-btn-acknowledge ms-Button--primary" value="Ok" />
+    <input type="button" id="acknowledgeDialog" class="pnp-btn-acknowledge slb-primary-button" value="Ok" />
 </div>
 
 <div id="dialogOverlay" class="dialogModalOverlay hide">

@@ -17,5 +17,31 @@
 }
 
 .pnp-svcteaser {
-    border-bottom: 2px #038387 solid !important;
+    /*border-bottom: 2px #038387 solid !important;*/
+    border-bottom: inherit !important;
+}
+
+.pnp-tag-header {
+    font-size: inherit !important;
+}
+
+button,
+input[type="button"] {
+    font-weight: 400 !important;
+}
+
+.permission {
+    margin-top: 1em;
+}
+
+button.pnp-btn-provision:hover, input[type="button"].pnp-btn-provision:hover {
+    color: white !important;
+    background-color: #038387 !important;
+    text-decoration: underline !important;
+}
+
+button.slb-primary-button,
+input[type="button"].slb-primary-button {
+    color: white !important;
+    background-color: #038387 !important;
 }
