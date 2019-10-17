@@ -973,7 +973,7 @@
                 cancelButton.addEventListener('click', function (e) {
                     // redirects the browser to the home page of the Provisioning Service
                     e.stopPropagation();
-                    location.href = "/";
+                    location.href = '@((ViewBag.HeaderData != null && !String.IsNullOrEmpty(ViewBag.HeaderData.RootSiteUrl)) ? ViewBag.HeaderData.RootSiteUrl : "/")';
                     return (false);
                 });
             }

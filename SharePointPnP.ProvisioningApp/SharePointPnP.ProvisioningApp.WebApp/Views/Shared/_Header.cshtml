@@ -18,7 +18,7 @@
 
         // Get the dynamic list of categories
         var categoriesMenuInit = { method: 'POST' };
-        fetch("/home/CategoriesMenu", categoriesMenuInit).then(function (response) {
+        fetch('/home/CategoriesMenu?returnUrl=@(!String.IsNullOrEmpty(ViewBag?.HeaderData?.RootSiteUrl) ? HttpUtility.UrlEncode(ViewBag.HeaderData.RootSiteUrl) : "")', categoriesMenuInit).then(function (response) {
             return response.text();
         }).then(function (html) {
 
