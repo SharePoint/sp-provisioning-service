@@ -24,6 +24,19 @@
         return (package.ImagePreviewUrl);
     }
 
+    String GetTemplateDescriptor(SharePointPnP.ProvisioningApp.DomainModel.Package package)
+    {
+        var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<SharePointPnP.ProvisioningApp.DomainModel.TemplateSettingsMetadata>(package.PropertiesMetadata);
+        if (!String.IsNullOrEmpty(settings?.displayInfo?.siteDescriptor))
+        {
+            return(settings?.displayInfo?.siteDescriptor);
+        }
+        else
+        {
+            return (package.Abstract);
+        }
+    }
+
 }
 
 <div class="content-container">
@@ -90,7 +103,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="site-name"> @package.DisplayName </div>
-                                                            <h5> @Html.Raw(package.Abstract) </h5>
+                                                            <h5> @Html.Raw(GetTemplateDescriptor(package)) </h5>
                                                         </a>
                                                     </div>
                                                 </div>

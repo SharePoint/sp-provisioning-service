@@ -7,7 +7,9 @@ $(function () {
         return (width > 767);
     }
 
-    $.post("/home/CategoriesMenu", null, function (html) {
+    
+
+    $.post("/home/CategoriesMenu" + window.location.search, null, function (html) {
         // Get a reference to the menu
         var menu = $("#packagesMenu");
 
