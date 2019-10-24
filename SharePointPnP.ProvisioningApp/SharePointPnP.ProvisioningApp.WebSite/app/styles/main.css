@@ -49,50 +49,56 @@ h1 {
   margin-top: 0; }
 
 .pnp-tb, .pnp-search-input {
-  font-size: 1em;
+  font-size: .8em;
   position: relative;
-  padding: .2em .8em .3em; }
+  padding: .2em .8em .3em;
+  width: 225px; }
   .pnp-tb[disabled], [disabled].pnp-search-input {
     color: #a6a6a6;
     background-color: #f4f4f4; }
 
 input[type="radio"] {
-  font-size: 1em;
+  font-size: .8em;
   margin-right: 1em; }
 
 input[type="checkbox"] {
-  font-size: 1em;
+  font-size: .8em;
   margin-right: 1em; }
 
-button,
+/*button,
 input[type="button"] {
-  font-size: 1em;
-  font-weight: 600;
-  padding: .4em 1em .5em;
-  transition: background-color .25s ease-in-out;
-  color: #333333;
-  border: 1px #a6a6a6 solid;
-  border-color: 2px #a6a6a6 solid;
-  background-color: #f4f4f4; }
-  button:hover,
-  input[type="button"]:hover {
-    color: white;
-    background-color: #0078d4; }
-  button:active, button:checked,
-  input[type="button"]:active,
-  input[type="button"]:checked {
-    color: #333333;
-    background-color: #c8c8c8; }
+    font-size: 1em;
+    font-weight: 600;
 
+    padding: .4em 1em .5em;
+
+    transition: background-color .25s ease-in-out;
+
+    color: rgb(51, 51, 51);
+    border: 1px $ms-form-border solid;
+    border-color: 2px $ms-form-border solid;
+    background-color: rgb(244, 244, 244);
+
+    &:hover {
+        color: white;
+        background-color: $ms-sharepoint;
+    }
+
+    &:active,
+    &:checked {
+        color: rgb(51, 51, 51);
+        background-color: rgb(200, 200, 200);
+    }
+}*/
 textarea {
   font-family: "Segoe UI", "SegoeUI", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 1em;
+  font-size: .8em;
   padding: .2em .8em .3em;
   border-color: 2px #a6a6a6 solid; }
 
 select,
 option {
-  font-size: 1em;
+  font-size: .8em;
   border-color: 2px #a6a6a6 solid;
   -webkit-border-radius: 0; }
 
@@ -141,6 +147,7 @@ th {
     width: 60%;
     max-width: 50%; }
   .pnp-form td {
+    padding-top: 30px;
     white-space: nowrap;
     max-width: 50%; }
   @media screen and (max-width: 768px) {
@@ -149,7 +156,8 @@ th {
     .pnp-form th, .pnp-form td {
       display: block;
       width: 100%;
-      max-width: 100%; }
+      max-width: 100%;
+      padding-top: 10px; }
       .pnp-form th .pnp-tb, .pnp-form th .pnp-search-input, .pnp-form td .pnp-tb, .pnp-form td .pnp-search-input {
         width: 70%; } }
   @media screen and (max-width: 480px) {
@@ -157,7 +165,12 @@ th {
     .pnp-form table td {
       display: block; } }
   .pnp-form .pnp-field-description {
-    font-size: .7em;
+    font-size: .8em;
+    font-weight: normal;
+    display: flex;
+    max-width: 90%; }
+  .pnp-form .pnp-field-caption {
+    font-size: .8em;
     font-weight: normal;
     display: flex;
     max-width: 90%; }
@@ -184,7 +197,7 @@ th {
 .siteBaseUrl {
   top: 2px;
   font-weight: 400;
-  font-size: 1em;
+  font-size: .8em;
   text-align: right;
   float: left;
   position: relative;
@@ -193,6 +206,11 @@ th {
 .siteUrlLink > a {
   text-decoration: none;
   color: #0078d4; }
+
+.siteUrlField {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: block; }
 
 .pnp-error {
   max-width: 1200px;

@@ -159,13 +159,13 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             {
                 headerData.SiteTitle = "SharePoint Look Book";
                 headerData.RootSiteUrl = returnUrl;
-                headerData.ShowServiceDescription = false;
+                headerData.RenderProvisioningService = false;
             }
             else
             {
                 headerData.SiteTitle = "SharePoint Provisioning Service";
                 headerData.RootSiteUrl = "/";
-                headerData.ShowServiceDescription = true;
+                headerData.RenderProvisioningService = true;
             }
 
             ViewBag.HeaderData = headerData;
@@ -602,6 +602,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
                 model.ForceNewSite = package.ForceNewSite;
                 model.MatchingSiteBaseTemplateId = package.MatchingSiteBaseTemplateId;
+                model.PackageImagePreviewUrl = GetTemplatePreviewImage(package);
 
                 // Configure content for instructions
                 model.Instructions = package.Instructions;
@@ -732,6 +733,23 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 model.Themes = themes.Select(t => t.Name).ToList();
             }
         }
+
+        private static String GetTemplatePreviewImage(SharePointPnP.ProvisioningApp.DomainModel.Package package)
+        {
+            var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<SharePointPnP.ProvisioningApp.DomainModel.TemplateSettingsMetadata>(package.PropertiesMetadata);
+            if (settings?.displayInfo?.previewImages != null &&
+                settings?.displayInfo?.previewImages.Length > 0)
+            {
+                var cardPreview = settings.displayInfo.previewImages.FirstOrDefault(p => p.type == "cardpreview");
+                if (cardPreview != null)
+                {
+                    return (cardPreview.url);
+                }
+            }
+
+            return (package.ImagePreviewUrl);
+        }
+
 
         private async Task<CanProvisionResult> CanProvisionInternal(CanProvisionModel model, Boolean validateUser = true)
         {

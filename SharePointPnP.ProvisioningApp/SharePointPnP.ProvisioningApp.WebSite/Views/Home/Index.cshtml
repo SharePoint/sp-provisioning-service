@@ -26,101 +26,130 @@
 
 }
 
-@Html.Partial("_TopHeader")
-
-<!-- Inner Content Wrapper -->
-<div class="">
-    <div class="wrapper-inner">
-        <div class="pnp-hightlight-sm">
-            @foreach (var package in Model.Packages.Where(p => p.Promoted).OrderByDescending(p => p.SortOrderPromoted))
-            {
-                <a href="/home/details?packageId=@package.Id" class="pnp-item pnp-item-large">
-                    <div class="pnp-img">
-                        <img src="@GetTemplatePreviewImage(package)" alt="@package.DisplayName" class="pnp-item-img">
-                        @*@if (package.PackageType == SharePointPnP.ProvisioningApp.DomainModel.PackageType.SiteCollection)
-                            {
-                                <div class="pnp-item-label lbl-sc">Site Collection Owner</div>
-                            }
-                            else
-                            {
-                                <div class="pnp-item-label lbl-tenant">Tenant Admin</div>
-                            }*@
-                    </div>
-                    <div class="pnp-item-desc">
-                        <div class="pnp-item-title">@package.DisplayName</div>
-                        <div class="pnp-item-content">
-                            <p>@Html.Raw(package.Abstract)</p>
-                        </div>
-                    </div>
-                </a>
-            }
-        </div>
-        <a name="templates"></a>
-        <div>
-            <section class="categories-section">
-                <div class="container-fluid">
-                    <div class="description-text">
-                        <h3>Discover the modern experiences</h3>
+<div class="content-container">
+    <div>
+        <div class="container-fluid">
+            <section class="top-hero-section">
+                <div class="section-text">
+                    <div>
+                        <h2>SharePoint provisioning service</h2>
+                        <h3>Get inspired.</h3>
                         <p>
-                            Reinvent the intranet with solutions for collaboration, communication,
-                            engagement, and knowledge management. Today it's simple for any user to create beautiful, fast sites and
-                            pages that look great on any device or screen
-                        </p>
+                            Discover the modern experiences you can build with SharePoint in Office 365
+                        </p><a href="/#templates" class="call-to-action slb-primary-button"><span>See examples</span></a>
                     </div>
                 </div>
-                <div id="templates">
-                    <div alignlabels="center" class="slb-tab-group">
-                        <div class="slb-tab-label-wrapper align-center" role="tablist">
-                            @{
-                                foreach (var category in Model.Categories)
-                                {
-                                    <div id="@("category-" + category.Id.ToLower())" onclick="selectCategory('@category.Id.ToLower()')" role="tab" class="slb-tab-label" tabindex="0">
-                                        <span> @category.DisplayName </span>
-                                    </div>
-                                }
+                <div class="section-image"></div>
+            </section>
+            <section class="feature-hero-section">
+                <div class="hero-section-text-container">
+                    <div>
+                        <h6>Build a beautiful, powerful intranet</h6>
+                        <p> SharePoint connects the workplace by powering a new generation of intelligent content and communication experiences </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <section class="categories-section">
+            <div class="container-fluid">
+                <div class="description-text">
+                    <h3>Create stunning sites</h3>
+                    <p>
+                        Reinvent the intranet with solutions for collaboration, communication, engagement, and knowledge management. Today it's simple for any user to create beautiful, fast sites and pages that look great on any device or screen. Get inspired with these designs or add them to your tenant to start building your next stunning site with them.
+                    </p>
+                </div>
+            </div>
+            <a name="templates"></a>
+            <div id="templates">
+                <div alignlabels="center" class="slb-tab-group">
+                    <div class="slb-tab-label-wrapper align-center" role="tablist">
+                        @{
+                            foreach (var category in Model.Categories)
+                            {
+                                <div id="@("category-" + category.Id.ToLower())" onclick="selectCategory('@category.Id.ToLower()')" role="tab" class="slb-tab-label" tabindex="0">
+                                    <span> @category.DisplayName </span>
+                                </div>
                             }
-                        </div>
-                        <div class="slb-tab-body-wrapper">
-                            <div class="slb-tab-body">
-                                <div>
-                                    <div class="container-fluid">
-                                        <div class="row">
-                                            @foreach (var package in Model.Packages.OrderByDescending(p => p.SortOrder))
+                        }
+                    </div>
+                    <div class="slb-tab-body-wrapper">
+                        <div class="slb-tab-body">
+                            <div>
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        @foreach (var package in Model.Packages.OrderByDescending(p => p.SortOrder))
+                                        {
+                                            if (package.TargetPlatforms.Any(p => p.Id == "SPPNP"))
                                             {
-                                                if (package.TargetPlatforms.Any(p => p.Id == "SPPNP"))
-                                                {
-                                                    <div class="col-sm-6 col-lg-4 mt-5 slb-tab-label-item hide @(package.Categories.Aggregate("", (a, c) => a += $" category-{c.Id.ToLower()}"))">
-                                                        <div class="div">
-                                                            <a href="/home/details?packageId=@package.Id">
-                                                                <div class="hero-image aspect-ratio-wrapper">
-                                                                    <div class="aspect-ratio-image-wrapper">
-                                                                        <img src="@GetTemplatePreviewImage(package)"
-                                                                             alt="@package.DisplayName">
-                                                                    </div>
+                                                <div class="col-sm-6 col-lg-4 mt-5 slb-tab-label-item hide @(package.Categories.Aggregate("", (a, c) => a += $" category-{c.Id.ToLower()}"))">
+                                                    <div class="div">
+                                                        <a href="/home/details?packageId=@package.Id">
+                                                            <div class="hero-image aspect-ratio-wrapper">
+                                                                <div class="aspect-ratio-image-wrapper">
+                                                                    <img src="@GetTemplatePreviewImage(package)"
+                                                                         alt="@package.DisplayName">
                                                                 </div>
-                                                                <h5> @package.DisplayName </h5>
-                                                            </a>
-                                                            <div>
-                                                                @Html.Raw(package.Abstract)
                                                             </div>
+                                                            <h5> @package.DisplayName </h5>
+                                                        </a>
+                                                        <div>
+                                                            @Html.Raw(package.Abstract)
                                                         </div>
                                                     </div>
-                                                }
+                                                </div>
                                             }
-                                        </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
-
+            </div>
+        </section>
+        <img src="https://telemetry.sharepointpnp.com/provisioning-service/welcome-page" />
+        <section class="footer-splash">
+            <div class="design-guidance">
+                <div class="content-container">
+                    <span class="text-color-green text-uppercase">sharepoint design guidance</span>
+                    <h2>Create beautiful sites and pages</h2>
+                    <p> Looking for how to get the most out of your SharePoint sites and pages? Visit the SharePoint Design Guidance site for more information on how to design beautiful and performant sites, pages, and web parts with SharePoint in Office 365. </p>
+                    <a href="https://spdesign.azurewebsites.net/" rel="noopener noreferrer" target="_blank" class="call-to-action slb-primary-button">
+                        <span> Visit site </span>
+                    </a>
+                </div>
+            </div>
+            <div class="content-grouping">
+                <div class="twitter">
+                    <div class="content-container">
+                        <a href="https://twitter.com/SharePoint?s=17" rel="noopener noreferrer" target="_blank">
+                            <img alt="twitter logo" src="/lookbook/assets/images/Twitter-white.svg" width="43.5">
+                            <h4>Follow SharePoint on Twitter</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="user-voice">
+                    <div class="content-container">
+                        <h3>Share. Vote. Discuss.</h3>
+                        <p>Got an idea for how to improve SharePoint?</p>
+                        <a buttontype="link" href="https://sharepoint.uservoice.com/" rel="noopener noreferrer" target="_blank" class="call-to-action slb-link-button">
+                            <span>Share it with us</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="intrazone">
+                <div class="content-container">
+                    <div class="text-content">
+                        <a buttontype="link" href="https://intrazone.libsyn.com/" rel="noopener noreferrer" target="_blank" class="call-to-action slb-link-button">
+                            <span> Listen now </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
-
-<img src="https://telemetry.sharepointpnp.com/provisioning-service/welcome-page" />
 
 @section scripts
 {

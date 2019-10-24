@@ -11,6 +11,6 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Models
 
         public string RootSiteUrl { get; set; }
 
-        public bool ShowServiceDescription { get; set; }
+        public bool RenderProvisioningService { get; set; }
     }
 }

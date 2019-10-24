@@ -117,6 +117,7 @@ input[type="checkbox"], input[type="radio"] {
 
 .pnp-btn-provision {
     font-size: 14px;
+    margin-left: 15pt;
 }
 
 #ThemePrimaryColor, #ThemeBodyBackgroundColor, #ThemeBodyTextColor {
@@ -128,7 +129,7 @@ select.pnp-tb {
 }
 
 select.pnp-tb-sites {
-    width: 105px;
+    /*width: 105px;*/
 }
 
 .pnp-tb.invalid {
@@ -162,9 +163,9 @@ hr.sectionTitleDivider {
     top: 50%;
     left: 50%;
     width: 30em;
-    height: 26em;
     margin-top: -15em;
     margin-left: -15em;
+    text-align: left;
     z-index: 100;
 }
 
@@ -177,16 +178,25 @@ hr.sectionTitleDivider {
 }
 
 .confirmationDialogContent {
-    overflow-y: scroll;
+    /*overflow-y: scroll;*/
     text-align: left;
+    margin-top: 1em;
     margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
     height: 21em;
 }
+
+    .confirmationDialogContent > h2 {
+        font-size: 1.2em;
+        font-weight: 600;
+        text-align: left;
+    }
 
 .missingPreReqsDialog {
     position: fixed;
     background-color: white;
-    text-align: center;
+    text-align: left;
     top: 50%;
     left: 50%;
     width: 30em;
@@ -204,10 +214,19 @@ hr.sectionTitleDivider {
     display: block;
 }
 
+    .missingPreReqsDialog > h2 {
+        font-size: 1.2em;
+        font-weight: 600;
+        text-align: left;
+    }
+
 .missingPreReqsDialogContent {
     overflow-y: scroll;
     text-align: left;
+    margin-top: 1em;
     margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
     height: 21em;
 }
 
@@ -236,7 +255,6 @@ hr.sectionTitleDivider {
 .dialogModalOverlay.show {
     display: block;
 }
-
 
 .workingOnItSiteDialog {
     position: fixed;
@@ -269,11 +287,10 @@ hr.sectionTitleDivider {
 .siteExistsDialog {
     position: fixed;
     background-color: white;
-    text-align: center;
+    text-align: left;
     top: 50%;
     left: 50%;
     width: 24em;
-    height: 14em;
     margin-top: -7em;
     margin-left: -12em;
     z-index: 100;
@@ -287,9 +304,22 @@ hr.sectionTitleDivider {
     display: block;
 }
 
+    .siteExistsDialog > h2 {
+        margin-top: 1em;
+        margin-left: 1em;
+        font-size: 1.2em;
+        font-weight: 600;
+        text-align: left;
+    }
+
+
 .siteExistsDialogContent {
     height: 6em;
-    margin: .5em;
+    margin-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    text-align: left;
 }
 
 .okDialog {
@@ -321,3 +351,104 @@ hr.sectionTitleDivider {
 .failedSiteUrlLink.show {
     display: block;
 }
+
+.provisioning-top-section {
+    height: 150px;
+    margin-top: 0px;
+}
+
+.teal-header {
+    height: 150px;
+    color: white;
+    background-color: teal;
+}
+
+.white-header {
+    color: black;
+    background-color: white;
+}
+
+.provisioning-title {
+    padding-left: 25pt;
+    font-size: 20pt;
+    font-weight: 600;
+}
+
+.provisioning-local-header {
+
+}
+
+    .provisioning-local-header .title {
+        font-size: 20pt;
+        font-weight: 600;
+    }
+
+    .provisioning-local-header .subtitle {
+        font-size: 16pt;
+        font-weight: 600;
+    }
+
+    .provisioning-local-header .normal-text {
+        font-size: 14pt;
+        font-weight: 400;
+    }
+
+.provisioning-local-header-box {
+    vertical-align: top;
+}
+
+.provisioning-goback-cta-wrapper {
+    height: 340px;
+    text-align: center;
+}
+
+.provisioning-commands {
+    /*padding-left: 40px;*/
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.dialog-commands {
+    text-align: right;
+    padding-right: 20px;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.topright {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.dialogCloseButton {
+    border: none;
+    display: inline-block;
+    padding: 8px 16px;
+    vertical-align: middle;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background-color: inherit;
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 1.8em !important;
+    font-weight: 300 !important;
+}
+
+.siteUrlContainer {
+    width: 300px;
+}
+
+.provisioning-status-animation {
+    display: inline;
+}
+
+    .provisioning-status-animation.hide {
+        display: none;
+    }
+
+    .provisioning-status-animation.show {
+        display: block;
+    }

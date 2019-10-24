@@ -2,18 +2,22 @@
 <div>
     @foreach (var c in Model.Categories)
     {
-        <li>
-            <div>
-                <button class="menuButton has-glyph"><span>@c.DisplayName</span></button>
-                <div class="menu-panel" role="menu">
+        <li class="">
+            <div class="app-nav-menu-item">
+                <button class="has-glyph" type="button" aria-expanded="false">
+                    <span>@c.DisplayName</span>
+                </button>
+                <div class="menu-panel" style="height: auto;">
                     <ul>
                         @foreach (var p in c.Packages)
                         {
-                            <li>
-                                <div>
-                                    <a href="/home/details?packageId=@p.Id">
-                                        <span>@p.DisplayName</span>
-                                    </a>
+                            <li class="">
+                                <div class="app-nav-menu-item">
+                                    <div class="">
+                                        <a href="/home/details?packageId=@p.Id" class="">
+                                            <span>@p.DisplayName</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </li>
                         }

@@ -60,6 +60,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
     {
         public string pageTemplateId { get; set; }
 
+        public string siteDescriptor { get; set; }
+
         public string[] descriptionParagraphs { get; set; }
 
         public TemplateSettingsMetadataDisplayInfoPreviewImage[] previewImages { get; set; }

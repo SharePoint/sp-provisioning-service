@@ -25,10 +25,11 @@
     font-size: inherit !important;
 }
 
-button,
+/* Removed on 10/24/2019 7:15am */
+/*button,
 input[type="button"] {
     font-weight: 400 !important;
-}
+}*/
 
 .permission {
     margin-top: 1em;

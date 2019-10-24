@@ -1,10 +1,12 @@
 ﻿@model SharePointPnP.ProvisioningApp.WebApp.Models.TemplateParameterModel
 
 <!-- SiteUrl Custom Editor -->
-<div class="siteBaseUrl">@Model.SPORootSiteUrl</div>
-<select id="urlPrefix" class="pnp-tb pnp-tb-sites siteUrlPrefix">
-    <option value="/sites/">/sites/</option>
-    <option value="/teams/">/teams/</option>
-</select>
-<input value="@(Model.ParameterValue.StartsWith("/sites/") || Model.ParameterValue.StartsWith("/teams/") ? Model.ParameterValue.Substring(7, Model.ParameterValue.Length - 7) : Model.ParameterValue)" class="pnp-tb siteUrl" />
-<input type="hidden" name="PackageProperties[@Model.Index].Value" value="@Model.ParameterValue" />
+<div class="siteUrlContainer">
+    <div class="siteBaseUrl siteUrlField">@Model.SPORootSiteUrl</div>
+    <select id="urlPrefix" class="pnp-tb pnp-tb-sites siteUrlPrefix siteUrlField">
+        <option value="/sites/">/sites/</option>
+        <option value="/teams/">/teams/</option>
+    </select>
+    <input value="@(Model.ParameterValue.StartsWith("/sites/") || Model.ParameterValue.StartsWith("/teams/") ? Model.ParameterValue.Substring(7, Model.ParameterValue.Length - 7) : Model.ParameterValue)" class="pnp-tb siteUrl siteUrlField" />
+    <input type="hidden" name="PackageProperties[@Model.Index].Value" value="@Model.ParameterValue" />
+</div>

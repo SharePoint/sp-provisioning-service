@@ -1,10 +1,9 @@
 ﻿.pnp-tb {
-    font-size: 1em;
+    font-size: .8em;
     // border: 2px $ms-form-border solid;
-
     position: relative;
-
     padding: .2em .8em .3em;
+    width: 225px;
 
     &[disabled] {
         color: $ms-form-border;
@@ -13,18 +12,16 @@
 }
 
 input[type="radio"] {
-    font-size: 1em;
-
+    font-size: .8em;
     margin-right: 1em;
 }
 
 input[type="checkbox"] {
-    font-size: 1em;
-
+    font-size: .8em;
     margin-right: 1em;
 }
 
-button,
+/*button,
 input[type="button"] {
     font-size: 1em;
     font-weight: 600;
@@ -48,22 +45,19 @@ input[type="button"] {
         color: rgb(51, 51, 51);
         background-color: rgb(200, 200, 200);
     }
-}
+}*/
 
 
 textarea {
     font-family: "Segoe UI", "SegoeUI", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 1em;
-
+    font-size: .8em;
     padding: .2em .8em .3em;
-
     border-color: 2px $ms-form-border solid;
 }
 
 select,
 option {
-    font-size: 1em;
-
+    font-size: .8em;
     border-color: 2px $ms-form-border solid;
     -webkit-border-radius: 0;
 }
@@ -132,31 +126,36 @@ th {
 .pnp-form {
     width: 100%;
 
-    th{
+    th {
         width: 60%;
         max-width: 50%;
     }
 
-    td{
+    td {
+        padding-top: 30px;
         white-space: nowrap;
         max-width: 50%;
     }
 
-    @media screen and (max-width: 768px){
-        table{
+    @media screen and (max-width: 768px) {
+        table {
             display: block;
         }
-        th, td{
+
+        th, td {
             display: block;
             width: 100%;
             max-width: 100%;
-            .pnp-tb{
+            padding-top: 10px;
+
+            .pnp-tb {
                 width: 70%;
             }
         }
     }
 
-    .pnp-btn-provision {}
+    .pnp-btn-provision {
+    }
 
     @media #{$base-phone} {
 
@@ -167,13 +166,21 @@ th {
     }
 
     .pnp-field-description {
-        font-size: .7em;
+        font-size: .8em;
         font-weight: normal;
         display: flex;
         max-width: 90%;
     }
 
-    .pnp-field-label {}
+    .pnp-field-caption {
+        font-size: .8em;
+        font-weight: normal;
+        display: flex;
+        max-width: 90%;
+    }
+
+    .pnp-field-label {
+    }
 }
 
 .pnp-colorpreview {
@@ -203,7 +210,7 @@ th {
 .siteBaseUrl {
     top: 2px;
     font-weight: 400;
-    font-size: 1em;
+    font-size: .8em;
     text-align: right;
     float: left;
     position: relative;
@@ -213,4 +220,10 @@ th {
 .siteUrlLink > a {
     text-decoration: none;
     color: #0078d4;
+}
+
+.siteUrlField {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: block;
 }

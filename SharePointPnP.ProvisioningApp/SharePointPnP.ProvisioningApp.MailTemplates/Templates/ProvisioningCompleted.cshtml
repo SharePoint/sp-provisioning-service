@@ -8,238 +8,231 @@
     <!-- Title will show in certain email notifications (e.g., Android 4.4). -->
     <title>Provision request succeeded</title>
     <style>
-        html,
-        body {
-            margin: 0 auto !important;
-            padding: 0 !important;
-            height: 100% !important;
-            width: 100% !important;
-        }
-
-        * {
-            -ms-text-size-adjust: 100%;
-            -webkit-text-size-adjust: 100%;
-        }
-
-        div[style*="margin: 16px 0"] {
-            margin: 0 !important;
-        }
-
-        table,
-        td {
-            mso-table-lspace: 0pt !important;
-            mso-table-rspace: 0pt !important;
-        }
-
-        table {
-            border-spacing: 0 !important;
-            border-collapse: collapse !important;
-            table-layout: fixed !important;
-            margin: 0 auto !important;
-        }
-
-        img {
-            -ms-interpolation-mode: bicubic;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        *[x-apple-data-detectors], /* iOS */
-        .unstyle-auto-detected-links *,
-        .aBn {
-            border-bottom: 0 !important;
-            cursor: default !important;
-            color: inherit !important;
-            text-decoration: none !important;
-            font-size: inherit !important;
-            font-family: inherit !important;
-            font-weight: inherit !important;
-            line-height: inherit !important;
-        }
-
-        .a6S {
-            display: none !important;
-            opacity: 0.01 !important;
-        }
-
-        .im {
-            color: inherit !important;
-        }
-
-        img.g-img + div {
-            display: none !important;
-        }
-
-        @@media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
-            u ~ div .email-container {
-                min-width: 320px !important;
-            }
-        }
-
-        @@media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
-            u ~ div .email-container {
-                min-width: 375px !important;
-            }
-        }
-
-        @@media only screen and (min-device-width: 414px) {
-            u ~ div .email-container {
-                min-width: 414px !important;
-            }
-        }
+    <!--
+    /* Font Definitions */
+    @@font-face
+	    {font-family:"Cambria Math";
+	    panose-1:2 4 5 3 5 4 6 3 2 4;}
+    @@font-face
+	    {font-family:Calibri;
+	    panose-1:2 15 5 2 2 2 4 3 2 4;}
+    @@font-face
+	    {font-family:"Segoe UI";
+	    panose-1:2 11 5 2 4 2 4 2 2 3;}
+    @@font-face
+	    {font-family:"Segoe UI Light";
+	    panose-1:2 11 5 2 4 2 4 2 2 3;}
+    /* Style Definitions */
+    p.MsoNormal, li.MsoNormal, div.MsoNormal
+	    {margin:0in;
+	    margin-bottom:.0001pt;
+	    font-size:11.0pt;
+	    font-family:"Calibri",sans-serif;}
+    a:link, span.MsoHyperlink
+	    {mso-style-priority:99;
+	    color:#0078D1;
+	    text-decoration:underline;}
+    a:visited, span.MsoHyperlinkFollowed
+	    {mso-style-priority:99;
+	    color:#0078D1;
+	    text-decoration:underline;}
+    p.msonormal0, li.msonormal0, div.msonormal0
+	    {mso-style-name:msonormal;
+	    mso-margin-top-alt:auto;
+	    margin-right:0in;
+	    mso-margin-bottom-alt:auto;
+	    margin-left:0in;
+	    font-size:11.0pt;
+	    font-family:"Calibri",sans-serif;}
+    span.EmailStyle18
+	    {mso-style-type:personal;
+	    font-family:"Times New Roman",serif;}
+    span.EmailStyle20
+	    {mso-style-type:personal-reply;
+	    font-family:"Calibri",sans-serif;
+	    color:windowtext;}
+    .MsoChpDefault
+	    {mso-style-type:export-only;
+	    font-size:10.0pt;}
+    @@page WordSection1
+	    {size:8.5in 11.0in;
+	    margin:1.0in 1.0in 1.0in 1.0in;}
+    div.WordSection1
+	    {page:WordSection1;}
+    -->
     </style>
-
-    <!--[if gte mso 9]>
-    <xml>
-        <o:OfficeDocumentSettings>
-            <o:AllowPNG/>
-            <o:PixelsPerInch>96</o:PixelsPerInch>
-        </o:OfficeDocumentSettings>
-    </xml>
-    <![endif]-->
-
-    <style>
-        .button-td,
-        .button-a {
-            transition: all 100ms ease-in;
-        }
-
-        .button-td-primary:hover,
-        .button-a-primary:hover {
-            background: #555555 !important;
-            border-color: #555555 !important;
-        }
-
-        @@media screen and (max-width: 600px) {
-            .email-container p {
-                font-size: 17px !important;
-            }
-        }
-    </style>
-
+    <!--[if gte mso 9]><xml>
+    <o:shapedefaults v:ext="edit" spidmax="1026" />
+    </xml><![endif]-->
+    <!--[if gte mso 9]><xml>
+    <o:shapelayout v:ext="edit">
+    <o:idmap v:ext="edit" data="1" />
+    </o:shapelayout></xml><![endif]-->
 </head>
-<body width="100%" style="margin: 0; padding: 0 !important; mso-line-height-rule: exactly; background-color: #03787c;">
-    <center style="width: 100%; background-color: #03787c;">
-        <!--[if mso | IE]>
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #03787c;">
-        <tr>
-        <td>
-        <![endif]-->
-        <!-- Visually Hidden Preheader Text -->
-        <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
-            Your request to provision "@Model.TemplateName" template is now complete!
-        </div>
-
-        <!-- Create white space after the preview text so email clients don’t pull other distracting text into the inbox preview. Extend as necessary. -->
-        <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
-            &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
-        </div>
-        <div style="max-width: 600px; margin: 0 auto;" class="email-container">
-            <!--[if mso]>
-            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="600">
-            <tr>
-            <td>
-            <![endif]-->
-
-            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+<body bgcolor="#E3E3E3" lang="EN-US" link="#0078D1" vlink="#0078D1">
+    <div class="WordSection1">
+        <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100.0%;background:#E3E3E3;border-collapse:collapse">
+            <tbody>
                 <tr>
-                    <td style="padding: 70px 0 0 0;">
-                        <img src="https://provisioning.sharepointpnp.com/app/images/success.png" width="600" height="" alt="alt_text" border="0" style="width: 100%; max-width: 600px; height: auto; font-family: sans-serif; font-size: 15px; line-height: 15px; color: #555555; margin: auto; display: block;" class="g-img">
+                    <td valign="top" style="padding:0in 0in 0in 0in">
+                        <div align="center">
+                            <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" style="background:white;border-collapse:collapse">
+                                <tbody>
+                                    <tr style="height:56.25pt">
+                                        <td width="640" style="width:480.0pt;padding:0in 0in 0in 0in;height:56.25pt">
+                                            <p class="MsoNormal">
+                                                <span style="font-size:28.0pt;font-family:&quot;Segoe UI&quot;,sans-serif;letter-spacing:-.25pt">
+                                                    &nbsp;
+                                                    <span style="color:#008575">SharePoint Provisioning Service</span>
+                                                </span><span style="font-size:10.0pt;font-family:&quot;Times New Roman&quot;,serif"><o:p></o:p></span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td style="background-color: #eeeeee;">
-                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                            <tr>
-                                <td style="padding: 0 20px 20px 20px;">
-                                    @*<img alt="SharePoint PnP Provisioning" src="https://provisioning.sharepointpnp.com/app/images/pnp-provision-300.png">*@
-                                    <p style="font-family: sans-serif; font-size: 18px; line-height: 25px; color: #000000; font-weight: bold; margin: 5px 0 30px 0">SharePoint Online Provisioning Service</p>
-                                    <h1 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 25px; line-height: 35px; color: #333333; font-weight: normal;">
-                                        Your request to provision<br>
-                                        <span style="color: #03787c; font-size: 35px;">"@Model.TemplateName"</span>
-                                        <br>template is now complete!
-                                    </h1>
-                                </td>
-                            </tr>
-                        </table>
+                    <td valign="top" style="padding:0in 0in 0in 0in">
+                        <div align="center">
+                            <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" style="background:white;border-collapse:collapse">
+                                <tbody>
+                                    <tr>
+                                        <td width="640" valign="top" style="width:480.0pt;padding:0in 0in 0in 0in">
+                                            <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100.0%;background:white;border-collapse:collapse">
+                                                <tbody>
+                                                    <tr>
+                                                        <td valign="top" style="padding:0in 0in 0in 0in">
+                                                            <p style="margin:0in;margin-bottom:.0001pt">
+                                                                <span style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#505050">
+                                                                    <img width="640" height="345" style="width:6.6666in;height:3.5937in" src="https://provisioning-test.sharepointpnp.com/lookbook/assets/images/SharePoint_lookBook_cta_hero.png" alt="A screenshot of a computer">
+                                                                </span><span style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#505050"><o:p></o:p></span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td aria-hidden="true" height="40" style="font-size: 0px; line-height: 0px;">
-                        &nbsp;
+                    <td valign="top" style="padding:0in 0in 0in 0in">
+                        <div align="center">
+                            <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" style="background:white;border-collapse:collapse">
+                                <tbody>
+                                    <tr style="height:314.1pt">
+                                        <td width="640" valign="top" style="width:480.0pt;padding:0in 0in 0in 0in;height:314.1pt">
+                                            <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100.0%;background:white;border-collapse:collapse">
+                                                <tbody>
+                                                    <tr style="height:180.5pt">
+                                                        <td valign="top" style="padding:11.25pt .25in 0in .25in;height:180.5pt">
+                                                            <p style="margin:0in;margin-bottom:.0001pt"><span style="font-size:28.5pt;font-family:&quot;Segoe UI Light&quot;,sans-serif;color:#505050;letter-spacing:-.25pt">Your request to provision<o:p></o:p></span></p>
+                                                            <p style="margin:0in;margin-bottom:.0001pt">
+                                                                <span style="font-size:28.5pt;font-family:&quot;Segoe UI Light&quot;,sans-serif;color:#03787C;letter-spacing:-.25pt">
+                                                                    &quot;@Model.TemplateName&quot;
+                                                                    <o:p></o:p>
+                                                                </span>
+                                                            </p>
+                                                            <p style="margin:0in;margin-bottom:.0001pt"><span style="font-size:28.5pt;font-family:&quot;Segoe UI Light&quot;,sans-serif;color:#505050;letter-spacing:-.25pt">template is now completed<o:p></o:p></span></p>
+                                                            <p style="mso-margin-top-alt:10.5pt;margin-right:0in;margin-bottom:10.5pt;margin-left:0in">
+                                                                <span style="font-size:13.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#505050">Enjoy your newly created site!<o:p></o:p></span>
+                                                            </p>
+                                                            <p style="mso-margin-top-alt:10.5pt;margin-right:0in;margin-bottom:10.5pt;margin-left:0in">
+                                                                <span style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#505050">
+                                                                    Click the below link to get access on the newly provisioned site:
+                                                                    <o:p></o:p>
+                                                                </span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="height:31.9pt">
+                                                        <td valign="top" style="padding:4.5pt .25in 16.5pt 0in;height:31.9pt">
+                                                            <div align="center">
+                                                                <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="143" style="width:107.3pt">
+                                                                    <tbody>
+                                                                        <tr style="height:18.55pt">
+                                                                            <td style="background:#008575;padding:3.75pt .25in 6.75pt 16.5pt;height:18.55pt">
+                                                                                <p class="MsoNormal" align="center" style="text-align:center">
+                                                                                    <span style="font-size:10.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:white">
+                                                                                        @if (Model.ProvisionedSites != null && Model.ProvisionedSites.Count > 0)
+                                                                                        {
+                                                                                            <a href="@Model.ProvisionedSites[0].Item2">
+                                                                                                <span style="color:white;letter-spacing:1.0pt">OPEN SITE</span><span style="color:white;letter-spacing:1.0pt;text-decoration:none">&nbsp;</span><span style="font-size:13.5pt;color:white;letter-spacing:1.0pt;text-decoration:none">&gt;</span><span style="color:white;letter-spacing:1.0pt;text-decoration:none">
+                                                                                                </span>
+                                                                                            </a>
+                                                                                        }
+                                                                                    </span>
+                                                                                </p>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <p align="center" style="margin:0in;margin-bottom:.0001pt;text-align:center;line-height:1.5pt">
+                                                                <span style="font-size:1.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#505050">&nbsp;<o:p></o:p></span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="height:52.75pt">
+                                                        <td valign="top" style="padding:4.5pt .25in 16.5pt 0in;height:52.75pt">
+                                                            <p class="MsoNormal" style="mso-margin-top-alt:10.5pt;margin-right:0in;margin-bottom:10.5pt;margin-left:.3in">
+                                                                <span style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#505050">
+                                                                    Please provide use feedback around your used template or the service in general by using our
+                                                                </span><span style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#008575"><a href="http://aka.ms/provisioning-feedback"><span style="color:#008575">feedback form</span></a></span><span style="font-size:11.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#505050">
+                                                                    .
+                                                                    Thank you for your input advance.<o:p></o:p>
+                                                                </span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <p class="MsoNormal"><span style="font-size:10.0pt;font-family:&quot;Times New Roman&quot;,serif"><o:p></o:p></span></p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td style="background-color: #ffffff;">
-                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                            <tr>
-                                <td style="padding: 20px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
-                                    <h2 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 18px; line-height: 22px; color: #333333; font-weight: bold;">Enjoy your newly created sites!</h2>
-                                    @if (Model.ProvisionedSites != null && Model.ProvisionedSites.Count > 0)
-                                    {
-                                    <p style="margin: 0 0 10px 0;">Click on below links to get access on the provisioned sites:</p>
-                                        <ul style="padding: 0; margin: 0 0 10px 0; list-style-type: disc;">
-                                            @foreach (Tuple<String, String> ps in Model.ProvisionedSites)
-                                            {
-                                                <li style="margin: 0 0 10px 30px;" class="list-item-first"><a href="@ps.Item2">@ps.Item1</a></li>
-                                            }
-                                        </ul>
-                                    }
-                                </td>
-                            </tr>
-                        </table>
+                    <td valign="top" style="padding:0in 0in 0in 0in">
+                        <div align="center">
+                            <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" style="background:white;border-collapse:collapse">
+                                <tbody>
+                                    <tr>
+                                        <td width="640" valign="top" style="width:480.0pt;padding:.25in 0in 0in 0in">
+                                            <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100.0%;background:#F2F2F2;border-collapse:collapse">
+                                                <tbody>
+                                                    <tr>
+                                                        <td width="100%" valign="top" style="width:100.0%;padding:12.0pt .25in .25in .25in">
+                                                            <p style="mso-margin-top-alt:13.5pt;margin-right:0in;margin-bottom:4.5pt;margin-left:0in">
+                                                                <span style="font-size:7.5pt;font-family:&quot;Segoe UI&quot;,sans-serif;color:#505050">
+                                                                    You are receiving this email because you used the SharePoint Provisioning Service.
+                                                                    <br>
+                                                                    This is an automatic email and you shouldn’t reply to it.<br>
+                                                                    Copyright ©2019<o:p></o:p>
+                                                                </span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </td>
                 </tr>
-            </table>
-            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
-                <tr>
-                    <td style="padding: 20px; font-family: sans-serif; font-size: 12px; line-height: 15px; text-align: center; color: #888888;">
-                        @*<webversion style="color: #cccccc; text-decoration: underline; font-weight: bold;">View as Web Page</webversion>*@
-                        <br><br>
-                        SharePoint Online Provisioning Service<br>
-                        This is an automatic email and you shouldn't reply to it.
-                    </td>
-                </tr>
-            </table>
-            <!--[if mso]>
-            </td>
-            </tr>
-            </table>
-            <![endif]-->
-        </div>
-
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #004c4f;">
-            <tr>
-                <td>
-                    <div align="center" style="max-width: 600px; margin: auto;" class="email-container">
-                        <!--[if mso]>
-                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
-                        <tr>
-                        <td>
-                        <![endif]-->
-                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                            <tr>
-                                <td style="padding: 20px; text-align: left; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #049fa5;">
-                                    <p style="margin: 0;">&nbsp;</p>
-                                </td>
-                            </tr>
-                        </table>
-                        <!--[if mso]>
-                        </td>
-                        </tr>
-                        </table>
-                        <![endif]-->
-                    </div>
-                </td>
-            </tr>
+            </tbody>
         </table>
-        <!--[if mso | IE]>
-        </td>
-        </tr>
-        </table>
-        <![endif]-->
-    </center>
+        <p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+    </div>
 </body>
 </html>

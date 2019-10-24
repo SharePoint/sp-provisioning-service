@@ -3,6 +3,7 @@
 // Licensed under the MIT license.
 //
 using Newtonsoft.Json;
+using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,16 +44,23 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         /// <summary>
         /// Defines the email address to use for sending notifications
         /// </summary>
-        [DisplayName("Notification Email")]
+        [DisplayName("Email")]
         [JsonProperty(PropertyName = "notificationEmail")]
         public string NotificationEmail { get; set; }
 
         /// <summary>
-        /// Represents the Package to apply to the target
+        /// Represents the Package ID to apply to the target
         /// </summary>
         [DisplayName("Package ID")]
         [JsonProperty(PropertyName = "packageId")]
         public String PackageId { get; set; }
+
+        /// <summary>
+        /// Provides the URL of Image Preview for the Package to apply to the target
+        /// </summary>
+        [DisplayName("PackageImagePreviewUrl")]
+        [JsonIgnore]
+        public String PackageImagePreviewUrl { get; set; }
 
         /// <summary>
         /// Defines any custom property for the provisioning of the Package

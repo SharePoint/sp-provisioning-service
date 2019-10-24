@@ -1,7 +1,7 @@
 ﻿@model SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ProvisioningActionModel
 @using SharePointPnP.ProvisioningApp.WebApp.Models
 
-@{ 
+@{
     ViewBag.ReturnUrl = ViewContext.HttpContext.Request.QueryString["returnUrl"];
 }
 
@@ -26,17 +26,11 @@
     }
 }
 
-<section class="top-section">
-    <div class="container-fluid">
-        <div class="top-section-area dark-bg d-flex align-items-center">
-            <div class="section-text">
-                <div>
-                    <h1 class="mb-4">SharePoint Provisioning Service</h1>
-                    <h3 class="mb-3">Great choice!</h3>
-                    <p class="mb-3">
-                        We just need a bit of information before the site can be provisioned.
-                    </p>
-                </div>
+<section class="provisioning-top-section">
+    <div class="top-section-area teal-header d-flex align-items-center">
+        <div class="section-text">
+            <div>
+                <div class="provisioning-title">SharePoint provisioning service</div>
             </div>
         </div>
     </div>
@@ -45,16 +39,16 @@
 <!-- Inner Content Wrapper -->
 <div class="">
     <div class="wrapper-inner">
-        <div class="pnp-svcteaser">
-            <div class="pnp-svcteaser-inner">
-                @(Html.Raw(Model.ProvisionDescription))
-                @if (!String.IsNullOrEmpty(Model.Instructions))
-                {
-                    <hr />
-                    @(Html.Raw(Model.Instructions))
-                }
-            </div>
-        </div>
+        @*<div class="pnp-svcteaser">
+                <div class="pnp-svcteaser-inner">
+                    @(Html.Raw(Model.ProvisionDescription))
+                    @if (!String.IsNullOrEmpty(Model.Instructions))
+                    {
+                        <hr />
+                        @(Html.Raw(Model.Instructions))
+                    }
+                </div>
+            </div>*@
         <div class="pnp-form">
             <div class="pnp-svcteaser-inner">
                 @using (Html.BeginForm("Provision", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -78,9 +72,28 @@
 
                     <table>
                         <tr>
+                            <th class="provisioning-local-header-box">
+                                <div class="provisioning-local-header">
+                                    <div class="title">Great choice!</div>
+                                    <div class="subtitle">We just need a bit of information before we start provisioning</div>
+                                    <p class="normal-text">
+                                        The following settings are used for your example site. You can keep them as is, or change them to suit your needs.
+                                    </p>
+                                </div>
+                            </th>
+                            <td>
+                                <div class="hero-image aspect-ratio-wrapper">
+                                    <div class="aspect-ratio-image-wrapper">
+                                        <img src="@Model.PackageImagePreviewUrl"
+                                             alt="@Model.DisplayName">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
                             <th>
                                 @Html.LabelFor(m => m.NotificationEmail)
-                                <div class="pnp-field-description">Provide an email address to get notifications about the provisioning process</div>
+                                <div class="pnp-field-description">Provide an email address to get notified when provisioning is complete</div>
                             </th>
                             <td>
                                 @Html.TextBoxFor(m => m.NotificationEmail, new { @class = "pnp-tb" })
@@ -135,8 +148,8 @@
                                 </tr>*@
                             <tr>
                                 <th>
-                                    Apply theme
-                                    <div class="pnp-field-description">Enable this flag to apply a Theme to the target sites</div>
+                                    Theme
+                                    <div class="pnp-field-description">Would you like to apply a company custom theme to the target site(s)?</div>
                                 </th>
                                 <td>
                                     @Html.EditorFor(m => m.ApplyTheme)
@@ -144,8 +157,8 @@
                             </tr>
                             <tr>
                                 <th>
-                                    @Html.LabelFor(m => m.SelectedTheme)
-                                    <div class="pnp-field-description">Select an already existing Theme</div>
+                                    @*@Html.LabelFor(m => m.SelectedTheme)*@
+                                    <div class="pnp-field-description">If you have a custom theme, you can apply it to the example site(s) now or apply a theme and other branding options later</div>
                                 </th>
                                 <td>
                                     @Html.DropDownListFor(m => m.SelectedTheme, GetAvailableThemes(), new { @class = "pnp-tb" })
@@ -208,9 +221,9 @@
                             </tr>*@
                         <tr>
                             <td>
-                                <input type="button" id="cancelButton" class="pnp-btn-provision" value="Cancel" />
                             </td>
-                            <td>
+                            <td class="provisioning-commands">
+                                <input type="button" id="cancelButton" class="pnp-btn-provision" value="Cancel" />
                                 <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="Provision" />
                             </td>
                         </tr>
@@ -224,12 +237,15 @@
 </div>
 
 <div id="confirmationDialog" class="confirmationDialog hide">
+    <span onclick="document.getElementById('cancelDialog').click()" class="dialogCloseButton topright">&times;</span>
     <div class="confirmationDialogContent">
         @(Html.Raw(Model.ProvisionRecap))
+        <br />
     </div>
-    <br />
-    <input type="button" id="cancelDialog" class="pnp-btn-provision" value="Cancel" />
-    <input type="button" id="confirmDialog" class="pnp-btn-provision slb-primary-button" value="Confirm" />
+    <div class="dialog-commands">
+        <input type="button" id="cancelDialog" class="pnp-btn-provision" value="Cancel" />
+        <input type="button" id="confirmDialog" class="pnp-btn-provision slb-primary-button" value="Confirm" />
+    </div>
 </div>
 
 <div id="workingOnItSiteDialog" class="workingOnItSiteDialog hide">
@@ -240,32 +256,38 @@
 </div>
 
 <div id="siteExistsDialog" class="siteExistsDialog hide">
+    <span onclick="document.getElementById('siteExistsCancelDialog').click()" class="dialogCloseButton topright">&times;</span>
     <h2>Site URL already in use</h2>
     <div id="siteExistsDialogContent" class="siteExistsDialogContent"></div>
-    <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision" value="Cancel" />
-    <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="Confirm" />
+    <div class="dialog-commands">
+        <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision" value="Cancel" />
+        <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="Confirm" />
+    </div>
 </div>
 
 <div id="missingPreReqsDialog" class="missingPreReqsDialog hide">
+    <span onclick="document.getElementById('acknowledgeDialog').click()" class="dialogCloseButton topright">&times;</span>
     <div class="missingPreReqsDialogContent">
         @(Html.Raw(Model.MissingPreReqsHeader))
         <div id="missingPreReqsList"></div>
         @(Html.Raw(Model.MissingPreReqsFooter))
     </div>
     <br />
-    <input type="button" id="acknowledgeDialog" class="pnp-btn-acknowledge slb-primary-button" value="Ok" />
+    <div class="dialog-commands">
+        <input type="button" id="acknowledgeDialog" class="pnp-btn-acknowledge slb-primary-button" value="Ok" />
+    </div>
 </div>
 
 <div id="dialogOverlay" class="dialogModalOverlay hide">
 </div>
 
-@section scripts
+    @section scripts
 {
-    <!-- build:js scripts/main.js -->
-    <script src="/app/scripts/main.js"></script>
-    <!-- endbuild -->
+        <!-- build:js scripts/main.js -->
+        <script src="/app/scripts/main.js"></script>
+        <!-- endbuild -->
 
-    <script>
+        <script>
 
         // global state variable
         var focusingOutToProvision = false;
@@ -1107,8 +1129,8 @@
             }*@
         });
 
-    </script>
-}
+        </script>
+    }
 
-<img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />
+    <img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />
 

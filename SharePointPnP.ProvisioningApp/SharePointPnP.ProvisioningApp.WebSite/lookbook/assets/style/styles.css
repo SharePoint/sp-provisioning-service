@@ -1,10 +1,10 @@
 ﻿@charset "UTF-8";
 
-*,
+/**,
 ::after,
 ::before {
 	box-sizing: border-box
-}
+}*/
 
 html {
 	font-family: sans-serif;
@@ -13,7 +13,7 @@ html {
 	-webkit-tap-highlight-color: transparent
 }
 
-article,
+/*article,
 aside,
 figcaption,
 figure,
@@ -24,7 +24,7 @@ main,
 nav,
 section {
 	display: block
-}
+}*/
 
 body {
 	margin: 0;
@@ -55,13 +55,13 @@ h6 {
 	margin-bottom: .5rem
 }
 
-dl,
+/*dl,
 ol,
 p,
 ul {
 	margin-top: 0;
 	margin-bottom: 1rem
-}
+}*/
 
 abbr[data-original-title],
 abbr[title] {
@@ -80,12 +80,12 @@ address {
 	line-height: inherit
 }
 
-ol ol,
+/*ol ol,
 ol ul,
 ul ol,
 ul ul {
 	margin-bottom: 0
-}
+}*/
 
 dt {
 	font-weight: 700
@@ -188,16 +188,16 @@ label {
 	margin-bottom: .5rem
 }
 
-button {
+/*button {
 	border-radius: 0
-}
+}*/
 
 button:focus {
 	outline: dotted 1px;
 	outline: -webkit-focus-ring-color auto 5px
 }
 
-button,
+/*button,
 input,
 optgroup,
 select,
@@ -206,35 +206,35 @@ textarea {
 	font-family: inherit;
 	font-size: inherit;
 	line-height: inherit
-}
+}*/
 
-button,
+/*button,
 input {
 	overflow: visible
-}
+}*/
 
-button,
+/*button,
 select {
 	text-transform: none
-}
+}*/
 
 select {
 	word-wrap: normal
 }
 
-[type=button],
+/*[type=button],
 [type=reset],
 [type=submit],
 button {
 	-webkit-appearance: button
-}
+}*/
 
-[type=button]:not(:disabled),
+/*[type=button]:not(:disabled),
 [type=reset]:not(:disabled),
 [type=submit]:not(:disabled),
 button:not(:disabled) {
 	cursor: pointer
-}
+}*/
 
 [type=button]::-moz-focus-inner,
 [type=reset]::-moz-focus-inner,
@@ -4142,11 +4142,11 @@ section {
 	background-color: #d2d2d2
 }
 
-.has-glyph:after {
+/*.has-glyph:after {
 	font-family: MWF-MDL2;
 	display: inline-block;
 	color: currentColor
-}
+}*/
 
 .call-to-action span {
 	display: inline-block;
@@ -4227,7 +4227,7 @@ section {
 	color: #878787
 }
 
-.slb-header {
+/*.slb-header {
 	color: #262626;
 	position: relative;
 	box-shadow: 0 3px 6px rgba(0, 0, 0, .08)
@@ -4629,9 +4629,9 @@ section {
 		animation: .3s cubic-bezier(.68, -.55, .265, 1.55) fade-in;
 		z-index: 1
 	}
-}
+}*/
 
-.slb-footer {
+/*.slb-footer {
 	margin-top: auto
 }
 
@@ -4692,7 +4692,7 @@ section {
 	max-width: 100%;
 	vertical-align: middle
 }
-
+    
 .slb-footer .footer-nav {
 	background-color: #f2f2f2;
 	font-size: 11px
@@ -4709,7 +4709,7 @@ section {
 	justify-content: flex-end;
 	height: 54px;
 	margin: auto 0 auto auto
-}
+}*/
 
 .slb-sticky-header-container {
 	-webkit-animation-name: fade-in;

@@ -14,8 +14,8 @@
     }
     <input class="ms-Toggle-input" type="checkbox" id="@fieldId" value="true" name="@fieldName" @((isReadOnly) ? "readonly" : "") @(Model ? "checked" : "")>
     <label class="ms-Toggle-field @(isRequired ? "is-required" : "") @(Model ? "is-selected" : "")" for="@fieldName" id="@($"{fieldId}Label")">
-        <span class="ms-Label ms-Label--off" style="@(Model ? "display: none;" : "display: block;")">Off</span>
-        <span class="ms-Label ms-Label--on" style="@(Model ? "display: block;" : "display: none;")">On</span>
+        <span class="ms-Label ms-Label--off" style="@(Model ? "display: none;" : "display: block;")">No</span>
+        <span class="ms-Label ms-Label--on" style="@(Model ? "display: block;" : "display: none;")">Yes</span>
     </label>
     @*<input type="hidden" name="@fieldName" value="false">*@
     <div>

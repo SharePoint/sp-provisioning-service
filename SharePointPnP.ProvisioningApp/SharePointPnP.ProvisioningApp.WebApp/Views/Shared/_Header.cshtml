@@ -45,16 +45,19 @@
 
 <div class="slb-header">
     <div class="header-container">
-        <a class="logo main-logo" href="https://www.microsoft.com/">
-            <img aria-hidden="true" src="/lookbook/assets/images/logo.png">
-            <span aria-hidden="true" role="presentation">Microsoft</span>
-        </a>
-        <div class="expanded-home-nav-item expanded-nav-item">
-            <a aria-label="Microsoft 365" class="logo" routerlink="/"
-               href="@ViewBag.HeaderData.RootSiteUrl">
-                <span>Microsoft 365</span>
+        @if (!ViewBag.HeaderData.RenderProvisioningService)
+        {
+            <a class="logo main-logo" href="https://www.microsoft.com/">
+                <img aria-hidden="true" src="/lookbook/assets/images/logo.png">
+                <span aria-hidden="true" role="presentation">Microsoft</span>
             </a>
-        </div>
+            <div class="expanded-home-nav-item expanded-nav-item">
+                <a aria-label="Microsoft 365" class="logo" routerlink="/"
+                   href="@ViewBag.HeaderData.RootSiteUrl">
+                    <span>Microsoft 365</span>
+                </a>
+            </div>
+        }
         <div>
             <div class="collapsed-nav-opener collapsed-nav-item">
                 <button class="menuButton has-glyph">
@@ -63,6 +66,12 @@
             </div>
             <nav class="menu">
                 <ul>
+                    @if (ViewBag.HeaderData.RenderProvisioningService)
+                    {
+                        <li>
+                            <img src="/app/images/beta-tag.png" alt="Beta" class="pnp-logo-beta">
+                        </li>
+                    }
                     <li class="collapsed-nav-item menuButton">
                         <a href="@ViewBag.HeaderData.RootSiteUrl">Home</a>
                     </li>
@@ -71,13 +80,10 @@
             </nav>
         </div>
         <div class="right-nav">
-            @if (ViewBag.HeaderData.ShowServiceDescription)
+            @if (ViewBag.HeaderData.RenderProvisioningService)
             {
                 <nav class="menu">
                     <ul>
-                        <li>
-                            <img src="/app/images/beta-tag.png" alt="Beta" class="pnp-logo-beta">
-                        </li>
                         <li class="collapsed-nav-item menuButton">
                             <a href="/">Home</a>
                         </li>
@@ -227,8 +233,8 @@
                 </div>
             </nav>
             @*<div class="me-control"><button class="me-control-trigger"><span class="me-control-text">Sign in</span>
-            <div class="profile-pic glyph_signIn_circle"></div>
-        </button></div>*@
+                <div class="profile-pic glyph_signIn_circle"></div>
+            </button></div>*@
         </div>
     </div>
 </div>
