@@ -1,49 +1,4 @@
-﻿<script language="javascript">
-
-    document.addEventListener("DOMContentLoaded", function (event) {
-
-        //// Get the currently connected username, if any
-        //fetch("/site/UserProfile/Username")
-        //    .then(data => { return (data.json()); })
-        //    .then(username => {
-        //        if (username) {
-        //            document.body.querySelector(".pnp-username").textContent = username;
-        //            document.body.querySelector(".pnp-signinicon").classList.add("signedin");
-        //        }
-        //        else {
-        //            document.body.querySelector(".pnp-username").textContent = "Sign in";
-        //            document.body.querySelector(".pnp-signinicon").classList.remove("signedin");
-        //        }
-        //    });
-
-        // Get the dynamic list of categories
-        var categoriesMenuInit = { method: 'POST' };
-        fetch("/home/CategoriesMenu", categoriesMenuInit).then(function (response) {
-            return response.text();
-        }).then(function (html) {
-
-            // Get a reference to the menu
-            var menu = document.getElementById("packagesMenu");
-
-            // Build the HTML response
-            var htmlResponse = document.createElement("container");
-            htmlResponse.innerHTML = html;
-            htmlResponse.firstChild.childNodes.forEach(function (child) {
-                if (child.nodeName == "LI") {
-                    menu.appendChild(child);
-                }
-            });
-
-            hookMenuEvents();
-
-        }).catch(function (error) {
-            console.log('There has been a problem with your fetch operation: ' + error.message);
-        });
-    });
-
-</script>
-
-<div class="app-header">
+﻿<div class="app-header">
     <header class="slb-header">
         <div class="header-container">
             <div class="header-part-one">
@@ -59,7 +14,7 @@
                 </a>
             </div>
             <div class="page-nav">
-                <div class="collapsed-nav-opener collapsed-nav-item">
+                <div class="collapsed-nav-opener collapsed-nav-item responsiveMenuButton">
                     <button class="has-glyph"><span>Microsoft 365</span></button>
                 </div>
                 <nav class="menu">

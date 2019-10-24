@@ -1,9 +1,99 @@
 var isOpen = "is-open";
 var isActive = "isActive";
 
-document.addEventListener("DOMContentLoaded", function (event) {
+$(function () {
+    function isBigScreen() {
+        var width = $(window).width();
+        return (width > 767);
+    }
 
-    hookMenuEvents();
+    $.post("/home/CategoriesMenu", null, function (html) {
+        // Get a reference to the menu
+        var menu = $("#packagesMenu");
+
+        // Build the HTML response
+        $(html).children().each((i, child) => {
+            $(menu).append(child);
+        });
+
+        $(".menuButton").each((i, menuElement) => {
+            $(menuElement).click(function (e) {
+                $(e.currentTarget).siblings(".menu-panel").each((j, menuPanel) => {
+                    if ($(menuPanel).hasClass(isOpen)) {
+                        // Close the menu if it is open
+                        $(menuPanel).removeClass(isOpen);
+                    }
+                    else {
+                        if (isBigScreen()) {
+                            // Close all the other menu
+                            $("." + isOpen).each((k, openedMenu) => {
+                                var responsiveMenu = $(".page-nav").find(".menu");
+                                if ($(responsiveMenu)[0] != $(openedMenu)[0]) {
+                                    $(openedMenu).removeClass(isOpen);
+                                }
+                            });
+                        }
+
+                        // Open the menu
+                        $(menuPanel).addClass(isOpen);
+                    }
+                });
+            });
+        });
+
+        $("#packagesMenu").find(".menuButton").each((i, menuElement) => {
+            $(menuElement).mouseover(function (e) {
+                if(isBigScreen()) {
+                    $(e.currentTarget).siblings(".menu-panel").each((j, menuPanel) => {
+
+                        // Close all the other menu
+                        $("#packagesMenu").find("." + isOpen).each((k, openedMenu) => {
+                            $(openedMenu).removeClass(isOpen);
+                        });
+
+                        if (!$(menuPanel).hasClass(isOpen)) {
+                            // Open the menu
+                            $(menuPanel).addClass(isOpen);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Responsive menus
+        $(".responsiveMenuButton").click(function (e) {
+            var menu = $(".page-nav > .menu");
+            if ($(menu).hasClass(isOpen)) {
+                // Close the menu if it is open
+                $("." + isOpen).removeClass(isOpen);
+            }
+            else {
+                // Open the menu
+                $(menu).addClass(isOpen);
+
+            }
+        });
+
+        $(window).on('resize', function () {
+            $(".is-open").removeClass("is-open");
+        });
+    });
+
+    // Hide the open menu when clicked outside
+    $(document).mouseup(function (event) {
+        if (isBigScreen()) {
+            if (!$(event.target).parent().hasClass("menuButton")) {
+
+                var openMenus = document.querySelectorAll("." + isOpen);
+                [].forEach.call(openMenus, function (m) {
+                    m.classList.remove(isOpen);
+                });
+            }
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function (event) {
 
     // Microsoft Mega menu
     document.querySelector(".microsoftNav").addEventListener('click', function (e) {
@@ -19,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 [].forEach.call(openMenus, function (openMenu) {
                     openMenu.classList.remove(isOpen);
                 })
-                
+
                 // Open the menu
                 menu.classList.add(isOpen);
             }
@@ -27,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
     // Categories selection
-    var tabsCategories = document.querySelectorAll(".slb-tab-label");    
+    var tabsCategories = document.querySelectorAll(".slb-tab-label");
     for (var i = 0; i < tabsCategories.length; i++) {
         tabsCategories[i].addEventListener('click', function (e) {
             var slbTab = e.currentTarget;
@@ -44,39 +134,4 @@ document.addEventListener("DOMContentLoaded", function (event) {
             }
         });
     }
-
-    // Hide the open menu when clicked outside
-    document.addEventListener("mouseup", function (event) {
-        var openMenus = document.querySelectorAll("." + isOpen);
-        [].forEach.call(openMenus, function (m) {
-            m.classList.remove(isOpen);
-        });
-    });
 });
-
-function hookMenuEvents() {
-
-    // Header menu
-    var menuButtons = document.querySelectorAll(".menuButton");
-    for (var i = 0; i < menuButtons.length; i++) {
-        menuButtons[i].addEventListener('click', function (e) {
-            var menuPanels = e.currentTarget.parentElement.querySelectorAll(".menu-panel");
-            [].forEach.call(menuPanels, function (menuPanel) {
-                if (menuPanel.classList.contains(isOpen)) {
-                    // Close the menu if it is open
-                    menuPanel.classList.remove(isOpen);
-                }
-                else {
-                    // Close all the other menu
-                    var menus = document.querySelectorAll("." + isOpen);
-                    [].forEach.call(menus, function (m) {
-                        m.classList.remove(isOpen);
-                    });
-
-                    // Open the menu
-                    menuPanel.classList.add(isOpen);
-                }
-            });
-        });
-    }
-}

@@ -81,20 +81,17 @@
                                         {
                                             if (package.TargetPlatforms.Any(p => p.Id == "SPPNP"))
                                             {
-                                                <div class="col-sm-6 col-lg-4 mt-5 slb-tab-label-item hide @(package.Categories.Aggregate("", (a, c) => a += $" category-{c.Id.ToLower()}"))">
-                                                    <div class="div">
-                                                        <a href="/home/details?packageId=@package.Id">
+                                                <div class="col-sm-6 col-lg-4 mt-5 ng-star-inserted slb-tab-label-item hide @(package.Categories.Aggregate("", (a, c) => a += $" category-{c.Id.ToLower()}"))">
+                                                    <div class="app-package-card">
+                                                        <a href="/home/details?packageId=@package.Id" class="ng-star-inserted">
                                                             <div class="hero-image aspect-ratio-wrapper">
                                                                 <div class="aspect-ratio-image-wrapper">
-                                                                    <img src="@GetTemplatePreviewImage(package)"
-                                                                         alt="@package.DisplayName">
+                                                                    <img src="@GetTemplatePreviewImage(package)" alt="@package.DisplayName" class="ng-star-inserted">
                                                                 </div>
                                                             </div>
-                                                            <h5> @package.DisplayName </h5>
+                                                            <div class="site-name"> @package.DisplayName </div>
+                                                            <h5> @Html.Raw(package.Abstract) </h5>
                                                         </a>
-                                                        <div>
-                                                            @Html.Raw(package.Abstract)
-                                                        </div>
                                                     </div>
                                                 </div>
                                             }
