@@ -441,6 +441,11 @@ hr.sectionTitleDivider {
     width: 300px;
 }
 
+.provisioning-status-text {
+    margin-right: 10px;
+    margin-bottom: 50px;
+}
+
 .provisioning-status-animation {
     display: inline;
 }
@@ -452,3 +457,8 @@ hr.sectionTitleDivider {
     .provisioning-status-animation.show {
         display: block;
     }
+
+.provisioning-status-row {
+    display: flex;
+    flex-direction: row;
+}
