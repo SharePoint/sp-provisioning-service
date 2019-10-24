@@ -54,3 +54,7 @@ input[type="button"].slb-primary-button {
     color: white !important;
     background-color: #038387 !important;
 }
+
+.app-package-card a {
+    color: inherit;
+}
