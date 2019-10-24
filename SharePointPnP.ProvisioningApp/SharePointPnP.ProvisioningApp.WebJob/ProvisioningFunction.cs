@@ -680,7 +680,8 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
             else
             {
-                return (ex.ToDetailedString());
+                return (ex.Message);
+                //return (ex.ToDetailedString());
             }
         }
 

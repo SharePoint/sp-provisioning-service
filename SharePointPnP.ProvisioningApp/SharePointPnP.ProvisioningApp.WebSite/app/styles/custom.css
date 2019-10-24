@@ -357,6 +357,10 @@ hr.sectionTitleDivider {
     margin-top: 0px;
 }
 
+    .provisioning-top-section .top-section-area .section-text {
+        width: 100%;
+    }
+
 .teal-header {
     height: 150px;
     color: white;
