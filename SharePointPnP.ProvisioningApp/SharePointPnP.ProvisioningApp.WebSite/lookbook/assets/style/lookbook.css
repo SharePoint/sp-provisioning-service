@@ -1,4 +1,6 @@
-﻿.h2, h2 {
+﻿/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT license. */
+.h2, h2 {
     font-family: "Segoe UI",SegoeUI,Helvetica,sans-serif;
     font-size: 2.875rem;
     font-weight: 600;
@@ -138,7 +140,6 @@ ul {
 }
 
 .app-header {
-
 }
 
 .app-footer {
@@ -194,7 +195,7 @@ ul {
     }
 
     .slb-header .hamburger-button {
-        background: 0 0;
+        background: transparent;
         border-color: transparent;
         padding: 0;
         flex-shrink: 0;
@@ -203,7 +204,7 @@ ul {
         height: 48px;
     }
 
-        /*.slb-header .hamburger-button::after {
+        .slb-header .hamburger-button:after {
             font-size: 20px;
             margin-top: 7px;
             width: 20px;
@@ -211,14 +212,14 @@ ul {
             content: "";
         }
 
-        .slb-header .hamburger-button::focus {
+        .slb-header .hamburger-button:focus {
             border-color: #000;
             outline: none;
         }
 
-        .slb-header .hamburger-button .is-open::after {
+        .slb-header .hamburger-button .is-open:after {
             content: "";
-        }*/
+        }
 
 
     .slb-header a, .slb-header button {
@@ -230,15 +231,15 @@ ul {
         position: relative;
     }
 
-    .slb-header a:hover,
-    .slb-header button:hover {
-        text-decoration: none
-    }
+        .slb-header a:hover,
+        .slb-header button:hover {
+            text-decoration: none
+        }
 
-    .slb-header a:focus,
-    .slb-header button:focus {
-        outline: #000 dashed 1px
-    }
+        .slb-header a:focus,
+        .slb-header button:focus {
+            outline: #000 dashed 1px
+        }
 
 
     .slb-header .logo {
@@ -291,6 +292,17 @@ ul {
             padding: 0 15px;
         }
 
+            .slb-header .collapsed-nav-opener button:after {
+                font-size: 12px;
+                font-weight: 700;
+                content: "";
+                padding-left: 7px;
+            }
+
+        .slb-header .collapsed-nav-opener.is-open button:after {
+            content: "";
+        }
+
     .slb-header .menu {
         border-bottom: 1px solid #000;
         display: none;
@@ -336,22 +348,54 @@ ul {
                 display: none;
             }
 
-        .slb-header .menu li ul {
-            padding-left: 30px;
-            padding-right: 1px;
+            .slb-header .menu .menu-panel.is-open {
+                display: block;
+            }
+
+            .slb-header .menu .menu-panel .menu-panel.is-open {
+                display: block;
+            }
+
+        .slb-header .menu.is-open {
+            background: #F2F2F2;
+            display: block;
+            top: 100%;
+            z-index: 1;
         }
 
-        .slb-header .menu button:after {
-            display: inline-block;
-            content: "";
-            font-size: 10px;
-            font-weight: 700;
-            padding-top: 6px;
-            right: 15px;
-            position: absolute;
+            .slb-header .menu.is-open button.is-open:after {
+                content: "";
+            }
+
+    .slb-header .menu-panel button:hover, .slb-header .menu-panel a:hover {
+        background-color: #E5E5E5;
+        text-decoration: underline;
+    }
+
+        .slb-header .menu-panel button:hover span:before, .slb-header .menu-panel a:hover span:before {
+            display: none;
         }
 
-    /*.slb-header a:focus,
+    .slb-header .menu-panel button:after {
+        content: "";
+    }
+
+    .slb-header .menu li ul {
+        padding-left: 30px;
+        padding-right: 1px;
+    }
+
+    .slb-header .menu button:after {
+        display: inline-block;
+        content: "";
+        font-size: 10px;
+        font-weight: 700;
+        padding-top: 6px;
+        right: 15px;
+        position: absolute;
+    }
+
+/*.slb-header a:focus,
     .slb-header button:focus {
         outline: #000 dashed 1px
     }*/
@@ -397,7 +441,7 @@ ul {
 
     .slb-header a:hover span:before {
         background: currentColor;
-        bottom: 9px;
+        bottom: 15px;
         content: "";
         display: block;
         height: 2px;
@@ -440,7 +484,17 @@ ul {
                 position: absolute;
                 width: calc(100% - 42px);
             }
-        
+
+        .slb-header .menu a:hover span:before {
+            background: currentColor;
+            bottom: 9px;
+            content: "";
+            display: block;
+            height: 2px;
+            position: absolute;
+            width: calc(100% - 24px);
+        }
+
         .slb-header .menu > ul > li > a, .slb-header .menu > ul > li > span {
             white-space: nowrap;
         }
@@ -489,6 +543,16 @@ ul {
         font-weight: 400;
         margin-top: 7px;
         padding: 0 7px;
+    }
+
+    .slb-header .expanded-home-nav-item a:hover span:before {
+        background: currentColor;
+        bottom: 15px;
+        content: "";
+        display: block;
+        height: 2px;
+        position: absolute;
+        width: calc(100% - 16px);
     }
 }
 
@@ -547,14 +611,14 @@ ul {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
 
-    .feature-hero-section .hero-section-text-container h6 {
-        margin-bottom: 1.5rem;
-    }
+        .feature-hero-section .hero-section-text-container h6 {
+            margin-bottom: 1.5rem;
+        }
 
-    .feature-hero-section .hero-section-text-container p {
-        font-size: 0.9375rem;
-        line-height: 1.25rem;
-    }
+        .feature-hero-section .hero-section-text-container p {
+            font-size: 0.9375rem;
+            line-height: 1.25rem;
+        }
 
 .quotes-section {
     text-align: center;
@@ -665,38 +729,38 @@ ul {
         flex-basis: 100%;
     }
 
-    .footer-splash .content-grouping .twitter {
-        align-items: center;
-        background: url(/lookbook/assets/images/twitter-bw_bg.jpg);
-        display: flex;
-        justify-content: center;
-        overflow: hidden;
-    }
+        .footer-splash .content-grouping .twitter {
+            align-items: center;
+            background: url(/lookbook/assets/images/twitter-bw_bg.jpg);
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-    .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
-        flex-basis: 100%;
-    }
+        .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
+            flex-basis: 100%;
+        }
 
-    .footer-splash .content-grouping .twitter .content-container {
-        align-items: center;
-        background: #038387;
-        border-radius: 50%;
-        display: inline-flex;
-        flex-direction: column;
-        flex-shrink: 0;
-        justify-content: center;
-        padding: 0 15px;
-        height: 280px;
-        width: 280px;
-    }
+            .footer-splash .content-grouping .twitter .content-container {
+                align-items: center;
+                background: #038387;
+                border-radius: 50%;
+                display: inline-flex;
+                flex-direction: column;
+                flex-shrink: 0;
+                justify-content: center;
+                padding: 0 15px;
+                height: 280px;
+                width: 280px;
+            }
 
-    .footer-splash .content-grouping .twitter a {
-        color: #FFF;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
+            .footer-splash .content-grouping .twitter a {
+                color: #FFF;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
 
     .footer-splash h2 {
         font-size: 2.125rem;
@@ -727,18 +791,18 @@ ul {
         flex-basis: 100%;
     }
 
-    .footer-splash .content-grouping .user-voice .content-container {
-        padding: 15%;
-        width: 100%;
-    }
+        .footer-splash .content-grouping .user-voice .content-container {
+            padding: 15%;
+            width: 100%;
+        }
 
-    .footer-splash .content-grouping .user-voice h3 {
-        color: #37c6d0;
-    }
+        .footer-splash .content-grouping .user-voice h3 {
+            color: #37c6d0;
+        }
 
-    .footer-splash .content-grouping .user-voice .call-to-action {
-        color: #FFF;
-    }
+        .footer-splash .content-grouping .user-voice .call-to-action {
+            color: #FFF;
+        }
 
     .footer-splash .intrazone {
         background-image: url(/lookbook/assets/images/Intrazone-logo_square.jpg);
@@ -747,35 +811,35 @@ ul {
         flex-basis: 100%;
     }
 
-    .footer-splash .intrazone .content-container {
-        position: relative;
-    }
+        .footer-splash .intrazone .content-container {
+            position: relative;
+        }
 
-    .footer-splash .intrazone .content-container .text-content {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding-top: 75%;
-    }
+            .footer-splash .intrazone .content-container .text-content {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding-top: 75%;
+            }
 
 @media (max-width: 991.98px) and (min-width: 576px) {
     .footer-splash {
         height: 800px;
     }
 
-    .footer-splash .content-grouping h4 {
-        font-size: 18px;
-    }
+        .footer-splash .content-grouping h4 {
+            font-size: 18px;
+        }
 
-    .footer-splash .content-grouping a, .footer-splash .content-grouping p {
-        font-size: 18px;
-    }
+        .footer-splash .content-grouping a, .footer-splash .content-grouping p {
+            font-size: 18px;
+        }
 
-    .footer-splash .content-grouping p {
-        margin-bottom: 0.5em;
-    }
+        .footer-splash .content-grouping p {
+            margin-bottom: 0.5em;
+        }
 }
 
 @media (min-width: 576px) {
@@ -784,45 +848,46 @@ ul {
         flex-basis: 40%;
     }
 
-    .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
-        flex-basis: 100%;
-    }
+        .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
+            flex-basis: 100%;
+        }
 
-    .footer-splash .content-grouping .twitter .content-container {
-        height: 200px;
-        width: 200px;
-    }
+            .footer-splash .content-grouping .twitter .content-container {
+                height: 200px;
+                width: 200px;
+            }
 
-    .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
-        flex-basis: 100%;
-    }
+        .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
+            flex-basis: 100%;
+        }
 
-    .footer-splash .content-grouping .user-voice .content-container {
-        padding: 15px;
-    }
+            .footer-splash .content-grouping .user-voice .content-container {
+                padding: 15px;
+            }
 
     .footer-splash .intrazone {
         max-width: 500px;
         flex-basis: 60%;
-    }}
+    }
+}
 
 @media (min-width: 768px) {
     .footer-splash .content-grouping {
         flex-basis: 60%;
     }
 
-    .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
-        flex-basis: 50%;
-    }
+        .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
+            flex-basis: 50%;
+        }
 
-    .footer-splash .content-grouping .twitter .content-container {
-        height: 230px;
-        width: 230px;
-    }
+            .footer-splash .content-grouping .twitter .content-container {
+                height: 230px;
+                width: 230px;
+            }
 
-    .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
-        flex-basis: 50%;
-    }
+        .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
+            flex-basis: 50%;
+        }
 
     .footer-splash .intrazone {
         flex-basis: 40%;
@@ -838,22 +903,22 @@ ul {
         flex-basis: 60%;
     }
 
-    .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
-        flex-basis: 50%;
-    }
+        .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
+            flex-basis: 50%;
+        }
 
-    .footer-splash .content-grouping .twitter .content-container {
-        height: 280px;
-        width: 280px;
-    }
+            .footer-splash .content-grouping .twitter .content-container {
+                height: 280px;
+                width: 280px;
+            }
 
-    .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
-        flex-basis: 50%;
-    }
+        .footer-splash .content-grouping .twitter, .footer-splash .content-grouping .user-voice {
+            flex-basis: 50%;
+        }
 
-    .footer-splash .content-grouping .user-voice .content-container {
-        padding: 0;
-    }
+            .footer-splash .content-grouping .user-voice .content-container {
+                padding: 0;
+            }
 
     .footer-splash .intrazone {
         flex-basis: 40%;
@@ -866,9 +931,9 @@ ul {
         flex-basis: 40%;
     }
 
-    .footer-splash .design-guidance .content-container {
-        padding: 0 10%;
-    }
+        .footer-splash .design-guidance .content-container {
+            padding: 0 10%;
+        }
 
     .footer-splash .content-grouping {
         flex-basis: 25%;
@@ -903,13 +968,13 @@ ul {
         flex-basis: 40%;
     }
 
-    .footer-splash .design-guidance .content-container {
-        padding: 0 10%;
-    }
+        .footer-splash .design-guidance .content-container {
+            padding: 0 10%;
+        }
 }
 
 @media (min-width: 768px) {
-    
+
     .top-section .container-fluid .top-section-area .section-text {
         display: flex;
         align-items: center;
@@ -957,7 +1022,7 @@ ul {
             .slb-footer .footer-nav .main-logo img {
                 width: 100%;
             }
-        
+
         .slb-footer .footer-nav .links ul {
             line-height: 16px;
             margin: 12px 0 3px;
@@ -1039,33 +1104,33 @@ ul {
             width: 100%;
         }
 
-    a .hero-image {
-        background: #e0e0e0;
-        margin-bottom: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-        overflow: hidden;
-        transition: opacity 0.3s, box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+a .hero-image {
+    background: #e0e0e0;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+    transition: opacity 0.3s, box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+}
+
+    a:hover .hero-image,
+    a:focus .hero-image {
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+        opacity: 0.9;
     }
 
-    a:hover,
-    a:focus {
-        color: inherit;
-        text-decoration: none;
+a:focus {
+    outline: none;
+}
+
+    a:focus .hero-image {
+        outline: 1px dashed #000;
     }
-
-        a:hover .hero-image,
-        a:focus .hero-image {
-            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-            opacity: 0.9;
-        }
-
-    a:focus {
-        outline: none;
-    }
-
-        a:focus .hero-image {
-            outline: 1px dashed #000;
-        }
 
 [hidden] {
     display: none;

@@ -200,6 +200,38 @@
       <DependentUpon>main.css</DependentUpon>
     </Content>
     <Content Include="app\styles\slb-style.css" />
+    <Content Include="assets\images\BrandSite%2816x9%29.png" />
+    <Content Include="assets\images\BrandSite.png" />
+    <Content Include="assets\images\CompellingAndHighlyVisual.png" />
+    <Content Include="assets\images\ContosoLandingPage%2816x9%29.png" />
+    <Content Include="assets\images\ContosoLandingPage.png" />
+    <Content Include="assets\images\ContosoTeamSite%2816x9%29.png" />
+    <Content Include="assets\images\ContosoTeamSite.png" />
+    <Content Include="assets\images\CustomLearningSolution.png" />
+    <Content Include="assets\images\DroneLandingPage%2816x9%29.png" />
+    <Content Include="assets\images\DroneLandingPage.png" />
+    <Content Include="assets\images\feed-hero-background-1%402x.png" />
+    <Content Include="assets\images\feed-hero-background-1.png" />
+    <Content Include="assets\images\feed-hero-background-2%402x.png" />
+    <Content Include="assets\images\feed-hero-background-2.png" />
+    <Content Include="assets\images\footer\grid.svg" />
+    <Content Include="assets\images\footer\Intrazone-logo_square.jpg" />
+    <Content Include="assets\images\footer\twitter-bw_bg.jpg" />
+    <Content Include="assets\images\footer\Twitter-white.svg" />
+    <Content Include="assets\images\Give%40Site%2816x9%29.png" />
+    <Content Include="assets\images\Give%40Site.png" />
+    <Content Include="assets\images\HeroImage_v3.png" />
+    <Content Include="assets\images\homepage-top-image.png" />
+    <Content Include="assets\images\home\hero_getinspired_bg.png" />
+    <Content Include="assets\images\home\highlight-feature_bg.jpg" />
+    <Content Include="assets\images\HubConnected.png" />
+    <Content Include="assets\images\LeadershipFullPage.png" />
+    <Content Include="assets\images\logo.png" />
+    <Content Include="assets\images\Microsoft-logo.png" />
+    <Content Include="assets\images\NewsAndResources%28FULL%29.png" />
+    <Content Include="assets\images\SocialAndPersonalized.png" />
+    <Content Include="assets\images\Work%40Site.png" />
+    <Content Include="assets\images\WorkshopSite.png" />
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
     <Content Include="ApplicationInsights.config">
@@ -243,6 +275,7 @@
     <Content Include="lookbook\assets\images\twitter.png" />
     <Content Include="lookbook\assets\scripts\partial.js" />
     <Content Include="lookbook\assets\style\icon.css" />
+    <Content Include="lookbook\assets\style\lookbook.old.css" />
     <Content Include="lookbook\assets\style\lookbook-custom.css" />
     <Content Include="lookbook\assets\style\lookbook.css" />
     <Content Include="lookbook\assets\style\styles.css" />
