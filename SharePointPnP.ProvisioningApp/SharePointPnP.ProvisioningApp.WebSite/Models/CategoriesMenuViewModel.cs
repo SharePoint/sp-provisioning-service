@@ -9,5 +9,7 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Models
     public class CategoriesMenuViewModel
     {
         public List<Category> Categories { get; set; }
+
+        public String BaseLinksUrl { get; set; }
     }
 }

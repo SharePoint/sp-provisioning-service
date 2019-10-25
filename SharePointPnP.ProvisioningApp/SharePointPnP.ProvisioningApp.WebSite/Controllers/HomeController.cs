@@ -136,10 +136,12 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Controllers
                 !String.IsNullOrEmpty(slbHost) &&
                 returnUrl.Contains(slbHost))
             {
+                model.BaseLinksUrl = returnUrl.Substring(0, returnUrl.LastIndexOf(@"/") + 1);
                 targetPlatform = "LOOKBOOK";
             }
             else
             {
+                model.BaseLinksUrl = String.Empty;
                 targetPlatform = "SPPNP";
             }
 

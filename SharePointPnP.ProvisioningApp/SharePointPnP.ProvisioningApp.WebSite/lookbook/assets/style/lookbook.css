@@ -359,7 +359,6 @@ ul {
         .slb-header .menu.is-open {
             background: #F2F2F2;
             display: block;
-            top: 100%;
             z-index: 1;
         }
 

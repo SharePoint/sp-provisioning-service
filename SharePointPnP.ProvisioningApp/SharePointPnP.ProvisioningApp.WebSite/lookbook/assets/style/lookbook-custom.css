@@ -14,6 +14,14 @@
     .shortTitle {
         padding: 16px 8px 16px 12px !important;
     }
+
+    #packagesMenu button:hover span:before {
+        display: none;
+    }
+
+    #packagesMenu a span:before {
+        display: none;
+    }
 }
 
 .pnp-svcteaser {
@@ -45,4 +53,18 @@ button.slb-primary-button,
 input[type="button"].slb-primary-button {
     color: white !important;
     background-color: #038387 !important;
+}
+
+button.slb-button,
+input[type="button"].slb-button {
+    color: #333333 !important;
+    background-color: #F4F4F4 !important;
+    border: 1px #A6A6A6 solid;
+    padding: .4em 1em .5em;
+    font-weight: 400 !important;
+    cursor: pointer;
+}
+
+.app-package-card a {
+    color: inherit;
 }
