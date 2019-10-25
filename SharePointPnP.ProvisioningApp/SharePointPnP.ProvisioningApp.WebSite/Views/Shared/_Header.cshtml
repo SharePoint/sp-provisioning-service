@@ -1,27 +1,32 @@
 ﻿<div class="app-header">
     <header class="slb-header">
         <div class="header-container">
-            @*<div class="header-part-one">
-                <button aria-label="All Microsoft expand to see list of Microsoft products and services" class="hamburger-button collapsed-nav-item has-glyph" type="button" aria-expanded="false"></button>
-                <a aria-label="Microsoft" class="logo main-logo" href="https://www.microsoft.com">
-                    <img aria-hidden="true" src="/lookbook/assets/images/logo.png">
-                    <span aria-hidden="true" role="presentation">Microsoft</span>
-                </a>
-            </div>
-            <div class="expanded-home-nav-item expanded-nav-item">
-                <a class="logo" href="https://www.microsoft.com/en-us/microsoft-365">
-                    <span>Microsoft 365</span>
-                </a>
-            </div>*@
+            @*
+                <div class="header-part-one">
+                    <button aria-label="All Microsoft expand to see list of Microsoft products and services" class="hamburger-button collapsed-nav-item has-glyph" type="button" aria-expanded="false"></button>
+                    <a aria-label="Microsoft" class="logo main-logo" href="https://www.microsoft.com">
+                        <img aria-hidden="true" src="/lookbook/assets/images/logo.png">
+                        <span aria-hidden="true" role="presentation">Microsoft</span>
+                    </a>
+                </div>
+                <div class="expanded-home-nav-item expanded-nav-item">
+                    <a class="logo" href="https://www.microsoft.com/en-us/microsoft-365">
+                        <span>Microsoft 365</span>
+                    </a>
+                </div>
+            *@
             <div class="page-nav">
+                <div class="collapsed-nav-opener collapsed-nav-item responsiveMenuButton">
+                    <button class="has-glyph"><span>SharePoint provisioning service</span></button>
+                </div>
                 @*<div class="collapsed-nav-opener collapsed-nav-item responsiveMenuButton">
-                    <button class="has-glyph"><span>Microsoft 365</span></button>
+                        <button class="has-glyph"><span>Microsoft 365</span></button>
                 </div>*@
                 <nav class="menu">
                     <ul>
                         @*<li class="collapsed-nav-item">
-                            <a href="https://www.microsoft.com/en-us/microsoft-365">Home</a>
-                        </li>*@
+                                <a href="https://www.microsoft.com/en-us/microsoft-365">Home</a>
+                            </li>*@
                         <li>
                             <img src="/app/images/beta-tag.png" alt="Beta" class="pnp-logo-beta">
                         </li>
@@ -46,150 +51,152 @@
                         <li><a href="/home/contentPage?contentPageId=ServiceDescriptionLong" class="shortTitle"><span>Service description</span></a></li>
                     </ul>
                 </nav>
-                <nav class="menu">
-                    <div>
-                        <button aria-label="All Microsoft expand to see list of Microsoft products and services" class="expanded-nav-item has-glyph microsoftNav" type="button" aria-expanded="false"><span>All Microsoft</span></button>
-                        <nav aria-label="All microsoft menu" class="megamenu menu-panel">
-                            <ul class="megamenu-top-nav">
-                                <li>
-                                    <a href="https://products.office.com/en-us/home">Office</a>
-                                </li>
-                                <li>
-                                    <a href="https://www.microsoft.com/en-us/windows/">Windows</a>
-                                </li>
-                                <li>
-                                    <a href="https://www.microsoft.com/en-us/surface">Surface</a>
-                                </li>
-                                <li>
-                                    <a href="https://www.xbox.com/">Xbox</a>
-                                </li>
-                                <li>
-                                    <a href="https://www.microsoft.com/en-us/store/b/sale?icid=gm_nav_L0_salepage">Deals</a>
-                                </li>
-                                <li>
-                                    <a href="https://support.microsoft.com/en-us">Support</a>
-                                </li>
-                            </ul>
-                            <ul class="megamenu-panel">
-                                <li>
-                                    <button role="presentation" type="button" tabindex="-1" class="has-glyph" aria-expanded="false">Software </button>
-                                    <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
-                                        <li>
-                                            <a href="https://www.microsoft.com/en-us/windows/windows-10-apps"> Windows apps </a>
-                                        </li>
-                                        <li>
-                                            <a href="https://onedrive.live.com/about/en-us/">OneDrive</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://outlook.live.com/owa/">Outlook</a>
-                                        </li>
-                                        <li><a href="https://www.skype.com/en/">Skype</a></li>
-                                        <li><a href="https://www.onenote.com/">OneNote</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <button role="presentation" type="button" tabindex="-1" class="has-glyph"
-                                            aria-expanded="false">
-                                        PCs &amp; Devices
-                                    </button>
-                                    <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
-                                        <li><a href="https://www.microsoft.com/en-us/windows/devices"> PCs &amp; tablets </a></li>
-                                        <li><a href="https://www.microsoft.com/accessories/en-us">Accessories</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <button role="presentation" type="button" tabindex="-1" class="has-glyph"
-                                            aria-expanded="false">
-                                        Entertainment
-                                    </button>
-                                    <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
-                                        <li><a href="https://www.xbox.com/en-us/games/xbox-one?xr=shellnav"> Xbox games </a></li>
-                                        <li><a href="https://www.microsoft.com/en-us/windows/windows-10-games"> PC games </a></li>
-                                        <li>
-                                            <a href="https://www.microsoft.com/en-us/store/games/windows?icid=TopNavWindowsGames">
-                                                Windows digital games
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="https://www.microsoft.com/en-us/store/movies-and-tv?icid=TopNavMoviesTv">
-                                                Movies
-                                                &amp; TV
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <button role="presentation" type="button" tabindex="-1" class="has-glyph"
-                                            aria-expanded="false">
-                                        Business
-                                    </button>
-                                    <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
-                                        <li><a href="https://azure.microsoft.com/en-us/"> Microsoft Azure </a></li>
-                                        <li>
-                                            <a href="https://www.microsoft.com/en-us/dynamics365/home"> Microsoft Dynamics 365 </a>
-                                        </li>
-                                        <li><a href="https://www.microsoft.com/en-us/microsoft-365"> Microsoft 365 </a></li>
-                                        <li><a href="https://www.microsoft.com/en-us/enterprise"> Microsoft Industry </a></li>
-                                        <li><a href="https://www.microsoft.com/en-us/sql-server/ "> Data platform </a></li>
-                                        <li><a href="https://go.microsoft.com/fwlink/?linkid=2026638"> Microsoft Advertising </a></li>
-                                        <li><a href="https://www.microsoft.com/licensing/default" id="Licensing"> Licensing </a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <button role="presentation" type="button" tabindex="-1" class="has-glyph"
-                                            aria-expanded="false">
-                                        Developer &amp; IT
-                                    </button>
-                                    <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
-                                        <li><a href="https://www.microsoft.com/net/"> .NET </a></li>
-                                        <li><a href="https://visualstudio.microsoft.com/"> Visual Studio </a></li>
-                                        <li>
-                                            <a href="https://www.microsoft.com/cloud-platform/windows-server"> Windows Server </a>
-                                        </li>
-                                        <li><a href="https://developer.microsoft.com/en-us/windows"> Windows Dev Center </a></li>
-                                        <li><a href="https://docs.microsoft.com/en-us/"> Docs </a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <button role="presentation" type="button" tabindex="-1" class="has-glyph"
-                                            aria-expanded="false">
-                                        Other
-                                    </button>
-                                    <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
-                                        <li><a href="https://www.microsoft.com/en-us/store/b/home"> Microsoft Store </a></li>
-                                        <li><a href="https://www.microsoft.com/rewards"> Microsoft Rewards </a></li>
-                                        <li>
-                                            <a href="https://www.microsoft.com/en-us/download/default.aspx">
-                                                Free downloads &amp;
-                                                security
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="https://www.microsoft.com/en-us/education?icid=CNavMSCOML0_Studentsandeducation">
-                                                Education
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="https://www.microsoft.com/en-us/store/locations/find-a-store?icid=TopNavStoreLocations">
-                                                Store locations
-                                            </a>
-                                        </li>
-                                        <li><a href="https://www.microsoft.com/en-us/store/b/gift-cards"> Gift cards </a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul>
-                                <li class="multi-column-info">
-                                    <a class="has-glyph"
-                                       href="https://www.microsoft.com/en-us/sitemap.aspx"> View Sitemap </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </nav>
+                @*
+                    <nav class="menu">
+                        <div>
+                            <button aria-label="All Microsoft expand to see list of Microsoft products and services" class="expanded-nav-item has-glyph microsoftNav" type="button" aria-expanded="false"><span>All Microsoft</span></button>
+                            <nav aria-label="All microsoft menu" class="megamenu menu-panel">
+                                <ul class="megamenu-top-nav">
+                                    <li>
+                                        <a href="https://products.office.com/en-us/home">Office</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.microsoft.com/en-us/windows/">Windows</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.microsoft.com/en-us/surface">Surface</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.xbox.com/">Xbox</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.microsoft.com/en-us/store/b/sale?icid=gm_nav_L0_salepage">Deals</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://support.microsoft.com/en-us">Support</a>
+                                    </li>
+                                </ul>
+                                <ul class="megamenu-panel">
+                                    <li>
+                                        <button role="presentation" type="button" tabindex="-1" class="has-glyph" aria-expanded="false">Software </button>
+                                        <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
+                                            <li>
+                                                <a href="https://www.microsoft.com/en-us/windows/windows-10-apps"> Windows apps </a>
+                                            </li>
+                                            <li>
+                                                <a href="https://onedrive.live.com/about/en-us/">OneDrive</a>
+                                            </li>
+                                            <li>
+                                                <a href="https://outlook.live.com/owa/">Outlook</a>
+                                            </li>
+                                            <li><a href="https://www.skype.com/en/">Skype</a></li>
+                                            <li><a href="https://www.onenote.com/">OneNote</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <button role="presentation" type="button" tabindex="-1" class="has-glyph"
+                                                aria-expanded="false">
+                                            PCs &amp; Devices
+                                        </button>
+                                        <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
+                                            <li><a href="https://www.microsoft.com/en-us/windows/devices"> PCs &amp; tablets </a></li>
+                                            <li><a href="https://www.microsoft.com/accessories/en-us">Accessories</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <button role="presentation" type="button" tabindex="-1" class="has-glyph"
+                                                aria-expanded="false">
+                                            Entertainment
+                                        </button>
+                                        <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
+                                            <li><a href="https://www.xbox.com/en-us/games/xbox-one?xr=shellnav"> Xbox games </a></li>
+                                            <li><a href="https://www.microsoft.com/en-us/windows/windows-10-games"> PC games </a></li>
+                                            <li>
+                                                <a href="https://www.microsoft.com/en-us/store/games/windows?icid=TopNavWindowsGames">
+                                                    Windows digital games
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="https://www.microsoft.com/en-us/store/movies-and-tv?icid=TopNavMoviesTv">
+                                                    Movies
+                                                    &amp; TV
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <button role="presentation" type="button" tabindex="-1" class="has-glyph"
+                                                aria-expanded="false">
+                                            Business
+                                        </button>
+                                        <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
+                                            <li><a href="https://azure.microsoft.com/en-us/"> Microsoft Azure </a></li>
+                                            <li>
+                                                <a href="https://www.microsoft.com/en-us/dynamics365/home"> Microsoft Dynamics 365 </a>
+                                            </li>
+                                            <li><a href="https://www.microsoft.com/en-us/microsoft-365"> Microsoft 365 </a></li>
+                                            <li><a href="https://www.microsoft.com/en-us/enterprise"> Microsoft Industry </a></li>
+                                            <li><a href="https://www.microsoft.com/en-us/sql-server/ "> Data platform </a></li>
+                                            <li><a href="https://go.microsoft.com/fwlink/?linkid=2026638"> Microsoft Advertising </a></li>
+                                            <li><a href="https://www.microsoft.com/licensing/default" id="Licensing"> Licensing </a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <button role="presentation" type="button" tabindex="-1" class="has-glyph"
+                                                aria-expanded="false">
+                                            Developer &amp; IT
+                                        </button>
+                                        <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
+                                            <li><a href="https://www.microsoft.com/net/"> .NET </a></li>
+                                            <li><a href="https://visualstudio.microsoft.com/"> Visual Studio </a></li>
+                                            <li>
+                                                <a href="https://www.microsoft.com/cloud-platform/windows-server"> Windows Server </a>
+                                            </li>
+                                            <li><a href="https://developer.microsoft.com/en-us/windows"> Windows Dev Center </a></li>
+                                            <li><a href="https://docs.microsoft.com/en-us/"> Docs </a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <button role="presentation" type="button" tabindex="-1" class="has-glyph"
+                                                aria-expanded="false">
+                                            Other
+                                        </button>
+                                        <ul appnavmenupanel="" aria-hidden="false" class="menu-panel">
+                                            <li><a href="https://www.microsoft.com/en-us/store/b/home"> Microsoft Store </a></li>
+                                            <li><a href="https://www.microsoft.com/rewards"> Microsoft Rewards </a></li>
+                                            <li>
+                                                <a href="https://www.microsoft.com/en-us/download/default.aspx">
+                                                    Free downloads &amp;
+                                                    security
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="https://www.microsoft.com/en-us/education?icid=CNavMSCOML0_Studentsandeducation">
+                                                    Education
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="https://www.microsoft.com/en-us/store/locations/find-a-store?icid=TopNavStoreLocations">
+                                                    Store locations
+                                                </a>
+                                            </li>
+                                            <li><a href="https://www.microsoft.com/en-us/store/b/gift-cards"> Gift cards </a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li class="multi-column-info">
+                                        <a class="has-glyph"
+                                           href="https://www.microsoft.com/en-us/sitemap.aspx"> View Sitemap </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </nav>
+                *@
                 @*<div class="me-control"><button class="me-control-trigger"><span class="me-control-text">Sign in</span>
-                <div class="profile-pic glyph_signIn_circle"></div>
-            </button></div>*@
+                        <div class="profile-pic glyph_signIn_circle"></div>
+                    </button></div>*@
             </div>
         </div>
     </header>
