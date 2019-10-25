@@ -82,13 +82,76 @@ $(function () {
     // Hide the open menu when clicked outside
     $(document).mouseup(function (event) {
         if (isBigScreen()) {
-            if (!$(event.target).parent().hasClass("menuButton")) {
-
-                var openMenus = document.querySelectorAll("." + isOpen);
-                [].forEach.call(openMenus, function (m) {
-                    m.classList.remove(isOpen);
+            if (!$(event.target).parent().hasClass("menuButton") && $(event.target).siblings(".is-open").length == 0) {
+                $("." + isOpen).each((i, m) => {
+                    $(m).removeClass(isOpen);
                 });
             }
+        } else {
+            var parentMenu = $(event.target).parents(".menu");
+            if ($(parentMenu).length == 0) {
+                $("." + isOpen).each((i, m) => {
+                    $(m).removeClass(isOpen);
+                });
+            }
+        }
+    });
+
+    $(".microsoftNav").click(function (e) {
+        var menu = $(".megamenu");
+        if ($(menu).hasClass(isOpen)) {
+            // Close the menu
+            $(menu).removeClass(isOpen);
+        }
+        else {
+            // Close all the menu
+            $("." + isOpen).each((j, openMenu) => {
+                $(openMenu).removeClass(isOpen);
+            })
+
+            // Open the menu
+            $(menu).addClass(isOpen);
+        }
+    });
+
+    $(".hamburger-button").click(function (e) {
+        var hamburgerButton = $(".hamburger-button");
+        var menu = $(".megamenu");
+        var button = $(".microsoftNav");
+        var navPanel = $(".right-nav").children("nav.menu");
+
+        if ($(navPanel).hasClass(isOpen)) {
+            // Close the menu
+            $(navPanel).removeClass(isOpen);
+            $(button).removeClass(isOpen);
+            $(menu).removeClass(isOpen);
+            $(hamburgerButton).removeClass(isOpen);
+        }
+        else {
+            // Close all the menu
+            $("." + isOpen).each((j, openMenu) => {
+                $(openMenu).removeClass(isOpen);
+            })
+
+            // Open the menu
+            $(navPanel).addClass(isOpen);
+            $(button).addClass(isOpen);
+            $(menu).addClass(isOpen);
+            $(hamburgerButton).addClass(isOpen);
+        }
+    });
+
+    $(".megamenu-panel").find("button").click(function (e) {
+        var button = $(e.currentTarget);
+        var menuPanel = $(e.currentTarget).siblings(".menu-panel");
+
+        if ($(button).hasClass(isOpen)) {
+            $(button).removeClass(isOpen);
+            $(menuPanel).removeClass(isOpen);
+        }
+        else {
+            $(button).addClass(isOpen);
+            $(menuPanel).addClass(isOpen);
         }
     });
 });
@@ -96,25 +159,25 @@ $(function () {
 document.addEventListener("DOMContentLoaded", function (event) {
 
     // Microsoft Mega menu
-    document.querySelector(".microsoftNav").addEventListener('click', function (e) {
-        var menus = document.querySelectorAll(".megamenu");
-        [].forEach.call(menus, function (menu) {
-            if (menu.classList.contains(isOpen)) {
-                // Close the menu
-                menu.classList.remove(isOpen);
-            }
-            else {
-                // Close all the menu
-                var openMenus = document.querySelectorAll("." + isOpen);
-                [].forEach.call(openMenus, function (openMenu) {
-                    openMenu.classList.remove(isOpen);
-                })
+    //document.querySelector(".microsoftNav").addEventListener('click', function (e) {
+    //    var menus = document.querySelectorAll(".megamenu");
+    //    [].forEach.call(menus, function (menu) {
+    //        if (menu.classList.contains(isOpen)) {
+    //            // Close the menu
+    //            menu.classList.remove(isOpen);
+    //        }
+    //        else {
+    //            // Close all the menu
+    //            var openMenus = document.querySelectorAll("." + isOpen);
+    //            [].forEach.call(openMenus, function (openMenu) {
+    //                openMenu.classList.remove(isOpen);
+    //            })
 
-                // Open the menu
-                menu.classList.add(isOpen);
-            }
-        });
-    });
+    //            // Open the menu
+    //            menu.classList.add(isOpen);
+    //        }
+    //    });
+    //});
 
     // Categories selection
     var tabsCategories = document.querySelectorAll(".slb-tab-label");
