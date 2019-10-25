@@ -276,7 +276,6 @@
     <Content Include="lookbook\assets\scripts\jquery-3.4.1.min.js" />
     <Content Include="lookbook\assets\scripts\partial.js" />
     <Content Include="lookbook\assets\style\icon.css" />
-    <Content Include="lookbook\assets\style\lookbook.old.css" />
     <Content Include="lookbook\assets\style\lookbook-custom.css" />
     <Content Include="lookbook\assets\style\lookbook.css" />
     <Content Include="lookbook\assets\style\styles.css" />

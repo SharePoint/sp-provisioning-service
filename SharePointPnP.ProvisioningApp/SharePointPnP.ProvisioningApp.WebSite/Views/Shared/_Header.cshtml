@@ -20,8 +20,8 @@
                     <button class="has-glyph"><span>SharePoint provisioning service</span></button>
                 </div>
                 @*<div class="collapsed-nav-opener collapsed-nav-item responsiveMenuButton">
-                        <button class="has-glyph"><span>Microsoft 365</span></button>
-                </div>*@
+                            <button class="has-glyph"><span>Microsoft 365</span></button>
+                    </div>*@
                 <nav class="menu">
                     <ul>
                         @*<li class="collapsed-nav-item">
@@ -194,9 +194,21 @@
                         </div>
                     </nav>
                 *@
-                @*<div class="me-control"><button class="me-control-trigger"><span class="me-control-text">Sign in</span>
-                        <div class="profile-pic glyph_signIn_circle"></div>
-                    </button></div>*@
+                <nav class="menu">
+                    <ul>
+                        <li id="sign-in-menu"><a href="/tenant/home/Login" class="shortTitle"><span>Sign in</span></a></li>
+                        <li id="signed-in-menu" style="display: none;">
+                            <div class="app-nav-menu-item">
+                                <button class="has-glyph menuButton" type="button" aria-expanded="false"><span class="pnp-username"></span></button>
+                                <div role="menu" class="menu-panel" style="height: auto;">
+                                    <ul>
+                                        <li><a href="/tenant/home/Logout" class="shortTitle">Sign out</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>

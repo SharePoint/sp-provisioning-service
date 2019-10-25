@@ -55,7 +55,10 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         [HttpGet]
         public ActionResult Logout()
         {
-            HttpContext.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+            HttpContext.GetOwinContext().Authentication.SignOut(HttpContext.GetOwinContext()
+                           .Authentication.GetAuthenticationTypes()
+                           .Select(o => o.AuthenticationType).ToArray());
+            
             return Redirect("/");
         }
 

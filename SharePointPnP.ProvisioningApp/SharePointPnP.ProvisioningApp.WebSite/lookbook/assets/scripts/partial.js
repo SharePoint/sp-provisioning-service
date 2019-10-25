@@ -160,26 +160,37 @@ $(function () {
 
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    // Microsoft Mega menu
-    //document.querySelector(".microsoftNav").addEventListener('click', function (e) {
-    //    var menus = document.querySelectorAll(".megamenu");
-    //    [].forEach.call(menus, function (menu) {
-    //        if (menu.classList.contains(isOpen)) {
-    //            // Close the menu
-    //            menu.classList.remove(isOpen);
-    //        }
-    //        else {
-    //            // Close all the menu
-    //            var openMenus = document.querySelectorAll("." + isOpen);
-    //            [].forEach.call(openMenus, function (openMenu) {
-    //                openMenu.classList.remove(isOpen);
-    //            })
+    // Get the currently connected username, if any
+    fetch("/tenant/UserProfile/Username")
+        .then(data => { return (data.json()); })
+        .then(username => {
+            var usernameField = document.body.querySelector(".pnp-username");
+            var signInMenu = $("#sign-in-menu");
+            var signedInMenu = $("#signed-in-menu");
 
-    //            // Open the menu
-    //            menu.classList.add(isOpen);
-    //        }
-    //    });
-    //});
+            if (username) {
+                if (usernameField) {
+                    usernameField.textContent = username;
+                }
+                if (signInMenu) {
+                    signInMenu.hide();
+                }
+                if (signedInMenu) {
+                    signedInMenu.show();
+                }
+            }
+            else {
+                if (usernameField) {
+                    usernameField.textContent = "";
+                }
+                if (signInMenu) {
+                    signInMenu.show();
+                }
+                if (signedInMenu) {
+                    signedInMenu.hide();
+                }
+            }
+        });
 
     // Categories selection
     var tabsCategories = document.querySelectorAll(".slb-tab-label");
