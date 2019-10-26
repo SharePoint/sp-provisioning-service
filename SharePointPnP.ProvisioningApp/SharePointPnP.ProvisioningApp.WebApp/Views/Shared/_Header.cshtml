@@ -1,7 +1,7 @@
 ﻿<div class="app-header">
     <header class="slb-header">
         <div class="header-container">
-            @if (!ViewBag.HeaderData.RenderProvisioningService)
+            @if (ViewBag.HeaderData != null && !ViewBag.HeaderData.RenderProvisioningService)
             {
                 <div class="header-part-one">
                     <button aria-label="All Microsoft expand to see list of Microsoft products and services" class="hamburger-button collapsed-nav-item has-glyph" type="button" aria-expanded="false"></button>
@@ -17,7 +17,7 @@
                 </div>
             }
             <div class="page-nav">
-                @if (!ViewBag.HeaderData.RenderProvisioningService)
+                @if (ViewBag.HeaderData != null && !ViewBag.HeaderData.RenderProvisioningService)
                 {
                     <div class="collapsed-nav-opener collapsed-nav-item responsiveMenuButton">
                         <button class="has-glyph"><span>Microsoft 365</span></button>
@@ -31,7 +31,7 @@
                 }
                 <nav class="menu">
                     <ul>
-                        @if (!ViewBag.HeaderData.RenderProvisioningService)
+                        @if (ViewBag.HeaderData != null && !ViewBag.HeaderData.RenderProvisioningService)
                         {
                             <li class="collapsed-nav-item">
                                 <a href="https://www.microsoft.com/en-us/microsoft-365">Home</a>
@@ -62,7 +62,7 @@
                 </nav>
             </div>
             <div class="right-nav">
-                @if (ViewBag.HeaderData.RenderProvisioningService)
+                @if (ViewBag.HeaderData != null && ViewBag.HeaderData.RenderProvisioningService)
                 {
                     <nav class="menu">
                         <ul>
@@ -70,7 +70,7 @@
                         </ul>
                     </nav>
                 }
-                @if (!ViewBag.HeaderData.RenderProvisioningService)
+                @if (ViewBag.HeaderData != null && !ViewBag.HeaderData.RenderProvisioningService)
                 {
                     <nav class="menu">
                         <div>

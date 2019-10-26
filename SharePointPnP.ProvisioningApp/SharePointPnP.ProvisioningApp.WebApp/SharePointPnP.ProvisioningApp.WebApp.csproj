@@ -371,6 +371,7 @@
     <Content Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader">
       <Link>SharePointPnP.ProvisioningApp.DomainModel.licenseheader</Link>
     </Content>
+    <None Include="Properties\PublishProfiles\piasys-splb-dev - Tenant - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Test.pubxml" />
