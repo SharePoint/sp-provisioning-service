@@ -70,6 +70,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         [AllowAnonymous]
         public ActionResult Error(Exception exception)
         {
+            CheckBetaFlag();
+
             HandleErrorInfo model = null;
             if (exception != null)
             {
@@ -87,6 +89,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 throw new ArgumentNullException("packageId");
             }
 
+            CheckBetaFlag();
             PrepareHeaderData(returnUrl);
 
             ProvisioningActionModel model = new ProvisioningActionModel();
@@ -151,32 +154,10 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return View("Provision", model);
         }
 
-        private void PrepareHeaderData(String returnUrl)
-        {
-            var headerData = new SharePointPnP.ProvisioningApp.WebApp.Models.HeaderDataViewModel();
-            var slbHost = System.Configuration.ConfigurationManager.AppSettings["SPLBSiteHost"];
-
-            if (!String.IsNullOrEmpty(returnUrl) &&
-                !String.IsNullOrEmpty(slbHost) &&
-                returnUrl.Contains(slbHost))
-            {
-                headerData.SiteTitle = "SharePoint Look Book";
-                headerData.RootSiteUrl = returnUrl;
-                headerData.RenderProvisioningService = false;
-            }
-            else
-            {
-                headerData.SiteTitle = "SharePoint Provisioning Service";
-                headerData.RootSiteUrl = "/";
-                headerData.RenderProvisioningService = true;
-            }
-
-            ViewBag.HeaderData = headerData;
-        }
-
         [HttpPost]
         public async Task<ActionResult> Provision(ProvisioningActionModel model)
         {
+            CheckBetaFlag();
             PrepareHeaderData(model.ReturnUrl);
 
             if (model != null && ModelState.IsValid)
@@ -434,6 +415,35 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             
             // Return to the requested URL
             return Json(provisionResponse);
+        }
+
+        private void CheckBetaFlag()
+        {
+            var isBeta = ConfigurationManager.AppSettings["IsBeta"];
+            ViewBag.IsBeta = (!String.IsNullOrEmpty(isBeta) && Boolean.Parse(isBeta));
+        }
+
+        private void PrepareHeaderData(String returnUrl)
+        {
+            var headerData = new SharePointPnP.ProvisioningApp.WebApp.Models.HeaderDataViewModel();
+            var slbHost = System.Configuration.ConfigurationManager.AppSettings["SPLBSiteHost"];
+
+            if (!String.IsNullOrEmpty(returnUrl) &&
+                !String.IsNullOrEmpty(slbHost) &&
+                returnUrl.Contains(slbHost))
+            {
+                headerData.SiteTitle = "SharePoint Look Book";
+                headerData.RootSiteUrl = returnUrl;
+                headerData.RenderProvisioningService = false;
+            }
+            else
+            {
+                headerData.SiteTitle = "SharePoint Provisioning Service";
+                headerData.RootSiteUrl = "/";
+                headerData.RenderProvisioningService = true;
+            }
+
+            ViewBag.HeaderData = headerData;
         }
 
         /// <summary>
