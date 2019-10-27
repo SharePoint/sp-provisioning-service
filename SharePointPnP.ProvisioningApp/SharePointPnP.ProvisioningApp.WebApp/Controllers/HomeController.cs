@@ -23,6 +23,7 @@ using SharePointPnP.ProvisioningApp.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -290,6 +291,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             // Let's see if we need to filter the output categories
             var slbHost = System.Configuration.ConfigurationManager.AppSettings["SPLBSiteHost"];
+            var testEnvironment = Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]);
 
             string targetPlatform = null;
 
@@ -310,33 +312,15 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             ProvisioningAppDBContext context = new ProvisioningAppDBContext();
 
             var tempCategories = context.Categories
-                .Include("Packages")
-                .Include("Packages.TargetPlatforms")
+                .AsNoTracking()
+                .Where(c => c.Packages.Any(
+                    p => p.Visible &&
+                    (testEnvironment || !p.Preview) &&
+                    p.TargetPlatforms.Any(pf => pf.Id == targetPlatform)
+                ))
                 .OrderBy(c => c.Order)
+                .Include("Packages")
                 .ToList();
-
-            var emptyCategories = new List<String>();
-
-            foreach (var c in tempCategories)
-            {
-                foreach (var p in c.Packages.ToList())
-                {
-                    if (!p.TargetPlatforms.Any(tp => tp.Id == targetPlatform))
-                    {
-                        c.Packages.Remove(p);
-                    }
-                }
-
-                if (c.Packages.Count == 0)
-                {
-                    emptyCategories.Add(c.Id);
-                }
-            }
-
-            for (var n = 0; n < emptyCategories.Count; n++)
-            {
-                tempCategories.Remove(tempCategories.FirstOrDefault(c => c.Id == emptyCategories[n]));
-            }
 
             model.Categories = tempCategories;
 
