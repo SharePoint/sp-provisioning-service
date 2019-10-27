@@ -1,0 +1,35 @@
+.pnp-tag-header{
+	font-weight: 200;
+}
+
+.pnp-tags{
+	display: block;
+
+	margin: 1em 0;
+	padding: 0;
+}
+
+.pnp-tag{
+	font-size: 1rem;
+
+	display: block;
+
+	width: auto;
+
+	&:hover{
+
+	}
+	&-label{
+
+        display: inline-block;
+        font-size: 0.8em;
+
+        padding: .125em .5em;
+        margin: 0.5em 0.5em;
+        margin-left: 0;
+        background-color: white;
+        border: 1px black solid;
+	}
+}
+
+

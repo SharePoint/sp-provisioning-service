@@ -1,0 +1,19 @@
+html{
+	height: 100%;
+}
+
+body{
+	font-family: "Segoe UI", "SegoeUI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+	box-sizing: border-box;
+	min-height: 100%;
+	margin: 0 auto;
+	margin-top: 60px;
+	padding: 0;
+
+	background: #fafafa;
+}
+
+.body-short {
+    min-height: initial !important;
+}

@@ -284,6 +284,66 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpPost]
+        public ActionResult CategoriesMenu(String returnUrl = null)
+        {
+            CategoriesMenuViewModel model = new CategoriesMenuViewModel();
+
+            // Let's see if we need to filter the output categories
+            var slbHost = System.Configuration.ConfigurationManager.AppSettings["SPLBSiteHost"];
+
+            string targetPlatform = null;
+
+            if (!String.IsNullOrEmpty(returnUrl) &&
+                !String.IsNullOrEmpty(slbHost) &&
+                returnUrl.Contains(slbHost))
+            {
+                model.BaseLinksUrl = returnUrl.Substring(0, returnUrl.LastIndexOf(@"/") + 1);
+                targetPlatform = "LOOKBOOK";
+            }
+            else
+            {
+                model.BaseLinksUrl = String.Empty;
+                targetPlatform = "SPPNP";
+            }
+
+            // Get all the Categories together with the Packages
+            ProvisioningAppDBContext context = new ProvisioningAppDBContext();
+
+            var tempCategories = context.Categories
+                .Include("Packages")
+                .Include("Packages.TargetPlatforms")
+                .OrderBy(c => c.Order)
+                .ToList();
+
+            var emptyCategories = new List<String>();
+
+            foreach (var c in tempCategories)
+            {
+                foreach (var p in c.Packages.ToList())
+                {
+                    if (!p.TargetPlatforms.Any(tp => tp.Id == targetPlatform))
+                    {
+                        c.Packages.Remove(p);
+                    }
+                }
+
+                if (c.Packages.Count == 0)
+                {
+                    emptyCategories.Add(c.Id);
+                }
+            }
+
+            for (var n = 0; n < emptyCategories.Count; n++)
+            {
+                tempCategories.Remove(tempCategories.FirstOrDefault(c => c.Id == emptyCategories[n]));
+            }
+
+            model.Categories = tempCategories;
+
+            return PartialView("CategoriesMenu", model);
+        }
+
+        [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult> ProvisionContentPack(ProvisionContentPackRequest provisionRequest)
         {

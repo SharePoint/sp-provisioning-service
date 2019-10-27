@@ -1,0 +1,72 @@
+﻿/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT license. */
+.slb-tab-label-item.hide {
+    display: none;
+}
+
+.pnp-logo-beta {
+    height: 50px;
+}
+
+.wrapper-inner {
+    display: inherit !important;
+}
+
+@media (min-width:768px) {
+    .shortTitle {
+        padding: 16px 8px 16px 12px !important;
+    }
+
+    #packagesMenu button:hover span:before {
+        display: none;
+    }
+
+    #packagesMenu a span:before {
+        display: none;
+    }
+}
+
+.pnp-svcteaser {
+    /*border-bottom: 2px #038387 solid !important;*/
+    border-bottom: inherit !important;
+}
+
+.pnp-tag-header {
+    font-size: inherit !important;
+}
+
+/* Removed on 10/24/2019 7:15am */
+/*button,
+input[type="button"] {
+    font-weight: 400 !important;
+}*/
+
+.permission {
+    margin-top: 1em;
+}
+
+button.pnp-btn-provision:hover, input[type="button"].pnp-btn-provision:hover {
+    color: white !important;
+    background-color: #038387 !important;
+    text-decoration: underline !important;
+}
+
+button.slb-primary-button,
+input[type="button"].slb-primary-button {
+    color: white !important;
+    background-color: #038387 !important;
+}
+
+button.slb-button,
+input[type="button"].slb-button {
+    color: #333333 !important;
+    background-color: #F4F4F4 !important;
+    border: 1px #A6A6A6 solid;
+    padding: .4em 1em .5em;
+    font-weight: 400 !important;
+    cursor: pointer;
+}
+
+.app-package-card a {
+    color: inherit;
+}
