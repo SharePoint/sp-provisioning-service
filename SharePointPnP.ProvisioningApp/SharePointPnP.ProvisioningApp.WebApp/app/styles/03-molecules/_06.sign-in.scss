@@ -1,0 +1,130 @@
+.pnp-signinicon {
+    position: relative;
+
+    min-width: 90px;
+    padding: .5em;
+
+    background-color: white;
+
+    a {
+        text-decoration: none;
+        color: $ms-grey
+    }
+
+    .pnp-signin-flyout {
+        position: absolute;
+        z-index: 100;
+        left: 0px;
+        padding: 1em 1.5em;
+        padding-left: 2em;
+        display: none;
+        box-sizing: border-box;
+        width: 100%;
+
+    }
+
+    .pnp-username {
+        display: none;
+        &:before {
+            font-family: "FW-MDL2";
+            margin-right: .5em;
+            content: "";
+        }
+    }
+
+    .pnp-signin-btn {
+        &:before {
+            font-family: "FW-MDL2";
+            margin-right: .5em;
+            content: "";
+        }
+    }
+
+    &-inner {
+        position: absolute;
+        z-index: 100;
+    }
+
+    &:hover {
+        background-color: $ms-sharepoint;
+        color: white;
+
+        a {
+            color: white;
+        }
+
+        .pnp-signin-flyout {
+            background-color: $ms-sharepoint;
+            color: white;
+        }
+
+    }
+
+    &.signedin {
+        .pnp-signin-inner {
+
+            .pnp-signin-btn {
+                display: none;
+            }
+
+            .pnp-username {
+                display: inline-block;
+            }
+        }
+        &:hover {
+            .pnp-signin-flyout {
+                display: block;
+            }
+        }
+    }
+
+    @media #{$base-tablet} {
+
+        padding-left: 0em;
+
+        &-inner {
+            background-color: magenta;
+        }
+
+        .pnp-signin-flyout {
+            position: static;
+            padding-left: 1.5em;
+            width: auto;
+        }
+
+        &:hover {
+            background-color: white;
+            color: $ms-grey;
+
+            a {
+                color: $ms-grey;
+                // border-bottom: 1px $ms-form-border solid;
+            }
+
+            .pnp-signin-flyout {
+                display: none;
+                background-color: white;
+
+                a:hover{
+                    border-bottom: 1px $ms-form-border solid;
+                }
+            }
+        }
+
+        &.signedin{
+            .pnp-signin-btn{
+                display: none;
+            }
+            .pnp-username{
+                display: inline-block
+            }
+            .pnp-signin-flyout{
+                display: block;
+            }
+        }
+
+
+
+    }
+
+}

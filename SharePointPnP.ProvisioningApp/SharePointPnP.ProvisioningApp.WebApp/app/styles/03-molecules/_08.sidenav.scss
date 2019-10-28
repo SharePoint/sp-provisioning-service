@@ -1,0 +1,22 @@
+.pnp-sidebox{
+    display: inline-block;
+    box-sizing: border-box;
+    min-width: 220px;
+    margin-left: 2em;
+    margin-top: 3em;
+    float: right;
+    height: 100%;
+
+    @media #{$base-tablet-portait}{
+        width: 100%;
+    }
+}
+
+.permission{
+    position: static;
+    margin-bottom: 1em;
+    .pnp-item-label{
+        position: relative;
+        display: inline-block;
+    }
+}

@@ -353,6 +353,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
+    <Compile Include="Models\CategoriesMenuViewModel.cs" />
     <Compile Include="Models\HeaderDataViewModel.cs" />
     <Compile Include="Models\ProvisionContentPackRequest.cs" />
     <Compile Include="Models\ProvisionContentPackResponse.cs" />
@@ -361,8 +362,23 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\images\beta-tag.png" />
+    <Content Include="app\scripts\color-picker.min.js" />
+    <Content Include="app\scripts\custom.js" />
+    <Content Include="app\scripts\main.js" />
+    <Content Include="app\styles\color-picker.min.css" />
+    <Content Include="app\styles\custom.css" />
+    <Content Include="app\styles\main.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="lookbook\assets\favicon.ico" />
+    <Content Include="lookbook\assets\images\SharePoint_lookBook_cta_hero.png" />
+    <Content Include="lookbook\assets\scripts\jquery-3.4.1.min.js" />
+    <Content Include="lookbook\assets\scripts\partial.js" />
+    <Content Include="lookbook\assets\style\icon.css" />
+    <Content Include="lookbook\assets\style\lookbook-custom.css" />
+    <Content Include="lookbook\assets\style\lookbook.css" />
+    <Content Include="lookbook\assets\style\styles.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -371,6 +387,35 @@
     <Content Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader">
       <Link>SharePointPnP.ProvisioningApp.DomainModel.licenseheader</Link>
     </Content>
+    <Content Include="app\styles\01-base\_00.base.variables.scss" />
+    <Content Include="app\styles\01-base\_00.webfonts.scss" />
+    <Content Include="app\styles\01-base\_01.base.scss" />
+    <Content Include="app\styles\01-base\_02.typography.scss" />
+    <Content Include="app\styles\03-molecules\_01.burger.scss" />
+    <Content Include="app\styles\03-molecules\_01.header.scss" />
+    <Content Include="app\styles\03-molecules\_01.navigation.scss" />
+    <Content Include="app\styles\03-molecules\_02.compitem.scss" />
+    <Content Include="app\styles\03-molecules\_03.pnp-item.scss" />
+    <Content Include="app\styles\03-molecules\_04.pnp-item.scss" />
+    <Content Include="app\styles\03-molecules\_04.pnp-tags.scss" />
+    <Content Include="app\styles\03-molecules\_05.pnp-buttons.scss" />
+    <Content Include="app\styles\03-molecules\_06.iframe.scss" />
+    <Content Include="app\styles\03-molecules\_06.sign-in.scss" />
+    <Content Include="app\styles\03-molecules\_07.hero.scss" />
+    <Content Include="app\styles\03-molecules\_08.sidenav.scss" />
+    <Content Include="app\styles\03-molecules\_20.forms.scss" />
+    <Content Include="app\styles\03-molecules\_30.detail-page.scss" />
+    <Content Include="app\styles\03-molecules\_31.error.scss" />
+    <Content Include="app\styles\03-molecules\_32.svcdesc.scss" />
+    <Content Include="app\styles\03-molecules\_40.paging.scss" />
+    <Content Include="app\styles\03-molecules\_50.filter.scss" />
+    <Content Include="app\styles\03-molecules\_99.footer.scss" />
+    <Content Include="app\styles\03-molecules\__03.pnp-item.scss" />
+    <Content Include="app\styles\main.scss" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Properties\PublishProfiles\piasys-splb-dev - Tenant - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Prod.pubxml" />
@@ -418,6 +463,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Shared\_TopHeader.cshtml" />
+    <Content Include="Views\Home\CategoriesMenu.cshtml" />
     <None Include="Web.Dev.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

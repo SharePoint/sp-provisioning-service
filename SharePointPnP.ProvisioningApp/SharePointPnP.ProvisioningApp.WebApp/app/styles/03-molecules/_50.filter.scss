@@ -1,0 +1,119 @@
+.pnp-filter{
+	width: 100%;
+}
+
+.pnp-filter-toolbar{
+	position: relative;
+
+	display: flex;
+
+	width: 100%;
+
+	justify-content: space-between;
+
+	.pnp-search{
+		justify-self: flex-start;
+	}
+
+	.pnp-filter-toggle{
+		font-weight: normal;
+
+		position: absolute;
+		position: absolute;
+		z-index: 300;
+		top: 0;
+		right: 0;
+
+		box-sizing: border-box;
+		padding-right: 35px;
+		padding-bottom: 28px;
+
+		justify-self: flex-end;
+
+
+		&.active{
+			border: 1px $ms-grey solid;
+			border-bottom: none;
+		}
+
+		&:after{
+			font-family: "FW-MDL2";
+
+			position: absolute;
+			top: 0;
+
+			display: inline-block;
+
+			padding: .6em;
+
+			content: "";
+		}
+	}
+}
+
+
+.pnp-filter-panel{
+	display: none;
+
+	border: 1px $ms-grey solid;
+	background-color: whitesmoke;
+
+	align-content: flex-end;
+	flex-basis: 100%;
+
+	&.show{
+		display: block;
+	}
+
+	h2{
+		font-weight: 100;
+
+		margin-top: .5em;
+		margin-bottom: .5em;
+		padding-left: 32px;
+	}
+}
+
+.pnp-filter-toggle{
+	height: 37px;
+	margin: 0;
+	padding-top: .6em;
+
+	border: 0;
+}
+
+.filter-list{
+	margin: 0;
+	padding: 0 32px 32px;
+
+	list-style: none;
+
+	column-count: 4;
+	column-fill: balance;
+	column-gap: 2em;
+
+	@media #{$base-tablet-portait}{
+		column-count: 2;
+		column-gap: 1em;
+	}
+}
+
+.filter-entry{
+	margin: 0;
+	padding: 0;
+}
+
+.filter-btn{
+	@extend .pnp-tag-label;
+
+	font-weight: 400;
+
+	padding-top: .25em;
+	padding-bottom: .25em;
+
+	&:hover{
+		cursor: pointer;
+
+		border-color: $ms-sharepoint;
+	}
+}

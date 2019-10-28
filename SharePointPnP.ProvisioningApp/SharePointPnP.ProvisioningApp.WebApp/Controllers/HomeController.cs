@@ -23,6 +23,7 @@ using SharePointPnP.ProvisioningApp.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -281,6 +282,49 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
 
             return (Json(new { running, failed }, "application/json", Encoding.UTF8, JsonRequestBehavior.AllowGet));
+        }
+
+        [HttpPost]
+        public ActionResult CategoriesMenu(String returnUrl = null)
+        {
+            CategoriesMenuViewModel model = new CategoriesMenuViewModel();
+
+            // Let's see if we need to filter the output categories
+            var slbHost = System.Configuration.ConfigurationManager.AppSettings["SPLBSiteHost"];
+            var testEnvironment = Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]);
+
+            string targetPlatform = null;
+
+            if (!String.IsNullOrEmpty(returnUrl) &&
+                !String.IsNullOrEmpty(slbHost) &&
+                returnUrl.Contains(slbHost))
+            {
+                model.BaseLinksUrl = returnUrl.Substring(0, returnUrl.LastIndexOf(@"/") + 1);
+                targetPlatform = "LOOKBOOK";
+            }
+            else
+            {
+                model.BaseLinksUrl = String.Empty;
+                targetPlatform = "SPPNP";
+            }
+
+            // Get all the Categories together with the Packages
+            ProvisioningAppDBContext context = new ProvisioningAppDBContext();
+
+            var tempCategories = context.Categories
+                .AsNoTracking()
+                .Where(c => c.Packages.Any(
+                    p => p.Visible &&
+                    (testEnvironment || !p.Preview) &&
+                    p.TargetPlatforms.Any(pf => pf.Id == targetPlatform)
+                ))
+                .OrderBy(c => c.Order)
+                .Include("Packages")
+                .ToList();
+
+            model.Categories = tempCategories;
+
+            return PartialView("CategoriesMenu", model);
         }
 
         [HttpPost]

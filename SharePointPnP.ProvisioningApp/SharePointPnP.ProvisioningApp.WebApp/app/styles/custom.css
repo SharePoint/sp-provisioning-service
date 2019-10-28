@@ -1,0 +1,468 @@
+﻿/* Copyright (c) Microsoft Corporation. */
+/* Licensed under the MIT license. */
+.ms-Toggle {
+    font-family: Segoe UI WestEuropean,Segoe UI,-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    font-weight: 400;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    position: relative;
+    display: block;
+    margin-bottom: 26px;
+}
+
+.ms-Toggle-description {
+    position: relative;
+    font-size: 14px;
+    vertical-align: top;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.ms-Toggle-input {
+    display: none;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.ms-Toggle-field {
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 20px;
+    box-sizing: border-box;
+    border: 2px solid #a6a6a6;
+    border-radius: 20px;
+    cursor: pointer;
+    transition-property: background,left,border-color;
+    transition-duration: .25s;
+    transition-timing-function: cubic-bezier(.4,0,.23,1);
+    outline: 0;
+}
+
+.ms-Toggle .ms-Label {
+    position: relative;
+    top: -2px;
+    padding: 0 0 0 50px;
+}
+
+.ms-Toggle .ms-Toggle-field:before {
+    right: auto;
+}
+
+.ms-Toggle .ms-Toggle-field:before {
+    position: absolute;
+    top: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    content: "";
+    left: 4px;
+    background-color: #666;
+    outline: 1px solid transparent;
+    transition-property: background,left;
+    transition-duration: .25s;
+    transition-timing-function: cubic-bezier(.4,0,.23,1);
+}
+
+.ms-Toggle .ms-Toggle-field.is-selected:before {
+    background-color: #fff;
+    left: 28px;
+}
+
+.ms-Toggle .ms-Toggle-field.is-selected:before {
+    position: absolute;
+    top: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    content: "";
+    right: 4px;
+    outline: 1px solid transparent;
+    transition-property: background,left;
+    transition-duration: .25s;
+    transition-timing-function: cubic-bezier(.4,0,.23,1);
+}
+
+.ms-Toggle .ms-Toggle-field.is-selected {
+    background-color: #038387;
+    border-color: #038387;
+}
+
+.ms-Toggle.is-disabled .ms-Toggle-field {
+    background-color: #fff;
+    border-color: #c8c8c8;
+    pointer-events: none;
+    cursor: default;
+}
+
+.pnp-btn-provision.ms-Button--primary {
+    background-color: #038387;
+    border-color: #038387;
+    color: #fff;
+    margin-left: 118px;
+}
+
+.pnp-btn-provision.ms-Button--primary.is-disabled {
+    background-color: rgb(244, 244, 244);
+    color: rgb(166, 166, 166);
+    border-color: transparent;
+}
+
+.pnp-btn-provision {
+    font-size: 14px;
+    margin-left: 15pt;
+}
+
+#ThemePrimaryColor, #ThemeBodyBackgroundColor, #ThemeBodyTextColor {
+    width: 158px;
+}
+
+select.pnp-tb {
+    width: 224px;
+}
+
+select.pnp-tb-sites {
+    /*width: 105px;*/
+}
+
+.pnp-tb.invalid {
+    border-color: red;
+    border-style: dashed;
+    border-width: 1px;
+}
+
+.sectionTitle {
+    text-transform: uppercase;
+    font-size: 14pt;
+    float: left;
+    padding-right: 10px;
+}
+
+.sectionTitleDivider {
+    border: 1px;
+    position: absolute;
+    width: 100%;
+}
+
+hr.sectionTitleDivider {
+    position: relative;
+    top: 5px;
+}
+
+.confirmationDialog {
+    position: fixed;
+    background-color: white;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 30em;
+    margin-top: -15em;
+    margin-left: -15em;
+    text-align: left;
+    z-index: 100;
+}
+
+.confirmationDialog.hide {
+    display: none;
+}
+
+.confirmationDialog.show {
+    display: block;
+}
+
+.confirmationDialogContent {
+    /*overflow-y: scroll;*/
+    text-align: left;
+    margin-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    height: 21em;
+}
+
+    .confirmationDialogContent > h2 {
+        font-size: 1.2em;
+        font-weight: 600;
+        text-align: left;
+    }
+
+.missingPreReqsDialog {
+    position: fixed;
+    background-color: white;
+    text-align: left;
+    top: 50%;
+    left: 50%;
+    width: 30em;
+    height: 26em;
+    margin-top: -15em;
+    margin-left: -15em;
+    z-index: 100;
+}
+
+.missingPreReqsDialog.hide {
+    display: none;
+}
+
+.missingPreReqsDialog.show {
+    display: block;
+}
+
+    .missingPreReqsDialog > h2 {
+        font-size: 1.2em;
+        font-weight: 600;
+        text-align: left;
+    }
+
+.missingPreReqsDialogContent {
+    overflow-y: scroll;
+    text-align: left;
+    margin-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    height: 21em;
+}
+
+.pnp-btn-acknowledge {
+    font-size: 14px;
+    margin-left: 0px;
+}
+
+.dialogModalOverlay {
+    position: fixed; /* Stay in place */
+    z-index: 50; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.dialogModalOverlay.hide {
+    display: none;
+}
+
+.dialogModalOverlay.show {
+    display: block;
+}
+
+.workingOnItSiteDialog {
+    position: fixed;
+    background-color: white;
+    text-align: center;
+    left: 50%;
+    top: 50%;
+    width: 24em;
+    height: 9em;
+    margin-top: -4.5em;
+    margin-left: -12em;
+    z-index: 100;
+}
+
+.workingOnItSiteDialogContent {
+    margin-top: 2em;
+    vertical-align: middle;
+    font-size: 1.5em;
+    font-family: "Segoe UI Light", "Segoe UI", Tahoma, Helvetica, Arial, sans-serif
+}
+
+.workingOnItSiteDialog.hide {
+    display: none;
+}
+
+.workingOnItSiteDialog.show {
+    display: block;
+}
+
+.siteExistsDialog {
+    position: fixed;
+    background-color: white;
+    text-align: left;
+    top: 50%;
+    left: 50%;
+    width: 24em;
+    margin-top: -7em;
+    margin-left: -12em;
+    z-index: 100;
+}
+
+.siteExistsDialog.hide {
+    display: none;
+}
+
+.siteExistsDialog.show {
+    display: block;
+}
+
+    .siteExistsDialog > h2 {
+        margin-top: 1em;
+        margin-left: 1em;
+        font-size: 1.2em;
+        font-weight: 600;
+        text-align: left;
+    }
+
+
+.siteExistsDialogContent {
+    height: 6em;
+    margin-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    text-align: left;
+}
+
+.okDialog {
+    background-color: #038387;
+    border-color: #038387;
+    color: #fff;
+}
+
+.siteUrlLink.hide {
+    display: none;
+}
+
+.siteUrlLink.show {
+    display: block;
+}
+
+.provisioningSiteUrlLink.hide {
+    display: none;
+}
+
+.provisioningSiteUrlLink.show {
+    display: block;
+}
+
+.failedSiteUrlLink.hide {
+    display: none;
+}
+
+.failedSiteUrlLink.show {
+    display: block;
+}
+
+.provisioning-top-section {
+    height: 150px;
+    margin-top: 0px;
+}
+
+    .provisioning-top-section .top-section-area .section-text {
+        width: 100%;
+    }
+
+.teal-header {
+    height: 150px;
+    color: white;
+    background-color: teal;
+}
+
+.white-header {
+    color: black;
+    background-color: white;
+}
+
+.provisioning-title {
+    padding-left: 25pt;
+    font-size: 20pt;
+    font-weight: 600;
+}
+
+.provisioning-local-header {
+
+}
+
+    .provisioning-local-header .title {
+        font-size: 20pt;
+        font-weight: 600;
+    }
+
+    .provisioning-local-header .subtitle {
+        font-size: 16pt;
+        font-weight: 600;
+    }
+
+    .provisioning-local-header .normal-text {
+        font-size: 14pt;
+        font-weight: 400;
+    }
+
+.provisioning-local-header-box {
+    vertical-align: top;
+}
+
+.provisioning-goback-cta-wrapper {
+    height: 340px;
+    text-align: center;
+}
+
+.provisioning-commands {
+    /*padding-left: 40px;*/
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.dialog-commands {
+    text-align: right;
+    padding-right: 20px;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.topright {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.dialogCloseButton {
+    border: none;
+    display: inline-block;
+    padding: 8px 16px;
+    vertical-align: middle;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background-color: inherit;
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 1.8em !important;
+    font-weight: 300 !important;
+}
+
+.siteUrlContainer {
+    width: 300px;
+}
+
+.provisioning-status-text {
+    margin-right: 10px;
+    margin-bottom: 50px;
+}
+
+.provisioning-status-animation {
+    display: inline;
+}
+
+    .provisioning-status-animation.hide {
+        display: none;
+    }
+
+    .provisioning-status-animation.show {
+        display: block;
+    }
+
+.provisioning-status-row {
+    display: flex;
+    flex-direction: row;
+}
