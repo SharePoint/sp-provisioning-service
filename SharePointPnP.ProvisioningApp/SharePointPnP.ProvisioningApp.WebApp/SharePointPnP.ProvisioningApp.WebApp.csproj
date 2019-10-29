@@ -371,6 +371,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="lookbook\assets\favicon.ico" />
+    <Content Include="lookbook\assets\images\logo.png" />
     <Content Include="lookbook\assets\images\SharePoint_lookBook_cta_hero.png" />
     <Content Include="lookbook\assets\scripts\jquery-3.4.1.min.js" />
     <Content Include="lookbook\assets\scripts\partial.js" />
