@@ -151,13 +151,13 @@ namespace SharePointPnP.ProvisioningApp.WebSite.Controllers
 
             var tempCategories = context.Categories
                 .AsNoTracking()
+                .Include("Packages")
                 .Where(c => c.Packages.Any(
                     p => p.Visible &&
                     (testEnvironment || !p.Preview) &&
                     p.TargetPlatforms.Any(pf => pf.Id == targetPlatform)
                 ))
                 .OrderBy(c => c.Order)
-                .Include("Packages")
                 .ToList();
 
             model.Categories = tempCategories;
