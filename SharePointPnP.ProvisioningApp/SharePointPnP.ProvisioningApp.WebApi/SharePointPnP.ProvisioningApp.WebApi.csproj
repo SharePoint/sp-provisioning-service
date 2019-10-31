@@ -196,7 +196,8 @@
       <HintPath>..\packages\WindowsAzure.Storage.7.0.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="OfficeDevPnP.Core, Version=3.14.1910.1, Culture=neutral, PublicKeyToken=5e633289e95c321a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharePointPnPCoreOnline.3.14.1910.1\lib\net45\OfficeDevPnP.Core.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\PnP-Sites-Core\Core\OfficeDevPnP.Core\bin\Debug\OfficeDevPnP.Core.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
