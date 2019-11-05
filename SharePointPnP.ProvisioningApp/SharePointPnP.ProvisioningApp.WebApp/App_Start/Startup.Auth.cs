@@ -40,7 +40,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp
             String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
              app.UseCookieAuthentication(new CookieAuthenticationOptions {
-                CookiePath = provisioningScope ?? "/",
+                CookiePath = $"/{provisioningScope}" ?? "/"
             });
 
             app.UseOpenIdConnectAuthentication(
@@ -109,6 +109,9 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                                     String tokenId = $"{tenandIdClaim.Value}-{upnClaim.Value.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                                     await ProvisioningAppManager.AccessTokenProvider.WriteRefreshTokenAsync(tokenId, token.RefreshToken);
                                 }
+
+                                //context.AuthenticationTicket.Identity.AddClaims(
+                                //    ((System.Security.Claims.ClaimsIdentity)System.Threading.Thread.CurrentPrincipal.Identity).Claims);
                             }
                         },
                         AuthenticationFailed = (context) =>
