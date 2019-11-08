@@ -123,6 +123,7 @@ publish/
 *.azurePubxml
 *.pubxml
 *.publishproj
+**/PublishProfiles/*
 
 # NuGet Packages Directory
 packages/
