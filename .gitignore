@@ -180,6 +180,9 @@ FakesAssemblies/
 Web.*.[Cc]onfig
 local.settings.json
 
+# Azure publishing files
+*.pubxml
+
 # Visual Studio 2015 cache/options directory
 .vs/
 
