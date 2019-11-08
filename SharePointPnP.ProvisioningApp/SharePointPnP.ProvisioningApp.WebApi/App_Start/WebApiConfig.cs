@@ -23,7 +23,7 @@ namespace SharePointPnP.ProvisioningApp.WebApi
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
+                routeTemplate: "_api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
 

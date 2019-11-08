@@ -339,6 +339,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Api - Dev.pubxml" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Api - Prod.pubxml" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Api - Test.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
