@@ -121,6 +121,8 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
+*.pubxml
+*.publishproj
 
 # NuGet Packages Directory
 packages/
@@ -179,9 +181,6 @@ FakesAssemblies/
 [Ww]eb.[Cc]onfig
 Web.*.[Cc]onfig
 local.settings.json
-
-# Azure publishing files
-*.pubxml
 
 # Visual Studio 2015 cache/options directory
 .vs/
