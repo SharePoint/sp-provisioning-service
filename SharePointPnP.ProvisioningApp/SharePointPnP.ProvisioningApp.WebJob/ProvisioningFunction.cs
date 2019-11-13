@@ -271,7 +271,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                             var provisionedSites = new List<Tuple<String, String>>();
 
                             // If we have a hierarchy with at least one Sequence
-                            if (hierarchy != null && hierarchy.Sequences != null && hierarchy.Sequences.Count > 0)
+                            if (hierarchy != null) // && hierarchy.Sequences != null && hierarchy.Sequences.Count > 0)
                             {
                                 Console.WriteLine($"Provisioning hierarchy \"{hierarchy.DisplayName}\"");
 
@@ -419,7 +419,10 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
                                             // Apply the hierarchy
                                             log.WriteLine($"Hierarchy Provisioning Started: {DateTime.Now:hh.mm.ss}");
-                                            tenant.ApplyProvisionHierarchy(hierarchy, hierarchy.Sequences[0].ID, ptai);
+                                            tenant.ApplyProvisionHierarchy(hierarchy,
+                                                (hierarchy.Sequences != null && hierarchy.Sequences.Count > 0) ?
+                                                hierarchy.Sequences[0].ID : null,
+                                                ptai);
                                             log.WriteLine($"Hierarchy Provisioning Completed: {DateTime.Now:hh.mm.ss}");
                                         }
 
