@@ -1,0 +1,11 @@
+<div class="carousel-contents">
+    <slb-carousel-item-body *ngFor="let item of items; index as index" [class.active]="item.isActive"
+        [animationDuration]="animationDuration" [content]="item.content" [isActive]="item.isActive"
+        [direction]="direction">
+    </slb-carousel-item-body>
+</div>
+
+<button *ngIf="doShowLeftButton" class="carousel-back-button" (click)="goLeft()" aria-hidden="true"
+    aria-label="Previous"></button>
+<button *ngIf="doShowRightButton" class="carousel-forward-button" (click)="goRight()" aria-hidden="true"
+    aria-label="Next"></button>

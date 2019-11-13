@@ -1,0 +1,19 @@
+@import "src/sass/variables";
+@import "src/sass/functions";
+
+.header-container {
+    align-items: center;
+    border-bottom: 1px solid transparentize($slb-color-black, 0.8);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 12px 12px 0 ;
+}
+
+h6 {
+    margin-bottom: 0;
+}
+
+.expand-indicator {
+    font-size: calculateRem(12px);
+}

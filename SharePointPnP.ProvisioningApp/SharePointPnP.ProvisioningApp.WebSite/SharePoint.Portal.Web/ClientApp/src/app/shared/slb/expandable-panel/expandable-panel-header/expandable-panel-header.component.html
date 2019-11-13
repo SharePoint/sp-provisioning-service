@@ -1,0 +1,6 @@
+<div class="header-container" [ngClass]="{'is-expanded': isExpanded}">
+    <h6>
+        <ng-content></ng-content>
+    </h6>
+    <div [@rotateIndicator]="expansionState" class="expand-indicator has-glyph glyph-chevron-down"></div>
+</div>

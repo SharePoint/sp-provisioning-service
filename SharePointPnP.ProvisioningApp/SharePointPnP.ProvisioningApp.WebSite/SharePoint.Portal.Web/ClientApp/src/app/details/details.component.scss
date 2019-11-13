@@ -1,0 +1,30 @@
+@import 'src/sass/variables';
+@import 'src/sass/mixins';
+
+.page-wrapper {
+    /* hide image sliding in from right offpage */
+    overflow-x: hidden;
+}
+
+.image-container {
+    margin-top: 64px;
+}
+
+@include media-breakpoint-up(lg) {
+    .image-container {
+        margin-top: 0;
+    }
+}
+
+.add-to-tenant-subsection h4 {
+    display: none;
+}
+
+.site-content-list {
+    margin-bottom: 0;
+    padding-inline-start: 30px;
+}
+
+li:not(:first-child) {
+    margin-top: 20px;
+}

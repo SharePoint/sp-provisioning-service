@@ -1,0 +1,8 @@
+<div class="slb-tab-label-wrapper" role="tablist" [ngClass]="alignClass" (keydown)="handleLabelWrapperKeydown($event)">
+    <slb-tab-label role="tab" *ngFor="let tab of tabs; let i = index" [label]="tab.label" (click)="activateTab(i)"
+        [attr.tabIndex]="tab.isActive ? 0 : -1" [ngClass]="{'isActive' : tab.isActive}" cdkMonitorElementFocus>
+    </slb-tab-label>
+</div>
+<div class="slb-tab-body-wrapper">
+    <slb-tab-body *ngFor="let tab of tabs" [content]="tab.content" [isActive]="tab.isActive"></slb-tab-body>
+</div>

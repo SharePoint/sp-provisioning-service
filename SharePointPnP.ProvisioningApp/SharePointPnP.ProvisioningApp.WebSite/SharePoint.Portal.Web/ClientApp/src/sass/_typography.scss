@@ -1,0 +1,106 @@
+@import 'src/sass/functions';
+
+h1,
+.h1 {
+    font-family: $slb-font-family-semibold;
+    font-size: $slb-font-size-biggest;
+    font-weight: $slb-font-weight-bold;
+    line-height: calculateRem(56px);
+    margin-bottom: calculateRem(24px);
+}
+
+h2,
+.h2 {
+    font-family: $slb-font-family-normal;
+    font-size: $slb-font-size-biggest;
+    font-weight: $slb-font-weight-semibold;
+    line-height: calculateRem(56px);
+    margin-bottom: calculateRem(24px);
+}
+
+h3,
+.h3 {
+    font-family: $slb-font-family-normal;
+    font-size: $slb-font-size-bigger;
+    font-weight: $slb-font-weight-semibold;
+    line-height: calculateRem(40px);
+    margin-bottom: calculateRem(16px);
+}
+
+h4,
+.h4 {
+    font-family: $slb-font-family-normal;
+    font-size: $slb-font-size-medium;
+    font-weight: $slb-font-weight-semibold;
+    line-height: calculateRem(28px);
+}
+
+h5,
+.h5 {
+    font-family: $slb-font-family-normal;
+    font-size: $slb-font-size-small;
+    font-weight: $slb-font-weight-semibold;
+    line-height: calculateRem(24px);
+}
+
+h6,
+.h6 {
+    font-family: $slb-font-family-normal;
+    font-size: calculateRem(18px);
+    font-weight: $slb-font-weight-semibold;
+    line-height: calculateRem(24px);
+}
+
+.h7 {
+    font-size: calculateRem(14px);
+    line-height: calculateRem(20px);
+}
+
+p {
+    font-size: calculateRem(15px);
+    line-height: calculateRem(20px);
+}
+
+.text-brand {
+    color: $slb-color-blue-brand;
+}
+
+.slb-font-size-biggest {
+    font-size: $slb-font-size-biggest;
+}
+
+.slb-font-size-bigger {
+    font-size: $slb-font-size-bigger;
+}
+
+.slb-font-size-big {
+    font-size: $slb-font-size-big;
+}
+
+.slb-font-size-medium {
+    font-size: $slb-font-size-medium;
+}
+
+.slb-font-size-small {
+    font-size: $slb-font-size-small;
+}
+
+.slb-font-size-smaller {
+    font-size: $slb-font-size-smaller;
+}
+
+.slb-font-size-smallest {
+    font-size: $slb-font-size-smallest;
+}
+
+.slb-font-size-smallestest {
+    font-size: $slb-font-size-smallestest;
+}
+
+.slb-font-family-semibold {
+    font-family: $slb-font-family-semibold;
+}
+
+.slb-font-family-semilight {
+    font-family: $slb-font-family-semilight;
+}

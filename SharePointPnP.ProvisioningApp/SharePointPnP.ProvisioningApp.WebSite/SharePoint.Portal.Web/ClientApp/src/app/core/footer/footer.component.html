@@ -1,0 +1,23 @@
+<footer class="slb-footer">
+  <div class="footer-nav">
+    <div class="footer-container">
+      <a class="main-logo" href="https://www.microsoft.com" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+        <img aria-hidden="true" src="/assets/images/logo.png" alt="Microsoft">
+      </a>
+      <a class="main-logo" *ngIf="(targetPlatformId | async) !== 'LOOKBOOK'">
+      </a>
+      <nav class="links" aria-label="Microsoft corporate links">
+        <ul>
+          <li><a href="https://www.microsoft.com/en-us/sitemap1.aspx">Sitemap</a></li>
+          <li><a href="https://go.microsoft.com/?linkid=2028325">Contact Microsoft</a></li>
+          <li><a href="https://go.microsoft.com/fwlink/?LinkId=521839">Privacy &amp; cookies</a></li>
+          <li><a href="https://go.microsoft.com/fwlink/?LinkID=206977">Terms of use</a></li>
+          <li><a href="https://www.microsoft.com/trademarks">Trademarks</a></li>
+          <li><a href="https://www.microsoft.com/en-us/devices/safety-and-eco">Safety &amp; eco</a></li>
+          <li><a href="https://choice.microsoft.com/">About our ads</a></li>
+          <li *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">&#169; Microsoft {{ currentDate | async | slbDateFormat:'YYYY' }}</li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>

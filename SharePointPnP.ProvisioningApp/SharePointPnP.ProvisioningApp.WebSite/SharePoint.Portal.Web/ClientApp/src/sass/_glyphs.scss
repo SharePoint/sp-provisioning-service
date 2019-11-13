@@ -1,0 +1,11 @@
+.has-glyph {
+    &:after {
+        font-family: "MWF-MDL2";
+        display: inline-block;
+        color: currentColor;
+    }
+
+    &.glyph-chevron-down:after {
+        content: "";
+    }
+}

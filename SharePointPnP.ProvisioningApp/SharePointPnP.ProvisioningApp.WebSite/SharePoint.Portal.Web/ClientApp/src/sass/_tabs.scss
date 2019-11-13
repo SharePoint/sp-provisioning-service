@@ -1,0 +1,70 @@
+@import './functions';
+
+.slb-tab-label-wrapper {
+    $base-padding: 8px;
+    $active-font-weight: $slb-font-weight-semibold;
+
+    .slb-tab-label {
+        cursor: pointer;
+        display: inline-block;
+        font-size: $slb-font-size-smaller;
+        line-height: calculateRem(21px);
+        padding: $base-padding;
+
+        span {
+            display: inline-block;
+            padding-bottom: 10px;
+            position: relative;
+            @include elem-underline(100%, 0, transparent);
+
+            &:before {
+                transition: background-color .267s cubic-bezier(.1, .25, .75, .9);
+            }
+
+            &:after {
+                color: transparent;
+                content: attr(title);
+                display: block;
+                font-weight: $active-font-weight;
+                height: 1px;
+                overflow: hidden;
+                visibility: hidden;
+            }
+        }
+
+        &.isActive {
+            font-weight: $active-font-weight;
+
+            span:before {
+                background-color: $slb-color-green-brand;
+            }
+        }
+
+        &:focus {
+            outline: 0;
+        }
+
+        &.cdk-keyboard-focused,
+        &.cdk-program-focused {
+            @include focus-outline;
+        }
+    }
+
+    &.align-center {
+        text-align: center;
+    }
+
+    &.align-left {
+        .slb-tab-label {
+            padding-left: 0;
+            padding-right: $base-padding * 2;
+        }
+    }
+
+    &.align-right {
+        .slb-tab-label {
+            padding-left: $base-padding * 2;
+            padding-right: 0;
+        }
+    }
+}

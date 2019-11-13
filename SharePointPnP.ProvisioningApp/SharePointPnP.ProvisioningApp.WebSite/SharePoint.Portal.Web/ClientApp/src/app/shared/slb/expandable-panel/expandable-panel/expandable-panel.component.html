@@ -1,0 +1,4 @@
+<ng-content select="slb-expandable-panel-header"></ng-content>
+<div [@expandPanel]="'expanded'" *ngIf="isExpanded" class="slb-expandable-panel-content" role="region">
+    <ng-content></ng-content>
+</div>

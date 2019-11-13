@@ -1,0 +1,33 @@
+<ng-template [ngIf]="item">
+    <ng-template [ngIf]="!item.subItems || !item.subItems.length" [ngIfElse]="hasSubItemsTemplate">
+        <div (mouseenter)="handleMouseEnterLink()">
+            <a *ngIf="item.routerLink; else externalLinkTemplate" [routerLink]="item.routerLink"
+                (click)="handleItemSelected($event, item)">
+                <span>{{ item.name }}</span>
+            </a>
+        </div>
+        <ng-template #externalLinkTemplate>
+            <a [href]="item.externalLink" [target]="target" rel="noopener noreferrer"
+                (click)="handleItemSelected($event, item)">
+                <span>{{ item.name }}</span>
+            </a>
+        </ng-template>
+    </ng-template>
+    <ng-template #hasSubItemsTemplate>
+        <button type="button" class="has-glyph" (mouseenter)="handleMouseEnterActivator()"
+            [appNavMenuActivatorFor]="navMenuPanel">
+            <span>{{ item.name }}</span>
+        </button>
+        <div role="menu" appNavMenuPanel (opened)="handlePanelOpened()" (closed)="handlePanelClosed()"
+            #navMenuPanel="navMenuPanel" #menuPanelElement>
+            <ul>
+                <li *ngFor="let subItem of item.subItems">
+                    <app-nav-menu-item [opensOnHover]="subMenuOpensOnHover" [subMenuOpensOnHover]="subMenuOpensOnHover"
+                        [item]="subItem" (opened)="handleSubMenuOpened($event)"
+                        (itemSelected)="handleSubItemSelected($event)">
+                    </app-nav-menu-item>
+                </li>
+            </ul>
+        </div>
+    </ng-template>
+</ng-template>

@@ -1,0 +1,79 @@
+@import './variables';
+@import '~@angular/material/theming';
+
+// Plus imports for other components in your app.
+$general-typography: mat-typography-config($font-family: '"Segoe UI","Helvetica",sans-serif',
+    $input: mat-typography-level(inherit, 1.25, 400));
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core($general-typography);
+$app-primary: (50: lighten($slb-color-green-brand, 0.9),
+    100: lighten($slb-color-green-brand, 0.8),
+    200: lighten($slb-color-green-brand, 0.6),
+    300: lighten($slb-color-green-brand, 0.4),
+    400: lighten($slb-color-green-brand, 0.3),
+    500: lighten($slb-color-green-brand, 0.2),
+    600: lighten($slb-color-green-brand, 0.1),
+    700: $slb-color-green-brand,
+    800: darken($slb-color-green-brand, 0.2),
+    900: darken($slb-color-green-brand, 0.4),
+    contrast: (50: $dark-primary-text,
+        100: $dark-primary-text,
+        200: $dark-primary-text,
+        300: $dark-primary-text,
+        400: $dark-primary-text,
+        500: $light-primary-text,
+        600: $light-primary-text,
+        700: $light-primary-text,
+        800: $light-primary-text,
+        900: $light-primary-text,
+    ));
+$app-accent: (50: #fff9e2,
+    100: #feeeb5,
+    200: #fee385,
+    300: #feda53,
+    400: #fecf2d,
+    500: #ffc712,
+    600: #ffb908,
+    700: #ffa603,
+    800: #ff9500,
+    900: #ff7600,
+    contrast: (50: $dark-primary-text,
+        100: $dark-primary-text,
+        200: $dark-primary-text,
+        300: $dark-primary-text,
+        400: $dark-primary-text,
+        500: $dark-primary-text,
+        600: $dark-primary-text,
+        700: $light-primary-text,
+        800: $light-primary-text,
+        900: $light-primary-text,
+    ));
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$primary: mat-palette($app-primary);
+$accent: mat-palette($app-primary, 700, 500, 900);
+// The warn palette is optional (defaults to red).
+$warn: mat-palette($mat-red);
+// Create the theme object (a Sass map containing all of the palettes).
+$theme: mat-light-theme($primary, $accent, $warn);
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+// @include angular-material-theme($theme);
+@include mat-button-theme($theme);
+@include mat-snack-bar-theme($theme);
+
+.mat-tab-header {
+    border-bottom: none;
+}
+
+.mat-tab-label {
+    min-width: unset !important;
+
+    &.mat-tab-label-active {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,10 @@
+@import 'src/sass/variables';
+
+.detail-item-main-text {
+    display: flex;
+    align-items: center;
+}
+
+.slb-badge {
+    margin-left: map-get($spacers, 1)
+}

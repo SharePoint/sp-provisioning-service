@@ -1,0 +1,52 @@
+@import 'src/sass/functions';
+
+.text-color-blue {
+    color: $slb-color-blue-brand !important;
+}
+
+.text-color-green {
+    color: $slb-color-green-brand !important;
+}
+
+.text-color-orange {
+    color: $slb-color-orange-brand !important;
+}
+
+.list-unstyled {
+    list-style-type: none;
+    padding: 0;
+    padding-inline-start: 0;
+    margin: 0;
+}
+
+.mt-8px {
+    margin-top: calculateRem(8px) !important;
+}
+
+.mt-16px {
+    margin-top: calculateRem(16px) !important;
+}
+
+.mt-24px {
+    margin-top: calculateRem(24px) !important;
+}
+
+.mt-32px {
+    margin-top: calculateRem(32px) !important;
+}
+
+.mb-8px {
+    margin-bottom: calculateRem(8px) !important;
+}
+
+.mb-16px {
+    margin-bottom: calculateRem(16px) !important;
+}
+
+.mb-24px {
+    margin-bottom: calculateRem(24px) !important;
+}
+
+.mb-32px {
+    margin-bottom: calculateRem(32px) !important;
+}

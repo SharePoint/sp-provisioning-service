@@ -1,0 +1,30 @@
+.call-to-action {
+    @include call-to-action();
+}
+
+.slb-primary-button {
+    @include button-styles();
+    @include button-theme($slb-color-green-brand, $slb-color-green-brand, $slb-color-white,
+        $slb-color-green-brand, $slb-color-green-brand, $slb-color-white,
+        $slb-color-green-brand, $slb-color-green-brand, $slb-color-white,
+        $slb-color-green-brand, $slb-color-green-brand, $slb-color-white,
+        $slb-color-button-disabled, $slb-color-button-disabled, $slb-color-button-disabled-text);
+}
+
+.slb-link-button {
+    @include button-styles();
+    @include button-theme(transparent, transparent, $slb-color-green-brand,
+        transparent, transparent, $slb-color-green-brand,
+        transparent, transparent, $slb-color-green-brand,
+        transaprent, transaprent, $slb-color-green-brand,
+        $slb-color-button-disabled, $slb-color-button-disabled, $slb-color-button-disabled-text);
+
+    border: none;
+    padding: 0;
+
+    &.call-to-action:hover {
+        span {
+            left: 0;
+        }
+    }
+}

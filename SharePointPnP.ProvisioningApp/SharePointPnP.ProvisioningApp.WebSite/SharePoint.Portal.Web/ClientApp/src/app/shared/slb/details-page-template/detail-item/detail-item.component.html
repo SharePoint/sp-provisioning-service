@@ -1,0 +1,18 @@
+<ng-template [ngIf]="item">
+    <div class="detail-item-main-text">
+        <a *ngIf="item.url; else nameSpanTemplate" [href]="item.url" target="_blank" rel="noopener noreferer">
+            <ng-container *ngTemplateOutlet="nameSpanTemplate"></ng-container>
+        </a>
+        <ng-template #nameSpanTemplate>
+            <span>{{ item.name }}</span>
+        </ng-template>
+
+        <div class="slb-badge" *ngIf="item.badgeText">
+            {{ item.badgeText }}
+        </div>
+    </div>
+
+    <div class="item-descriptive-text" *ngIf="item.description">
+        {{ item.description }}
+    </div>
+</ng-template>

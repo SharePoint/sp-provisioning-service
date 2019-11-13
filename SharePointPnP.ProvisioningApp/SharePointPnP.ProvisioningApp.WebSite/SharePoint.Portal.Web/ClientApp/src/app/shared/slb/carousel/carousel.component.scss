@@ -1,0 +1,75 @@
+@import "src/sass/variables";
+@import "src/sass/mixins";
+
+:host {
+    display: flex;
+    position: relative;
+}
+
+.carousel-contents {
+    margin-left: 50px;
+    margin-right: 50px;
+    overflow: hidden;
+    position: relative;
+    width: calc(100% - 100px);
+
+    .slb-carousel-item-body {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        &.active {
+            position: relative;
+        }
+    }
+}
+
+.carousel-back-button,
+.carousel-forward-button {
+    background: $slb-color-grey800;
+    border-radius: 50%;
+    border: 1px solid $slb-color-grey800;
+    color: $slb-color-black;
+    height: 42px;
+    opacity: 0.9;
+    padding: 0;
+    position: absolute;
+    width: 42px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
+
+    &:before {
+        font-family: "MWF-MDL2";
+        font-size: 14px;
+    }
+
+    &:hover {
+        @include box-shadow-elevation-2;
+        opacity: 1;
+    }
+
+    &:focus {
+        @include focus-outline;
+    }
+}
+
+.carousel-back-button {
+    left: 0;
+
+    &:before {
+        content: "";
+        margin-right: 2px;
+    }
+}
+
+.carousel-forward-button {
+    right: 0;
+
+    &:before {
+        content: "";
+        margin-left: 2px;
+    }
+}

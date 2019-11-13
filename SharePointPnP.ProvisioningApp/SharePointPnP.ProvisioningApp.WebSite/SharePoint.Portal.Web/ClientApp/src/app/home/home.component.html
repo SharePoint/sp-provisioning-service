@@ -1,0 +1,122 @@
+<div class="container-fluid">
+  <section class="top-hero-section">
+    <div class="section-text">
+      <div>
+        <h2 *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">SharePoint look book</h2>
+        <h2 *ngIf="(targetPlatformId | async) !== 'LOOKBOOK'">SharePoint provisioning service</h2>
+        <h3>Get inspired</h3>
+        <p>
+          Discover the modern experiences you can build with SharePoint in Microsoft 365
+        </p>
+        <a slb-cta-button href="#templates">See examples</a>
+      </div>
+    </div>
+    <div class="section-image"></div>
+  </section>
+
+  <section class="feature-hero-section">
+    <div class="hero-section-text-container">
+      <div>
+        <h6>Build a beautiful, powerful intranet</h6>
+        <p>
+          SharePoint connects the workplace by powering a new generation of intelligent content and
+          communication experiences
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="categories-section" id="templates">
+  <div class="container-fluid">
+    <div class="description-text">
+      <h3>Create stunning sites</h3>
+      <p>
+        Reinvent the intranet with solutions for collaboration, communication, engagement, and knowledge
+        management. Today it's simple for any user to create beautiful, fast sites and pages that look great on
+        any device or screen. Get inspired with these designs or add them to your tenant to start building your
+        next stunning site with them.
+      </p>
+    </div>
+  </div>
+  <div>
+    <slb-tab-group *ngIf="categories | async; let categories; else loadingSpinnerTemplateBlock"
+                   alignLabels="center">
+      <slb-tab *ngFor="let category of categories" [label]="category.displayName">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6 col-lg-4 mt-5" *ngFor="let package of category.packages">
+              <app-package-card [packageData]="package"></app-package-card>
+            </div>
+          </div>
+        </div>
+      </slb-tab>
+    </slb-tab-group>
+    <ng-template #loadingSpinnerTemplateBlock>
+      <div class="circle-loading-spinner m-auto" aria-label="Loading"></div>
+    </ng-template>
+  </div>
+</section>
+
+<section class="quotes-section">
+  <div class="container-fluid">
+    <slb-carousel>
+      <slb-carousel-item *ngFor="let quote of quotes">
+        <blockquote>
+          &quot;{{ quote.quoteText }}&quot;
+        </blockquote>
+        <div>
+          <span class="quote-customer">{{ quote.customerName }}</span>
+        </div>
+      </slb-carousel-item>
+    </slb-carousel>
+  </div>
+</section>
+
+<section class="footer-splash">
+  <div class="design-guidance">
+    <div class="content-container">
+      <span class="text-color-green text-uppercase">sharepoint design guidance</span>
+      <h2>Create beautiful sites and pages</h2>
+      <p>
+        Looking for how to get the most out of your SharePoint sites and pages? Visit the SharePoint Design
+        Guidance site for more information on how to design beautiful and performant sites, pages, and web
+        parts with SharePoint in Office 365.
+      </p>
+      <a slb-cta-button href="https://spdesign.azurewebsites.net/" target="_blank" rel="noopener noreferrer">
+        Visit site
+      </a>
+    </div>
+  </div>
+
+  <div class="content-grouping">
+    <div class="twitter">
+      <div class="content-container">
+        <a href="https://twitter.com/SharePoint?s=17" target="_blank" rel="noopener noreferrer">
+          <img width="43.5" src="/assets/images/footer/Twitter-white.svg" alt="twitter logo">
+          <h4>Follow SharePoint on Twitter</h4>
+        </a>
+      </div>
+    </div>
+
+    <div class="user-voice">
+      <div class="content-container">
+        <h3>Share. Vote. Discuss.</h3>
+        <p>Got an idea for how to improve SharePoint?</p>
+        <a slb-cta-button buttonType="link" href="https://sharepoint.uservoice.com/" target="_blank"
+           rel="noopener noreferrer">Share it with us</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="intrazone">
+    <div class="content-container">
+      <div class="text-content">
+        <a slb-cta-button buttonType="link" href="https://intrazone.libsyn.com/" target="_blank"
+           rel="noopener noreferrer">
+          Listen now
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

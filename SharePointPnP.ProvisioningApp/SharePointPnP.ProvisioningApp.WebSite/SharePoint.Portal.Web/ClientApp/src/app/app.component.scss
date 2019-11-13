@@ -1,0 +1,16 @@
+@import 'src/sass/variables';
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100vh;
+}
+
+.content-container {
+    flex-shrink: 0;
+}
+
+app-footer {
+    margin-top: auto;
+}

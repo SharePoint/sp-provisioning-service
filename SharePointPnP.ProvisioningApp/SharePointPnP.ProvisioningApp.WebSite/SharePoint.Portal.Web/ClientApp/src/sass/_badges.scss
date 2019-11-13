@@ -1,0 +1,18 @@
+.slb-badge {
+    background-color: $slb-color-green-brand;
+    border-radius: 0.3em;
+    color: $slb-color-white;
+    font-weight: $slb-font-weight-semibold;
+    display: inline-block;
+    font-size: $slb-font-size-smallestest;
+    padding: 0.2em 0.5em;
+    text-transform: uppercase;
+
+    &.blue {
+        background-color: $slb-color-blue-brand;
+    }
+
+    &.orange {
+        background-color: $slb-color-orange-brand;
+    }
+}

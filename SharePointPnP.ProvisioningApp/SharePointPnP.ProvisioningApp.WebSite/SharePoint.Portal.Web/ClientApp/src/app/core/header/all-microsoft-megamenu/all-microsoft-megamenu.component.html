@@ -1,0 +1,218 @@
+<nav class="megamenu" aria-label="All microsoft menu" appNavMenuPanel (closed)="handleMainPanelClosed()"
+    #mainPanel="navMenuPanel">
+    <ul class="megamenu-top-nav">
+        <li>
+            <a href="https://products.office.com/en-us/home">Office</a>
+        </li>
+        <li>
+            <a href="https://www.microsoft.com/en-us/windows/">Windows</a>
+        </li>
+        <li>
+            <a href="https://www.microsoft.com/en-us/surface">Surface</a>
+        </li>
+        <li>
+            <a href="https://www.xbox.com/">Xbox</a>
+        </li>
+        <li>
+            <a href="https://www.microsoft.com/en-us/store/b/sale?icid=gm_nav_L0_salepage">Deals</a>
+        </li>
+        <li>
+            <a href="https://support.microsoft.com/en-us">Support</a>
+        </li>
+    </ul>
+    <ul class="megamenu-panel">
+        <li>
+            <button type="button" role="presentation" [attr.tabindex]="tabIndex" [appNavMenuActivatorFor]="navPanel1">
+                Software
+            </button>
+            <ul aria-hidden="false" appNavMenuPanel #navPanel1="navMenuPanel">
+                <li>
+                    <a href="https://www.microsoft.com/en-us/windows/windows-10-apps">
+                        Windows apps
+                    </a>
+
+                </li>
+                <li>
+                    <a href="https://onedrive.live.com/about/en-us/">OneDrive</a>
+                </li>
+                <li>
+                    <a href="https://outlook.live.com/owa/">Outlook</a>
+
+                </li>
+                <li>
+                    <a href="https://www.skype.com/en/">Skype</a>
+
+                </li>
+                <li>
+                    <a href="https://www.onenote.com/">OneNote</a>
+
+                </li>
+            </ul>
+
+        </li>
+        <li>
+            <button type="button" role="presentation" [attr.tabindex]="tabIndex" [appNavMenuActivatorFor]="navPanel2">
+                PCs &amp; Devices
+            </button>
+            <ul aria-hidden="false" appNavMenuPanel #navPanel2="navMenuPanel">
+                <li>
+                    <a href="https://www.microsoft.com/en-us/windows/devices">
+                        PCs &amp; tablets
+                    </a>
+
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/accessories/en-us">Accessories</a>
+                </li>
+            </ul>
+
+        </li>
+        <li>
+            <button type="button" role="presentation" [attr.tabindex]="tabIndex" [appNavMenuActivatorFor]="navPanel3">
+                Entertainment
+            </button>
+            <ul aria-hidden="false" appNavMenuPanel #navPanel3="navMenuPanel">
+                <li>
+                    <a href="https://www.xbox.com/en-us/games/xbox-one?xr=shellnav">
+                        Xbox games
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/windows/windows-10-games">
+                        PC games
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/store/games/windows?icid=TopNavWindowsGames">
+                        Windows digital games
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/store/movies-and-tv?icid=TopNavMoviesTv">
+                        Movies &amp; TV
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <button type="button" role="presentation" [attr.tabindex]="tabIndex" [appNavMenuActivatorFor]="navPanel4">
+                Business
+            </button>
+            <ul aria-hidden="false" appNavMenuPanel #navPanel4="navMenuPanel">
+                <li>
+                    <a href="https://azure.microsoft.com/en-us/">
+                        Microsoft Azure
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/dynamics365/home">
+                        Microsoft Dynamics 365
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/microsoft-365">
+                        Microsoft 365
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/enterprise">
+                        Microsoft Industry
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/sql-server/ ">
+                        Data platform
+                    </a>
+
+                </li>
+                <li>
+                    <a href="https://go.microsoft.com/fwlink/?linkid=2026638">
+                        Microsoft Advertising
+                    </a>
+                </li>
+                <li>
+                    <a id="Licensing" href="https://www.microsoft.com/licensing/default">
+                        Licensing
+                    </a>
+                </li>
+            </ul>
+
+        </li>
+        <li>
+            <button type="button" role="presentation" [attr.tabindex]="tabIndex" [appNavMenuActivatorFor]="navPanel5">
+                Developer &amp; IT
+            </button>
+            <ul aria-hidden="false" appNavMenuPanel #navPanel5="navMenuPanel">
+                <li>
+                    <a href="https://www.microsoft.com/net/">
+                        .NET
+                    </a>
+                </li>
+                <li>
+                    <a href="https://visualstudio.microsoft.com/">
+                        Visual Studio
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/cloud-platform/windows-server">
+                        Windows Server
+                    </a>
+                </li>
+                <li>
+                    <a href="https://developer.microsoft.com/en-us/windows">
+                        Windows Dev Center
+                    </a>
+                </li>
+                <li>
+                    <a href="https://docs.microsoft.com/en-us/">
+                        Docs
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <button type="button" role="presentation" [attr.tabindex]="tabIndex" [appNavMenuActivatorFor]="navPanel6">
+                Other
+            </button>
+            <ul aria-hidden="false" appNavMenuPanel #navPanel6="navMenuPanel">
+                <li>
+                    <a href="https://www.microsoft.com/en-us/store/b/home">
+                        Microsoft Store
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/rewards">
+                        Microsoft Rewards
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/download/default.aspx">
+                        Free downloads &amp; security
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/education?icid=CNavMSCOML0_Studentsandeducation">
+                        Education
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/store/locations/find-a-store?icid=TopNavStoreLocations">
+                        Store locations
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.microsoft.com/en-us/store/b/gift-cards">
+                        Gift cards
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <ul>
+        <li class="multi-column-info">
+            <a class="has-glyph" href="https://www.microsoft.com/en-us/sitemap.aspx">
+                View Sitemap
+            </a>
+        </li>
+    </ul>
+</nav>

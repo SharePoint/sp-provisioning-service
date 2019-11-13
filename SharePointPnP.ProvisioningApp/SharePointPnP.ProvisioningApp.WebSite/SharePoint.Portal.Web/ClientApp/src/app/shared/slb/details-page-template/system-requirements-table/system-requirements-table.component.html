@@ -1,0 +1,20 @@
+<ng-template [ngIf]="systemRequirements | async" [ngIfElse]="noRequirementsDefinedBlock" let-requirements>
+    <table *ngIf="requirements.length; else noRequirementsDefinedBlock">
+        <thead>
+            <tr>
+                <td>Minimum</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let requirement of requirements">
+                <td class="requirement-name">{{ requirement.name }}</td>
+                <td class="requirement-value">{{ requirement.value }}</td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>
+
+<ng-template #noRequirementsDefinedBlock>
+    <span *ngIf="hasLoaded" class="no-requirements-message">{{ noRequirementsMessage }}</span>
+</ng-template>

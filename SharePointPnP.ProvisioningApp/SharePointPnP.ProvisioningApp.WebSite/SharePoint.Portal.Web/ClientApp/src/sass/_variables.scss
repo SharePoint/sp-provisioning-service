@@ -1,0 +1,52 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import './functions';
+
+$slb-spacer: 1rem !default;
+
+$slb-color-blue-brand: #0067B8 !default;
+$slb-color-green-brand: #038387 !default;
+$slb-color-orange-brand: #D83B01 !default;
+
+$slb-color-blue400: #005da6 !default;
+$slb-color-blue500: #0067B8 !default;
+$slb-color-blue600: #0078D7 !default;
+
+$slb-color-green400: #0e4f51 !default;
+$slb-color-green500: $slb-color-green-brand !default;
+$slb-color-green700: #37c6d0 !default;
+
+$slb-color-black: #000 !default;
+$slb-color-grey200: #262626 !default;
+$slb-color-grey300: #333333 !default;
+$slb-color-grey400: #616161 !default;
+$slb-color-grey500: #CCCCCC !default;
+$slb-color-grey600: #D9D9D9 !default;
+$slb-color-grey700: #E5E5E5 !default;
+$slb-color-grey800: #F2F2F2 !default;
+$slb-color-white: #FFF !default;
+
+$slb-color-button-disabled: #CCCCCC !default;
+$slb-color-button-disabled-text: #878787 !default;
+
+// default browser font size is usually 16px
+$slb-font-size-biggest: calculateRem(46px) !default;
+$slb-font-size-bigger: calculateRem(34px) !default;
+$slb-font-size-big: calculateRem(28px) !default;
+$slb-font-size-medium: calculateRem(24px) !default;
+$slb-font-size-small: calculateRem(20px) !default;
+$slb-font-size-smaller: calculateRem(16px) !default;
+$slb-font-size-smallest: calculateRem(14px) !default;
+$slb-font-size-smallestest: calculateRem(8px) !default;
+
+$slb-font-weight-bold: 700 !default;
+$slb-font-weight-semibold: 600 !default;
+$slb-font-weight-semilight: 300 !default;
+
+$slb-font-family-normal: "Segoe UI", SegoeUI, "Helvetica", sans-serif !default;
+$slb-font-family-semibold: "Segoe-UI-Semibold", "Segoe UI", SegoeUI, "Helvetica",sans-serif !default;
+$slb-font-family-semilight: "Segoe-UI-Semilight", "Segoe UI", SegoeUI, "Helvetica",sans-serif !default;
+
+$slb-section-spacing: 64px;
+$slb-page-max-width: 1600px;
+$slb-page-margin: 15px;

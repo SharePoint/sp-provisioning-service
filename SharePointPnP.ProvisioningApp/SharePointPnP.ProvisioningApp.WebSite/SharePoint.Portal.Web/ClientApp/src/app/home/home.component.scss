@@ -1,0 +1,405 @@
+@import 'src/sass/variables';
+@import 'src/sass/mixins';
+@import 'src/sass/functions';
+
+.top-hero-section {
+    height: 600px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+        color: $slb-color-green-brand;
+    }
+
+    p {
+        font-size: calculateRem(20px);
+        line-height: calculateRem(24px);
+        margin-bottom: calculateRem(24px);
+    }
+
+    .section-text {
+        flex-shrink: 0;
+        padding: $slb-page-margin;
+        width: 100%;
+        order: 1;
+    }
+
+    .section-image {
+        background-image: url(/assets/images/home/hero_getinspired_bg.png);
+        background-size: cover;
+        background-position: left center;
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 100%;
+    }
+
+    @include media-breakpoint-up(md) {
+        flex-direction: row;
+
+        .section-text {
+            align-items: center;
+            display: flex;
+            height: 100%;
+            width: auto;
+            max-width: 480px;
+            order: inherit;
+        }
+    }
+}
+
+.feature-hero-section {
+    align-items: center;
+    background-image: url(/assets/images/home/highlight-feature_bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: left;
+    display: flex;
+    padding: 10%;
+    height: 600px;
+
+    .hero-section-text-container {
+        align-items: center;
+        background-color: $slb-color-white;
+        display: flex;
+        height: 400px;
+        padding: 0 24px;
+        text-align: center;
+        width: 364px;
+        @include box-shadow-elevation-1;
+
+        h6 {
+            margin-bottom: calculateRem(24px);
+        }
+
+        p {
+            font-size: calculateRem(15px);
+            line-height: calculateRem(20px);
+        }
+    }
+}
+
+.categories-section {
+    .description-text {
+        max-width: map-get($container-max-widths, md);
+        margin: auto;
+        margin-bottom: $slb-section-spacing;
+        text-align: center;
+    }
+
+    p {
+        font-size: calculateRem(18px);
+    }
+}
+
+.quotes-section {
+  text-align: center;
+  margin-bottom: $slb-section-spacing * 3;
+
+  blockquote {
+    font-size: $slb-font-size-bigger;
+    font-weight: 600;
+    margin-bottom: map-get($spacers, 3);
+  }
+
+  .container-fluid {
+    max-width: 1200px;
+  }
+
+  .quote-customer,
+  .quote-date {
+    display: inline-block;
+    font-size: 1.2em;
+  }
+}
+
+.footer-splash {
+    $intrazone-max-width: 500px;
+
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+
+    h2 {
+        font-size: $slb-font-size-bigger;
+        font-weight: $slb-font-weight-bold;
+    }
+
+    h3 {
+        font-size: $slb-font-size-medium;
+    }
+
+    h4 {
+        font-size: $slb-font-size-small;
+    }
+
+    .content-container {
+        text-align: center;
+    }
+
+    .design-guidance {
+        align-items: center;
+        background-image: url(/assets/images/footer/grid.svg);
+        background-size: 100px 100px;
+        flex-basis: 100%;
+        display: flex;
+        justify-content: center;
+
+        .content-container {
+            padding: 10%;
+        }
+
+        .slb-primary-button {
+            margin-top: 24px;
+        }
+
+        @include media-breakpoint-up(lg) {
+            flex-basis: 50%;
+        }
+
+        @include media-breakpoint-up(xl) {
+            .content-container {
+                padding: 0 10%;
+            }
+        }
+    }
+
+    .content-grouping {
+        display: flex;
+        flex-wrap: wrap;
+
+        .twitter {
+            align-items: center;
+            background: url(/assets/images/footer/twitter-bw_bg.jpg);
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+
+            .content-container {
+                align-items: center;
+                background: $slb-color-green-brand;
+                border-radius: 50%;
+                display: inline-flex;
+                flex-direction: column;
+                flex-shrink: 0;
+                justify-content: center;
+                padding: 0 $slb-page-margin;
+                height: 280px;
+                width: 280px;
+            }
+
+            a {
+                color: $slb-color-white;
+                user-select: none;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+
+            h4 {
+                margin-top: 15px;
+            }
+        }
+
+        .user-voice {
+            align-items: center;
+            background: $slb-color-green400;
+            color: $slb-color-white;
+            display: flex;
+            justify-content: center;
+
+            .content-container {
+                padding: 15%;
+                width: 100%;
+            }
+
+            h3 {
+                color: $slb-color-green700;
+            }
+
+            .call-to-action {
+                color: $slb-color-white;
+            }
+        }
+
+        @include media-breakpoint-up(sm) {
+            .twitter {
+                .content-container {
+                    height: 200px;
+                    width: 200px;
+                }
+            }
+
+            .user-voice {
+                .content-container {
+                    padding: $slb-page-margin;
+                }
+
+            }
+        }
+
+        @include media-breakpoint-between(sm, md) {
+
+            a,
+            p {
+                font-size: 18px;
+            }
+
+            p {
+                margin-bottom: 0.5em;
+            }
+
+            h3 {
+                font-size: 24px;
+            }
+
+            h4 {
+                font-size: 18px;
+            }
+        }
+
+        @include media-breakpoint-up(md) {
+            .twitter {
+                .content-container {
+                    height: 230px;
+                    width: 230px;
+                }
+            }
+        }
+
+        @include media-breakpoint-up(lg) {
+            .twitter {
+                .content-container {
+                    height: 280px;
+                    width: 280px;
+                }
+            }
+
+            .user-voice {
+                .content-container {
+                    padding: 0;
+                }
+            }
+        }
+    }
+
+    .intrazone {
+        background-image: url(/assets/images/footer/Intrazone-logo_square.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+
+        .content-container {
+            position: relative;
+
+            .text-content {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding-top: 75%;
+            }
+
+            &:after {
+                content: "";
+                display: block;
+                padding-bottom: 100%;
+            }
+        }
+
+        @include media-breakpoint-up(sm) {
+            max-width: $intrazone-max-width;
+        }
+
+        @media (min-width: #{$slb-page-max-width}) {
+            background-size: contain;
+        }
+    }
+
+    // Flex layout
+
+    .design-guidance {
+        flex-basis: 100%;
+    }
+
+    .content-grouping {
+        flex-basis: 100%;
+
+        .twitter,
+        .user-voice {
+            flex-basis: 100%;
+        }
+    }
+
+    .intrazone {
+        flex-basis: 100%;
+    }
+
+    @include media-breakpoint-up(sm) {
+        .content-grouping {
+            flex-basis: 40%;
+
+            .twitter,
+            .user-voice {
+                flex-basis: 100%;
+            }
+        }
+
+        .intrazone {
+            flex-basis: 60%;
+        }
+    }
+
+    @include media-breakpoint-up(md) {
+        .content-grouping {
+            flex-basis: 60%;
+
+            .twitter,
+            .user-voice {
+                flex-basis: 50%;
+            }
+        }
+
+        .intrazone {
+            flex-basis: 40%;
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+        .content-grouping {
+            flex-basis: 60%;
+
+            .twitter,
+            .user-voice {
+                flex-basis: 50%;
+            }
+        }
+
+        .intrazone {
+            flex-basis: 40%;
+        }
+    }
+
+    @include media-breakpoint-up(xl) {
+        .design-guidance {
+            flex-grow: 1;
+            flex-basis: 40%;
+        }
+
+        .content-grouping {
+            flex-basis: 25%;
+            flex-direction: column;
+        }
+
+        .intrazone {
+            flex-basis: 35%;
+        }
+    }
+
+    @media (min-width: #{$slb-page-max-width}) {
+        .intrazone {
+            flex-basis: $intrazone-max-width;
+        }
+    }
+}

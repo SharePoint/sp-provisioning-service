@@ -1,0 +1,29 @@
+@import '~bootstrap/scss/_mixins';
+@import './mixins/buttons';
+@import './mixins/box-shadow';
+
+@mixin focus-outline {
+    outline: 1px dashed #000;
+}
+
+// fake an underline with a pseudoelement
+@mixin elem-underline($width, $bottom, $color: currentColor) {
+    &:before {
+        background: $color;
+        bottom: $bottom;
+        content: "";
+        display: block;
+        height: 2px;
+        position: absolute;
+        width: $width;
+    }
+}
+
+// Fake an underline with a box shadow
+@mixin box-shadow-underline($color: currentColor) {
+    box-shadow: 0 1px $color;
+}
+
+@mixin box-shadow-underline-2($color: currentColor) {
+    box-shadow: 0 2px $color;
+}

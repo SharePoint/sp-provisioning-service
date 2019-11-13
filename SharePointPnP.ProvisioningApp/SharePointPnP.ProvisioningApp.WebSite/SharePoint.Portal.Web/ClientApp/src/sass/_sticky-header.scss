@@ -1,0 +1,9 @@
+.slb-sticky-header-container {
+    animation-name: fade-in;
+    animation-duration: 400ms;
+    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+    background: $slb-color-white;
+    padding: map-get($spacers, 2) 0;
+    width: 100%;
+    @include box-shadow-elevation-2;
+}

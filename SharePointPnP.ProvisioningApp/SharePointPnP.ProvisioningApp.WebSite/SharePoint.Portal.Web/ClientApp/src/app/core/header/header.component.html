@@ -1,0 +1,78 @@
+<header class="slb-header">
+    <div class="header-container">
+        <div class="header-part-one" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+            <button type="button" class="hamburger-button collapsed-nav-item has-glyph"
+                [appNavMenuActivatorFor]="microsoftMegamenu.mainPanel"
+                aria-label="All Microsoft expand to see list of Microsoft products and services"
+                #megamenuTogglerElement></button>
+
+            <a class="logo main-logo" href="https://www.microsoft.com" aria-label="Microsoft">
+                <img src="../../assets/images/logo.png" aria-hidden="true">
+                <span role="presentation" aria-hidden="true">Microsoft</span>
+            </a>
+        </div>
+
+        <div class="expanded-home-nav-item expanded-nav-item" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+            <a class="logo" href="https://www.microsoft.com/en-us/microsoft-365">
+                <span>Microsoft 365</span>
+            </a>
+        </div>
+
+        <div class="page-nav" #menuElement>
+            <div class="collapsed-nav-opener collapsed-nav-item" [ngClass]="{'is-open': isShowingMainMenu}" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+                <button class="has-glyph" (click)="toggleMainMenu()">
+                    <span>Microsoft 365</span>
+                </button>
+            </div>
+
+            <nav class="menu" [ngClass]="{'is-open': isShowingMainMenu}">
+              <ul>
+                <li class="collapsed-nav-item" (click)="closeMainMenu()" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+                  <a href="https://www.microsoft.com/en-us/microsoft-365">Home</a>
+                </li>
+                <li *ngIf="(targetPlatformId | async) !== 'LOOKBOOK'">
+                  <img src="../../assets/images/beta-tag.png" alt="Beta" style="height: 50px; padding: 1em .75em 1em .75em;">
+                </li>
+                <li>
+                  <a routerLink="/" (click)="closeMainMenu()" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+                    <span>SharePoint look book</span>
+                  </a>
+                  <a routerLink="/" (click)="closeMainMenu()" *ngIf="(targetPlatformId | async) !== 'LOOKBOOK'">
+                    <span>SharePoint provisioning service</span>
+                  </a>
+                </li>
+                <li *ngFor="let item of navItems" [ngClass]="{'open-left': !isLargeScreen}">
+                  <app-nav-menu-item [item]="item" [expandMenuHeight]="!isSmallScreen" [subMenuOpensOnHover]="!isSmallScreen"
+                                     (opened)="handleMenuOpened($event)" (itemSelected)="closeMainMenu()">
+                  </app-nav-menu-item>
+                </li>
+                <li *ngIf="moreItem" class="open-left">
+                  <app-nav-menu-item [item]="moreItem" [expandMenuHeight]="!isSmallScreen" [subMenuOpensOnHover]="!isSmallScreen"
+                                     (opened)="handleMenuOpened($event)" (itemSelected)="closeMainMenu()"></app-nav-menu-item>
+                </li>
+              </ul>
+            </nav>
+        </div>
+
+        <div class="right-nav">
+            <nav class="menu" [ngClass]="{'is-open': microsoftMegamenu.mainPanel.isOpen}" #megamenuElement  *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+                <div>
+                    <button type="button" class="expanded-nav-item"
+                        [appNavMenuActivatorFor]="microsoftMegamenu.mainPanel"
+                        aria-label="All Microsoft expand to see list of Microsoft products and services">
+                        <span>All Microsoft</span>
+                    </button>
+                    <app-all-microsoft-megamenu [megamenuPanelButtonsTabbable]="isSmallScreen"
+                        #microsoftMegamenu="allMicrosoftMegamenu">
+                    </app-all-microsoft-megamenu>
+                </div>
+            </nav>
+            <!-- <div class="me-control">
+                <button class="me-control-trigger">
+                    <span class="me-control-text">Sign in</span>
+                    <div class="profile-pic glyph_signIn_circle"></div>
+                </button>
+            </div> -->
+        </div>
+    </div>
+</header>

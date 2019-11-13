@@ -1,0 +1,28 @@
+/**
+ * Variables for project and from bootstrap
+ */
+@import './variables';
+@import './mixins';
+
+/*
+ * Taking the bootstrap grid and utilities
+ */
+// @import '~bootstrap/scss/reboot';
+@import './reboot'; // TODO: Go back to using bootstrap reboot once v4.4 is released
+@import '~bootstrap/scss/grid';
+@import '~bootstrap/scss/_utilities';
+
+@import './fonts';
+@import './typography';
+@import './utilities';
+@import './global';
+@import './glyphs';
+@import './badges';
+@import './buttons';
+@import './header';
+@import './footer';
+@import './box-shadow';
+@import './spinner';
+@import './sticky-header';
+@import './tabs';
+@import './animations';

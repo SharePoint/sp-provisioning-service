@@ -1,0 +1,22 @@
+.circle-loading-spinner {
+    $spinner-width: 5px;
+    position: relative;
+    height: 150px;
+    width: 150px;
+
+    &:after {
+        border-radius: 50%;
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        animation: rotate360 1s infinite linear;
+        border: $spinner-width solid $slb-color-green-brand;
+        border-right-color: transparentize($slb-color-green-brand, 0.75);
+        border-bottom-color: transparentize($slb-color-green-brand, 0.75);
+        border-left-color: transparentize($slb-color-green-brand, 0.75);
+    }
+}

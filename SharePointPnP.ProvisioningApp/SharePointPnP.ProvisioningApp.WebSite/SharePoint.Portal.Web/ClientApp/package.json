@@ -1,0 +1,63 @@
+{
+  "name": "SharePoint.Portal.Web",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:styles": "node-sass --importer=node_modules/node-sass-tilde-importer src/sass/styles.scss dist/css/styles.css",
+    "build:styles:min": "node-sass --importer=node_modules/node-sass-tilde-importer --output-style=compressed src/sass/styles.scss dist/css/styles.min.css",
+    "build:ssr": "ng run SharePoint.Portal.Web:server:dev",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^8.2.8",
+    "@angular/cdk": "^8.2.2",
+    "@angular/common": "^8.2.8",
+    "@angular/compiler": "8.2.8",
+    "@angular/core": "^8.2.8",
+    "@angular/forms": "8.2.8",
+    "@angular/material": "^8.2.2",
+    "@angular/platform-browser": "8.2.8",
+    "@angular/platform-browser-dynamic": "8.2.8",
+    "@angular/platform-server": "8.2.8",
+    "@angular/router": "8.2.8",
+    "@nguniversal/module-map-ngfactory-loader": "8.1.1",
+    "aspnet-prerendering": "^3.0.1",
+    "core-js": "^3.2.1",
+    "material-design-icons": "^3.0.1",
+    "moment": "^2.24.0",
+    "rxjs": "^6.5.3",
+    "scss-compile": "^0.1.7",
+    "zone.js": "^0.9.1"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.803.6",
+    "@angular/cli": "^8.3.6",
+    "@angular/compiler-cli": "8.2.8",
+    "@angular/language-service": "^8.2.8",
+    "@types/jasmine": "^3.4.2",
+    "@types/jasminewd2": "^2.0.8",
+    "@types/node": "~12.7.9",
+    "bootstrap": "^4.3.1",
+    "codelyzer": "^5.1.0",
+    "jasmine-core": "~3.5.0",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "^4.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~2.1.0",
+    "karma-jasmine": "~2.0.1",
+    "karma-jasmine-html-reporter": "^1.4.2",
+    "node-sass": "^4.12.0",
+    "node-sass-tilde-importer": "^1.0.2",
+    "typescript": "~3.5.3"
+  },
+  "optionalDependencies": {
+    "protractor": "~5.4.0",
+    "ts-node": "~5.0.1",
+    "tslint": "~5.9.1"
+  }
+}
