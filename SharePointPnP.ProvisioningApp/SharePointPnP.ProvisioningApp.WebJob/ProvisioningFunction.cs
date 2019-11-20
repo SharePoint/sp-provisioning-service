@@ -156,6 +156,9 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                         context.Load(web, w => w.Title, w => w.Id);
                         await context.ExecuteQueryAsync();
 
+                        // Save the current SPO Correlation ID
+                        telemetryProperties.Add("SPOCorrelationId", context.TraceCorrelationId);
+
                         log.WriteLine($"SharePoint Online Root Site Collection title: {web.Title}");
 
                         #region Store the main site URL in KeyVault

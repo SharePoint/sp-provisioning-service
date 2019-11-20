@@ -31,7 +31,8 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
                 await func();
             }
             catch (Exception ex) when (ex is TimeoutException ||
-                ex is System.Net.Http.HttpRequestException)
+                ex is System.Net.Http.HttpRequestException ||
+                ex is Microsoft.Azure.KeyVault.Models.KeyVaultErrorException)
             {
                 Debug.WriteLine("Exception raised is: " +
                     ex.GetType().ToString() +
