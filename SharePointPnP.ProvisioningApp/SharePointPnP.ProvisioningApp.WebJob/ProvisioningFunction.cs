@@ -103,6 +103,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
                     ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
                     ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
+                log.WriteLine($"Retrieved target Microsoft Graph Access Token.");
 
                 if (!String.IsNullOrEmpty(graphAccessToken))
                 {
@@ -585,7 +586,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 Url = webhook.Url,
                 Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
                 BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
-                Async = true, // force sync webhooks
+                Async = false, // force sync webhooks
                 Parameters = webhook.Parameters,
             });
         }
@@ -599,7 +600,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 Url = webhook.Url,
                 Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
                 BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
-                Async = true, // force sync webhooks
+                Async = false, // force sync webhooks
                 Parameters = webhook.Parameters,
             });
         }
