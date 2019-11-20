@@ -29,5 +29,10 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Models
         /// The UPN of the requesting user
         /// </summary>
         public String UserPrincipalName { get; set; }
+
+        /// <summary>
+        /// The email to use for provisioning notifications
+        /// </summary>
+        public String NotificationEmail { get; set; }
     }
 }

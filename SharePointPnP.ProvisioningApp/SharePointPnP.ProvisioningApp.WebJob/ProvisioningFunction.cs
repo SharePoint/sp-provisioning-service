@@ -468,16 +468,19 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         telemetry?.LogEvent("ProvisioningFunction.EndProvisioning", telemetryProperties);
 
                                         // Notify user about the provisioning outcome
-                                        MailHandler.SendMailNotification(
-                                            "ProvisioningCompleted",
-                                            action.NotificationEmail,
-                                            null,
-                                            new
-                                            {
-                                                TemplateName = action.DisplayName,
-                                                ProvisionedSites = provisionedSites,
-                                            },
-                                            appOnlyAccessToken);
+                                        if (!String.IsNullOrEmpty(action.NotificationEmail))
+                                        {
+                                            MailHandler.SendMailNotification(
+                                                "ProvisioningCompleted",
+                                                action.NotificationEmail,
+                                                null,
+                                                new
+                                                {
+                                                    TemplateName = action.DisplayName,
+                                                    ProvisionedSites = provisionedSites,
+                                                },
+                                                appOnlyAccessToken);
+                                        }
 
                                         // Log reporting event (1 = Success)
                                         logReporting(action, provisioningEnvironment, startProvisioning, package, 1);
@@ -540,18 +543,21 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     telemetry?.LogEvent("ProvisioningFunction.ConcurrentProvisioning", telemetryProperties);
                 }
 
-                // Notify user about the provisioning outcome
-                MailHandler.SendMailNotification(
-                    "ProvisioningFailed",
-                    action.NotificationEmail,
-                    null,
-                    new
-                    {
-                        TemplateName = action.DisplayName,
-                        ExceptionDetails = SimplifyException(ex),
-                        PnPCorrelationId = action.CorrelationId.ToString(),
-                    },
-                    appOnlyAccessToken);
+                if (!String.IsNullOrEmpty(action.NotificationEmail))
+                {
+                    // Notify user about the provisioning outcome
+                    MailHandler.SendMailNotification(
+                        "ProvisioningFailed",
+                        action.NotificationEmail,
+                        null,
+                        new
+                        {
+                            TemplateName = action.DisplayName,
+                            ExceptionDetails = SimplifyException(ex),
+                            PnPCorrelationId = action.CorrelationId.ToString(),
+                        },
+                        appOnlyAccessToken);
+                }
 
                 // Log reporting event (2 = Failed)
                 logReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());

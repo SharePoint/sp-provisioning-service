@@ -235,7 +235,7 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
                         request.UserIsSPOAdmin = true; // We don't use this in the job
                         request.UserIsTenantAdmin = true; // We don't use this in the job
                         request.UserPrincipalName = provisionRequest.UserPrincipalName.ToLower();
-                        request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
+                        request.NotificationEmail = provisionRequest.NotificationEmail;
                         request.PackageProperties = item.Parameters;
                         request.ChildrenItems = childrenItems;
                         request.Webhooks = provisionRequest.Webhooks;
