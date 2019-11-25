@@ -418,6 +418,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                                 {
                                                     AddProvisioningWebhook(hierarchy, wh, ProvisioningTemplateWebhookKind.ProvisioningStarted);
                                                     AddProvisioningWebhook(hierarchy, wh, ProvisioningTemplateWebhookKind.ProvisioningCompleted);
+                                                    AddProvisioningWebhook(hierarchy, wh, ProvisioningTemplateWebhookKind.ProvisioningExceptionOccurred);
                                                 }
                                             }
 
@@ -532,16 +533,22 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
             catch (Exception ex)
             {
-                // Skip logging exception for Concurrent Provisioning 
-                if (!(ex is ConcurrentProvisioningException))
+                // Skip logging exception for Recycled Site
+                if (ex is RecycledSiteException)
                 {
-                    // Log telemetry event
-                    telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
+                    // rather log an event
+                    telemetry?.LogEvent("ProvisioningFunction.RecycledSite", telemetryProperties);
                 }
-                else
+                // Skip logging exception for Concurrent Provisioning 
+                else if (ex is ConcurrentProvisioningException)
                 {
                     // rather log an event
                     telemetry?.LogEvent("ProvisioningFunction.ConcurrentProvisioning", telemetryProperties);
+                }
+                else
+                {
+                    // Log telemetry event
+                    telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
                 }
 
                 if (!String.IsNullOrEmpty(action.NotificationEmail))
