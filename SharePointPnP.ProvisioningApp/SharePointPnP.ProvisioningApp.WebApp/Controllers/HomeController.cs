@@ -83,12 +83,42 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Provision(String packageId = null, String returnUrl = null)
+        public ActionResult Provision(Guid packageId, String returnUrl = null)
         {
-            if (String.IsNullOrEmpty(packageId))
+            // Get SQL Database context
+            var context = GetDataContext();
+
+            // Search for the target package
+            var package = context.Packages.FirstOrDefault(p => p.Id == packageId);
+            if (package == null)
             {
-                throw new ArgumentNullException("packageId");
+                return Redirect("/");
             }
+
+            var relativePath = package.RepositoryRelativeUrl.Substring(package.RepositoryRelativeUrl.IndexOf("/") + 1);
+            return RedirectToRoute("PackagePath", new { packageName = relativePath, returnUrl });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ProvisionByPath(String returnUrl = null)
+        {
+            // Get the package path from the request URL
+            string packagePath = (string)Request.RequestContext.RouteData.Values["packagePath"];
+
+            // Get SQL Database context
+            var context = GetDataContext();
+
+            // Define absolute URL of the package
+            String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+            var absolutePackagePath = $"{provisioningScope}/{packagePath}";
+
+            var package = context.Packages.FirstOrDefault(p => p.RepositoryRelativeUrl == absolutePackagePath);
+            if (package == null)
+            {
+                return Redirect("/");
+            }
+
+            string packageId = package.Id.ToString();
 
             CheckBetaFlag();
             PrepareHeaderData(returnUrl);
@@ -115,7 +145,6 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         model.ApplyTheme = false;
                         model.ApplyCustomTheme = false;
 
-                        String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                         String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
                         var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
@@ -152,11 +181,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 }
             }
 
-            return View("Provision", model);
+            return View("ProvisionByPath", model);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Provision(ProvisioningActionModel model)
+        public async Task<ActionResult> ProvisionByPath(ProvisioningActionModel model)
         {
             CheckBetaFlag();
             PrepareHeaderData(model.ReturnUrl);

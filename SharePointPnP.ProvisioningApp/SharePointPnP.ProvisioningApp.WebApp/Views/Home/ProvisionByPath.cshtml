@@ -51,8 +51,7 @@
             </div>*@
         <div class="pnp-form">
             <div class="pnp-svcteaser-inner">
-                @using (Html.BeginForm("Provision", "Home", new { returnUrl = Model.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                {
+                <form method="post" enctype="multipart/form-data" action="./@Request.RequestContext.RouteData.Values["packagePath"]?returnUrl=@Model.ReturnUrl">
                     @Html.AntiForgeryToken()
 
                     @Html.HiddenFor(m => m.PackageId)
@@ -102,11 +101,11 @@
                         @if (Model.PackageProperties != null && Model.PackageProperties.Count > 0)
                         {
                             @*<tr>
-                                    <td colspan="2">
-                                        <div class="sectionTitle">Template Properties</div>
-                                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                                    </td>
-                                </tr>*@
+                                <td colspan="2">
+                                    <div class="sectionTitle">Template Properties</div>
+                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                </td>
+                            </tr>*@
                         }
                         @{
                             int i = 0;
@@ -141,11 +140,11 @@
                             Model.Themes != null && Model.Themes.Count > 0)
                         {
                             @*<tr>
-                                    <td colspan="2">
-                                        <div class="sectionTitle">Custom Theme Settings</div>
-                                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                                    </td>
-                                </tr>*@
+                                <td colspan="2">
+                                    <div class="sectionTitle">Custom Theme Settings</div>
+                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                </td>
+                            </tr>*@
                             <tr>
                                 <th>
                                     Theme
@@ -165,60 +164,60 @@
                                 </td>
                             </tr>
                             @*<tr>
-                                    <th>
-                                        Apply custom theme
-                                        <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
-                                    </th>
-                                    <td>
-                                        @Html.EditorFor(m => m.ApplyCustomTheme)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemePrimaryColor)
-                                        <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemeBodyTextColor)
-                                        <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
-                                        <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>*@
-                            @*
-                                <tr>
-                                    <th>
-                                        <label for="CustomLogoFile">Logo</label>
-                                    </th>
-                                    <td>
-                                        <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
-                                    </td>
-                                </tr>
-                            *@
-                        }
-                        @*<tr>
-                                <td colspan="2">
-                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                <th>
+                                    Apply custom theme
+                                    <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
+                                </th>
+                                <td>
+                                    @Html.EditorFor(m => m.ApplyCustomTheme)
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.ThemePrimaryColor)
+                                    <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
+                                </th>
+                                <td>
+                                    <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
+                                    @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.ThemeBodyTextColor)
+                                    <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
+                                </th>
+                                <td>
+                                    <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
+                                    @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
+                                    <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
+                                </th>
+                                <td>
+                                    <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
+                                    @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
                                 </td>
                             </tr>*@
+                                        @*
+                            <tr>
+                                <th>
+                                    <label for="CustomLogoFile">Logo</label>
+                                </th>
+                                <td>
+                                    <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
+                                </td>
+                            </tr>
+                                        *@
+                                    }
+                                    @*<tr>
+                            <td colspan="2">
+                                <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                            </td>
+                        </tr>*@
                         <tr>
                             <td>
                             </td>
@@ -229,8 +228,7 @@
                         </tr>
 
                     </table>
-                }
-                </
+                </form>
             </div>
         </div>
     </div>
@@ -462,7 +460,7 @@
 
         // determines if the the URL is available in SPO or not, using a backend API
         function urlIsAvailableInSPO(field, url) {
-            fetch('../home/urlIsAvailableInSPO?url=' + encodeURI(url), {
+            fetch('./home/urlIsAvailableInSPO?url=' + encodeURI(url), {
                 method: 'get'
             })
                 .then(response => {
@@ -557,7 +555,7 @@
             // show the Working on it dialog
             showWorkingOnIt("@Resources.Messages.ValidatingPreRequisites");
 
-            fetch('../home/CanProvisionPackage', {
+            fetch('./home/CanProvisionPackage', {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
