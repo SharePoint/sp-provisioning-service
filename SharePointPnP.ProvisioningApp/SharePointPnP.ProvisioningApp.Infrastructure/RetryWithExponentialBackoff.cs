@@ -33,7 +33,8 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
             catch (Exception ex) when (ex is TimeoutException ||
                 ex is System.Net.Http.HttpRequestException ||
                 (ex is Microsoft.Azure.KeyVault.Models.KeyVaultErrorException 
-                    && ((Microsoft.Azure.KeyVault.Models.KeyVaultErrorException)ex).Message.Contains("'429'")))
+                    && ((Microsoft.Azure.KeyVault.Models.KeyVaultErrorException)ex).Message.Contains("'429'"))
+                    )
             {
                 await backoff.Delay();
                 goto retry;

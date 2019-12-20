@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Text;
 using System.Threading;
@@ -74,13 +75,6 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             telemetryProperties.Add("PnPCorrelationId", action.CorrelationId.ToString());
             telemetryProperties.Add("TargetSiteAlreadyExists", action.TargetSiteAlreadyExists.ToString());
             telemetryProperties.Add("TargetSiteBaseTemplateId", action.TargetSiteBaseTemplateId);
-
-            var appOnlyAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAppOnlyAccessTokenAsync(
-                "https://graph.microsoft.com/",
-                ConfigurationManager.AppSettings["OfficeDevPnP:TenantId"],
-                ConfigurationManager.AppSettings["OfficeDevPnP:ClientId"],
-                ConfigurationManager.AppSettings["OfficeDevPnP:ClientSecret"],
-                ConfigurationManager.AppSettings["OfficeDevPnP:AppUrl"]);
 
             // Get a reference to the data context
             ProvisioningAppDBContext dbContext = new ProvisioningAppDBContext();
@@ -472,6 +466,13 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         // Notify user about the provisioning outcome
                                         if (!String.IsNullOrEmpty(action.NotificationEmail))
                                         {
+                                            var appOnlyAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAppOnlyAccessTokenAsync(
+                                                "https://graph.microsoft.com/",
+                                                ConfigurationManager.AppSettings["OfficeDevPnP:TenantId"],
+                                                ConfigurationManager.AppSettings["OfficeDevPnP:ClientId"],
+                                                ConfigurationManager.AppSettings["OfficeDevPnP:ClientSecret"],
+                                                ConfigurationManager.AppSettings["OfficeDevPnP:AppUrl"]);
+
                                             MailHandler.SendMailNotification(
                                                 "ProvisioningCompleted",
                                                 action.NotificationEmail,
@@ -485,7 +486,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         }
 
                                         // Log reporting event (1 = Success)
-                                        logReporting(action, provisioningEnvironment, startProvisioning, package, 1);
+                                        LogReporting(action, provisioningEnvironment, startProvisioning, package, 1);
                                     }
                                 }
                             }
@@ -553,6 +554,13 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
                 if (!String.IsNullOrEmpty(action.NotificationEmail))
                 {
+                    var appOnlyAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAppOnlyAccessTokenAsync(
+                        "https://graph.microsoft.com/",
+                        ConfigurationManager.AppSettings["OfficeDevPnP:TenantId"],
+                        ConfigurationManager.AppSettings["OfficeDevPnP:ClientId"],
+                        ConfigurationManager.AppSettings["OfficeDevPnP:ClientSecret"],
+                        ConfigurationManager.AppSettings["OfficeDevPnP:AppUrl"]);
+
                     // Notify user about the provisioning outcome
                     MailHandler.SendMailNotification(
                         "ProvisioningFailed",
@@ -567,8 +575,10 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                         appOnlyAccessToken);
                 }
 
+                ProcessWebhooksExceptionNotification(action, ex);
+
                 // Log reporting event (2 = Failed)
-                logReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
+                LogReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
 
                 // Track the failure in the local action log
                 MarkCurrentActionItemAsFailed(action, dbContext);
@@ -581,6 +591,36 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 CleanupCurrentActionItem(action, dbContext);
 
                 telemetry?.Flush();
+            }
+        }
+
+        /// <summary>
+        /// Notifies an exception through the configured webhooks
+        /// </summary>
+        /// <param name="action">The provisioning action</param>
+        /// <param name="ex">The exception that occurred</param>
+        private static void ProcessWebhooksExceptionNotification(ProvisioningActionModel action, Exception ex)
+        {
+            if (action.Webhooks != null && action.Webhooks.Count > 0)
+            {
+                foreach (var wh in action.Webhooks)
+                {
+                    var provisioningWebhook = new OfficeDevPnP.Core.Framework.Provisioning.Model.ProvisioningWebhook
+                    {
+                        Kind = ProvisioningTemplateWebhookKind.ExceptionOccurred,
+                        Url = wh.Url,
+                        Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), wh.Method.ToString(), true),
+                        BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
+                        Async = false, // force sync webhooks
+                        Parameters = wh.Parameters,
+                    };
+
+                    var httpClient = new HttpClient();
+
+                    WebhookSender.InvokeWebhook(provisioningWebhook, httpClient, 
+                        ProvisioningTemplateWebhookKind.ExceptionOccurred,
+                        exception: ex);
+                }
             }
         }
 
@@ -705,7 +745,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
         }
 
-        private static void logReporting(ProvisioningActionModel action, string provisioningEnvironment, DateTime startProvisioning, DomainModel.Package package, Int32 outcome, String details = null)
+        private static void LogReporting(ProvisioningActionModel action, string provisioningEnvironment, DateTime startProvisioning, DomainModel.Package package, Int32 outcome, String details = null)
         {
             // Prepare the reporting event
             var provisioningEvent = new
