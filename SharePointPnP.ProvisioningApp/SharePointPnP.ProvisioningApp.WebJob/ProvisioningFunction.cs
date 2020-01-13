@@ -539,17 +539,26 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 {
                     // rather log an event
                     telemetry?.LogEvent("ProvisioningFunction.RecycledSite", telemetryProperties);
+
+                    // Log reporting event (3 = RecycledSite)
+                    LogReporting(action, provisioningEnvironment, startProvisioning, null, 3, ex.ToDetailedString());
                 }
                 // Skip logging exception for Concurrent Provisioning 
                 else if (ex is ConcurrentProvisioningException)
                 {
                     // rather log an event
                     telemetry?.LogEvent("ProvisioningFunction.ConcurrentProvisioning", telemetryProperties);
+
+                    // Log reporting event (4 = ConcurrentProvisioningException)
+                    LogReporting(action, provisioningEnvironment, startProvisioning, null, 4, ex.ToDetailedString());
                 }
                 else
                 {
                     // Log telemetry event
                     telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
+
+                    // Log reporting event (2 = Failed)
+                    LogReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
                 }
 
                 if (!String.IsNullOrEmpty(action.NotificationEmail))
@@ -576,9 +585,6 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 }
 
                 ProcessWebhooksExceptionNotification(action, ex);
-
-                // Log reporting event (2 = Failed)
-                LogReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
 
                 // Track the failure in the local action log
                 MarkCurrentActionItemAsFailed(action, dbContext);
@@ -755,7 +761,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 EventEndDateTime = DateTime.Now,
                 EventOutcome = outcome,
                 EventDetails = details,
-                EventFromProduction = provisioningEnvironment.ToUpper() != "TEST" ? 1 : 0,
+                EventFromProduction = provisioningEnvironment.ToUpper() == "PROD" ? 1 : 0,
                 TemplateId = action.PackageId,
                 TemplateDisplayName = package?.DisplayName,
             };
