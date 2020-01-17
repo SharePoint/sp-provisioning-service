@@ -3,6 +3,7 @@
 // Licensed under the MIT license.
 //
 using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
 using Microsoft.Online.SharePoint.TenantAdministration;
 using Microsoft.SharePoint.Client;
 using Microsoft.WindowsAzure.Storage;
@@ -32,7 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace SharePointPnP.ProvisioningApp.WebJob
+namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
 {
     public static class ProvisioningFunction
     {
@@ -43,7 +44,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             // Get the JSON settings for known exceptions
             Stream stream = typeof(KnownExceptions)
                 .Assembly
-                .GetManifestResourceStream("SharePointPnP.ProvisioningApp.WebJob.known-exceptions.json");
+                .GetManifestResourceStream("SharePointPnP.ProvisioningApp.WebJobServiceBus.known-exceptions.json");
 
             // If we have the stream and it can be read
             if (stream != null && stream.CanRead)
@@ -56,18 +57,18 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
         }
 
-        public static async Task RunAsync([QueueTrigger("actions")]ProvisioningActionModel action, TextWriter log)
+        public static async Task RunAsync([ServiceBusTrigger("actions", IsSessionsEnabled = false)]ProvisioningActionModel action, ILogger logger)
         {
             var startProvisioning = DateTime.Now;
 
             String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-            log.WriteLine($"Processing queue trigger function for {action.UserPrincipalName} on tenant {action.TenantId}");
-            log.WriteLine($"PnP Correlation ID: {action.CorrelationId.ToString()}");
+            logger.LogInformationWithPnPCorrelation("Processing queue trigger function for {UserPrincipalName} on tenant {TenantId}", action.CorrelationId, action.UserPrincipalName, action.TenantId);
+            logger.LogInformationWithPnPCorrelation("PnP Correlation ID:", action.CorrelationId);
 
             // Instantiate and use the telemetry model
             TelemetryUtility telemetry = new TelemetryUtility((s) => {
-                log.WriteLine(s);
+                logger.LogInformationWithPnPCorrelation(s, action.CorrelationId);
             });
             Dictionary<string, string> telemetryProperties = new Dictionary<string, string>();
 
@@ -99,7 +100,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
                     ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
                     ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
-                log.WriteLine($"Retrieved target Microsoft Graph Access Token.");
+                logger.LogInformationWithPnPCorrelation("Retrieved target Microsoft Graph Access Token.", action.CorrelationId);
 
                 if (!String.IsNullOrEmpty(graphAccessToken))
                 {
@@ -128,7 +129,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
                     String spoTenant = rootSite.WebUrl;
 
-                    log.WriteLine($"Target SharePoint Online Tenant: {spoTenant}");
+                    logger.LogInformationWithPnPCorrelation("Target SharePoint Online Tenant: {SPOTenant}", action.CorrelationId, spoTenant);
 
                     // Configure telemetry properties
                     telemetryProperties.Add("SPOTenant", spoTenant);
@@ -139,7 +140,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                         ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
                         ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
                         ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
-                    log.WriteLine($"Retrieved target SharePoint Online Access Token.");
+                    logger.LogInformationWithPnPCorrelation("Retrieved target SharePoint Online Access Token.", action.CorrelationId);
 
                     #endregion
 
@@ -156,7 +157,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                         // Save the current SPO Correlation ID
                         telemetryProperties.Add("SPOCorrelationId", context.TraceCorrelationId);
 
-                        log.WriteLine($"SharePoint Online Root Site Collection title: {web.Title}");
+                        logger.LogInformationWithPnPCorrelation("SharePoint Online Root Site Collection title: {WebTitle}", action.CorrelationId, web.Title);
 
                         #region Store the main site URL in KeyVault
 
@@ -283,7 +284,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                     ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
                                     ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
                                     ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
-                                log.WriteLine($"Retrieved target SharePoint Online Admin Center Access Token.");
+                                logger.LogInformationWithPnPCorrelation("Retrieved target SharePoint Online Admin Center Access Token.", action.CorrelationId);
 
                                 using (var tenantContext = authManager.GetAzureADAccessTokenAuthenticatedContext(tenantUrl, spoAdminAccessToken))
                                 {
@@ -298,26 +299,21 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         var ptai = new ProvisioningTemplateApplyingInformation();
                                         ptai.MessagesDelegate += delegate (string message, ProvisioningMessageType messageType)
                                         {
-                                            log.WriteLine($"{messageType} - {message}");
+                                            logger.LogInformationWithPnPCorrelation($"{messageType} - {message}", action.CorrelationId);
                                         };
                                         ptai.ProgressDelegate += delegate (string message, int step, int total)
                                         {
-                                            log.WriteLine($"{step:00}/{total:00} - {message}");
+                                            logger.LogInformationWithPnPCorrelation($"{step:00}/{total:00} - {message}", action.CorrelationId);
                                         };
                                         ptai.SiteProvisionedDelegate += delegate (string title, string url)
                                         {
-                                            log.WriteLine($"Fully provisioned site '{title}' with URL: {url}");
+                                            logger.LogInformationWithPnPCorrelation("Fully provisioned site '{SiteTitle}' with URL: {SiteUrl}", action.CorrelationId, title, url);
                                             var provisionedSite = new Tuple<string, string>(title, url);
                                             if (!provisionedSites.Contains(provisionedSite))
                                             {
                                                 provisionedSites.Add(provisionedSite);
                                             }
                                         };
-
-//#if !DEBUG
-//                                        // Set the default delay for sites creations to 5 mins
-//                                        ptai.DelayAfterModernSiteCreation = 60 * 5;
-//#endif
 
                                         // Configure the OAuth Access Tokens for the client context
                                         accessTokens.Add(new Uri(tenantUrl).Authority, spoAdminAccessToken);
@@ -419,12 +415,12 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                             }
 
                                             // Apply the hierarchy
-                                            log.WriteLine($"Hierarchy Provisioning Started: {DateTime.Now:hh.mm.ss}");
+                                            logger.LogInformationWithPnPCorrelation("Hierarchy Provisioning Started: {ProvisioningStartDateTime}", action.CorrelationId, DateTime.Now.ToString("hh.mm.ss"));
                                             tenant.ApplyProvisionHierarchy(hierarchy,
                                                 (hierarchy.Sequences != null && hierarchy.Sequences.Count > 0) ?
                                                 hierarchy.Sequences[0].ID : null,
                                                 ptai);
-                                            log.WriteLine($"Hierarchy Provisioning Completed: {DateTime.Now:hh.mm.ss}");
+                                            logger.LogInformationWithPnPCorrelation("Hierarchy Provisioning Completed: {ProvisioningEndDateTime}", action.CorrelationId, DateTime.Now.ToString("hh.mm.ss"));
                                         }
 
                                         if (action.ApplyTheme && action.ApplyCustomTheme)
@@ -433,7 +429,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                                 !String.IsNullOrEmpty(action.ThemeBodyTextColor) &&
                                                 !String.IsNullOrEmpty(action.ThemeBodyBackgroundColor))
                                             {
-                                                log.WriteLine($"Applying custom Theme to provisioned sites");
+                                                logger.LogInformationWithPnPCorrelation("Applying custom Theme to provisioned sites", action.CorrelationId);
 
 #region Palette generation for Theme
 
@@ -451,11 +447,11 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                                     {
                                                         if (provisionedSiteContext.Web.ApplyTheme(jsonPalette))
                                                         {
-                                                            log.WriteLine($"Custom Theme applied on site '{ps.Item1}' with URL: {ps.Item2}");
+                                                            logger.LogInformationWithPnPCorrelation($"Custom Theme applied on site '{ps.Item1}' with URL: {ps.Item2}", action.CorrelationId);
                                                         }
                                                         else
                                                         {
-                                                            log.WriteLine($"Failed to apply custom Theme on site '{ps.Item1}' with URL: {ps.Item2}");
+                                                            logger.LogInformationWithPnPCorrelation($"Failed to apply custom Theme on site '{ps.Item1}' with URL: {ps.Item2}", action.CorrelationId);
                                                         }
                                                     }
                                                 }
@@ -520,9 +516,9 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                             await ProvisioningAppManager.EnqueueProvisioningRequest(action);
                         }
 
-#endregion
+                        #endregion
 
-                        log.WriteLine($"Function successfully executed!");
+                        logger.LogInformationWithPnPCorrelation("Function successfully executed!", action.CorrelationId);
                         // Log telemetry event
                         telemetry?.LogEvent("ProvisioningFunction.End", telemetryProperties);
                     }
@@ -530,7 +526,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 else
                 {
                     var noTokensErrorMessage = $"Cannot retrieve Refresh Token or Access Token for {action.UserPrincipalName} in tenant {action.TenantId}!";
-                    log.WriteLine(noTokensErrorMessage);
+                    logger.LogInformationWithPnPCorrelation(noTokensErrorMessage, action.CorrelationId);
                     throw new ApplicationException(noTokensErrorMessage);
                 }
             }
@@ -787,6 +783,20 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             foreach (var s in site.Sites)
             {
                 UpdateChildrenSitesTheme(s, themeName);
+            }
+        }
+
+        private static void LogInformationWithPnPCorrelation(this ILogger logger, string message, Guid correlationId, params object[] args)
+        {
+            message += " [{PnPCorrelationId}]";
+            if (args == null)
+            {
+                args = new object[0];
+            }
+            args = args.Append(correlationId).ToArray();
+            if (logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+            {
+                logger.LogInformation(message, args);
             }
         }
     }

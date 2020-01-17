@@ -23,7 +23,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Telemetry
         /// <summary>
         /// Instantiates the telemetry client
         /// </summary>
-        public TelemetryUtility(TextWriter log)
+        public TelemetryUtility(Action<string> log)
         {
             try
             {
@@ -45,19 +45,13 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Telemetry
                     var coreAssembly = Assembly.GetExecutingAssembly();
                     this.telemetryClient.Context.GlobalProperties.Add("Version", ((AssemblyFileVersionAttribute)coreAssembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute))).Version.ToString());
 
-                    if (log != null)
-                    {
-                        log.WriteLine("Telemetry setup done");
-                    }
+                    log?.Invoke("Telemetry setup done");
                 }
             }
             catch (Exception ex)
             {
                 this.telemetryClient = null;
-                if (log != null)
-                {
-                    log.WriteLine($"Telemetry setup failed: {ex.Message}. Continuing without telemetry", ex);
-                }
+                log?.Invoke($"Telemetry setup failed: {ex.Message}. Continuing without telemetry");
             }
         }
         #endregion
