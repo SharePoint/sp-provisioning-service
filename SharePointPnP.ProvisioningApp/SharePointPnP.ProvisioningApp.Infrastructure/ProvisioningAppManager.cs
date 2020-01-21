@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning;
+using SharePointPnP.ProvisioningApp.Infrastructure.QueueUtilities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -76,18 +77,22 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
                 await blobLogo.UploadFromStreamAsync(logoFile);
             }
 
-            // Get a reference to the blob storage queue
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-                CloudConfigurationManager.GetSetting("SPPA:StorageConnectionString"));
+            var queueTarget = CloudConfigurationManager.GetSetting("SPPA:QueueTarget")?.ToUpper() ?? "BLOB";
 
-            // Get queue... create if does not exist.
-            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            CloudQueue queue = queueClient.GetQueueReference(
-                CloudConfigurationManager.GetSetting("SPPA:StorageQueueName"));
-            queue.CreateIfNotExists();
-
-            // add message to the queue
-            queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(model)));
+            switch (queueTarget)
+            {
+                case "SERVICEBUS":
+                    var sbConnectionString = CloudConfigurationManager.GetSetting("SPPA:ServiceBusConnectionString");
+                    var sbQueueName = CloudConfigurationManager.GetSetting("SPPA:ServiceBusQueueName");
+                    await ServiceBusQueueUtility.EnqueueMessageAsync(sbConnectionString, sbQueueName, model);
+                    break;
+                case "BLOB":
+                default:
+                    var blobConnectionString = CloudConfigurationManager.GetSetting("SPPA:StorageConnectionString");
+                    var blobQueueName = CloudConfigurationManager.GetSetting("SPPA:StorageQueueName");
+                    await BlobStorageQueueUtility.EnqueueMessageAsync(blobConnectionString, blobQueueName, model);
+                    break;
+            }
         }
     }
 }
