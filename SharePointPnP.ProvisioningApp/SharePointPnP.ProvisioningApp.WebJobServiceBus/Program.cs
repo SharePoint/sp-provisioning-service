@@ -14,6 +14,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
         static void Main(string[] args)
         {
             var builder = new HostBuilder();
+            builder.UseEnvironment(ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"]);
             builder.ConfigureWebJobs(b =>
             {
                 b.AddAzureStorageCoreServices();
