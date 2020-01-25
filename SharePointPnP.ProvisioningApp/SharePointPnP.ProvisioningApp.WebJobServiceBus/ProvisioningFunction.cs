@@ -63,8 +63,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
 
             String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-            logger.LogInformationWithPnPCorrelation("Processing queue trigger function for {UserPrincipalName} on tenant {TenantId}", action.CorrelationId, action.UserPrincipalName, action.TenantId);
-            logger.LogInformationWithPnPCorrelation("PnP Correlation ID:", action.CorrelationId);
+            logger.LogInformationWithPnPCorrelation("Processing queue trigger function for tenant {TenantId}", action.CorrelationId, action.TenantId);
 
             // Instantiate and use the telemetry model
             TelemetryUtility telemetry = new TelemetryUtility((s) => {
@@ -525,7 +524,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                 }
                 else
                 {
-                    var noTokensErrorMessage = $"Cannot retrieve Refresh Token or Access Token for {action.UserPrincipalName} in tenant {action.TenantId}!";
+                    var noTokensErrorMessage = $"Cannot retrieve Refresh Token or Access Token for action {action.CorrelationId} in tenant {action.TenantId}!";
                     logger.LogInformationWithPnPCorrelation(noTokensErrorMessage, action.CorrelationId);
                     throw new ApplicationException(noTokensErrorMessage);
                 }
