@@ -118,7 +118,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                         String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                        var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                        var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                         var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                             tokenId, "https://graph.microsoft.com/");
 
@@ -817,7 +817,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                 String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                     tokenId, "https://graph.microsoft.com/");
 

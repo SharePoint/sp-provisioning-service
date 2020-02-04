@@ -91,7 +91,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     throw new ConcurrentProvisioningException("The requested package is currently provisioning in the selected target tenant and cannot be applied in parallel. Please wait for the previous provisioning action to complete.");
                 }
 
-                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
+                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.ToLower().GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
 
                 // Retrieve the SPO target tenant via Microsoft Graph
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
