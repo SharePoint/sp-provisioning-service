@@ -95,61 +95,72 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             ProvisioningActionModel model = new ProvisioningActionModel();
 
-            if (IsValidUser())
+            try
             {
-                var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
-                if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
+                if (IsValidUser())
                 {
-                    var issuerValue = issuer.Value.Substring(0, issuer.Value.Length - 1);
-                    var tenantId = issuerValue.Substring(issuerValue.LastIndexOf("/") + 1);
-                    var upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst(ClaimTypes.Upn)?.Value;
-
-                    if (this.IsAllowedUpnTenant(upn))
+                    var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
+                    if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
                     {
-                        #region Prepare model generic context data
+                        var issuerValue = issuer.Value.Substring(0, issuer.Value.Length - 1);
+                        var tenantId = issuerValue.Substring(issuerValue.LastIndexOf("/") + 1);
+                        var upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst(ClaimTypes.Upn)?.Value;
 
-                        // Prepare the model data
-                        model.TenantId = tenantId;
-                        model.UserPrincipalName = upn;
-                        model.PackageId = packageId;
-                        model.ApplyTheme = false;
-                        model.ApplyCustomTheme = false;
-
-                        String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
-                        String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
-
-                        var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
-                        var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                            tokenId, "https://graph.microsoft.com/");
-
-                        model.UserIsTenantAdmin = Utilities.UserIsTenantGlobalAdmin(graphAccessToken);
-                        model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
-                        model.NotificationEmail = upn;
-
-                        model.ReturnUrl = returnUrl;
-
-                        #endregion
-
-                        // Determine the URL of the root SPO site for the current tenant
-                        var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
-                        SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
-
-                        // Store the SPO Root Site URL in the Model
-                        model.SPORootSiteUrl = rootSite.WebUrl;
-
-                        // If the current user is an admin, we can get the available Themes
-                        if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
+                        if (this.IsAllowedUpnTenant(upn))
                         {
-                            await LoadThemesFromTenant(model, tokenId, rootSite, graphAccessToken);
-                        }
+                            #region Prepare model generic context data
 
-                        LoadPackageDataIntoModel(packageId, model);
-                    }
-                    else
-                    {
-                        throw new ApplicationException("Invalid request, the current tenant is not allowed to use this solution!");
+                            // Prepare the model data
+                            model.TenantId = tenantId;
+                            model.UserPrincipalName = upn;
+                            model.PackageId = packageId;
+                            model.ApplyTheme = false;
+                            model.ApplyCustomTheme = false;
+
+                            String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                            String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                            var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                            var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                tokenId, "https://graph.microsoft.com/");
+                            if (string.IsNullOrEmpty(graphAccessToken))
+                            {
+                                throw new ApplicationException($"Cannot retrieve a valid Access Token for user {model.UserPrincipalName.ToLower()} in tenant {model.TenantId}");
+                            }
+
+                            model.UserIsTenantAdmin = Utilities.UserIsTenantGlobalAdmin(graphAccessToken);
+                            model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
+                            model.NotificationEmail = upn;
+
+                            model.ReturnUrl = returnUrl;
+
+                            #endregion
+
+                            // Determine the URL of the root SPO site for the current tenant
+                            var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
+                            SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
+
+                            // Store the SPO Root Site URL in the Model
+                            model.SPORootSiteUrl = rootSite.WebUrl;
+
+                            // If the current user is an admin, we can get the available Themes
+                            if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
+                            {
+                                await LoadThemesFromTenant(model, tokenId, rootSite, graphAccessToken);
+                            }
+
+                            LoadPackageDataIntoModel(packageId, model);
+                        }
+                        else
+                        {
+                            throw new ApplicationException("Invalid request, the current tenant is not allowed to use this solution!");
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return View("Provision", model);
@@ -201,7 +212,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                     String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                    var tokenId = $"{tenantId}-{upn.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                    var tokenId = $"{tenantId}-{upn.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                     var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                         tokenId, "https://graph.microsoft.com/");
 
@@ -390,7 +401,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     String provisioningScope = package.PackageType == PackageType.Tenant ? "tenant" : "site";
                     String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
 
                     try
                     {

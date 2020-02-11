@@ -106,7 +106,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                                 // Store the Refresh Token in the Azure Key Vault
                                 if (tenandIdClaim != null && !String.IsNullOrEmpty(tenandIdClaim.Value))
                                 {
-                                    String tokenId = $"{tenandIdClaim.Value}-{upnClaim.Value.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                                    String tokenId = $"{tenandIdClaim.Value}-{upnClaim.Value.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                                     await ProvisioningAppManager.AccessTokenProvider.WriteRefreshTokenAsync(tokenId, token.RefreshToken);
                                 }
 
