@@ -62,7 +62,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
             String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-            log.WriteLine($"Processing queue trigger function for {action.UserPrincipalName} on tenant {action.TenantId}");
+            log.WriteLine($"Processing queue trigger function for tenant {action.TenantId}");
             log.WriteLine($"PnP Correlation ID: {action.CorrelationId.ToString()}");
 
             // Instantiate and use the telemetry model
@@ -91,7 +91,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     throw new ConcurrentProvisioningException("The requested package is currently provisioning in the selected target tenant and cannot be applied in parallel. Please wait for the previous provisioning action to complete.");
                 }
 
-                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
+                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.ToLower().GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
 
                 // Retrieve the SPO target tenant via Microsoft Graph
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
@@ -529,7 +529,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 }
                 else
                 {
-                    var noTokensErrorMessage = $"Cannot retrieve Refresh Token or Access Token for {action.UserPrincipalName} in tenant {action.TenantId}!";
+                    var noTokensErrorMessage = $"Cannot retrieve Refresh Token or Access Token for {action.CorrelationId} in tenant {action.TenantId}!";
                     log.WriteLine(noTokensErrorMessage);
                     throw new ApplicationException(noTokensErrorMessage);
                 }
