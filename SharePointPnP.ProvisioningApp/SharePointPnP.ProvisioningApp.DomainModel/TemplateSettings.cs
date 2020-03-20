@@ -1,4 +1,8 @@
-﻿using System;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,6 +45,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public TemplateSettingsMetadataProperties[] properties { get; set; }
 
         public TemplateSettingsMetadataDisplayInfo displayInfo { get; set; }
+
+        public TemplateSettingsPreRequirement[] preRequirements { get; set; }
     }
 
     public class TemplateSettingsMetadataProperties
@@ -59,6 +65,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
     public class TemplateSettingsMetadataDisplayInfo
     {
         public string pageTemplateId { get; set; }
+
+        public string siteTitle { get; set; }
 
         public string siteDescriptor { get; set; }
 
@@ -105,5 +113,26 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public string name { get; set; }
 
         public string value { get; set; }
+    }
+
+    /// <summary>
+    /// Defines a pre-requirements
+    /// </summary>
+    public class TemplateSettingsPreRequirement
+    {
+        /// <summary>
+        /// The name of the assembly for the custom pre-check component
+        /// </summary>
+        public string assemblyName { get; set; }
+
+        /// <summary>
+        /// The name of the type for the custom pre-check component
+        /// </summary>
+        public string typeName { get; set; }
+
+        /// <summary>
+        /// The id of the document with the pre-requirement description
+        /// </summary>
+        public string preRequirementContent { get; set; }
     }
 }

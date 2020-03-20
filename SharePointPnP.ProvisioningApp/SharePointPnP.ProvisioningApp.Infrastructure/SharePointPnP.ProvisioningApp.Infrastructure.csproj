@@ -366,11 +366,12 @@
     <Compile Include="DomainModel\Provisioning\CanProvisionModel.cs" />
     <Compile Include="DomainModel\Provisioning\ProvisioningItemModel.cs" />
     <Compile Include="DomainModel\Provisioning\ProvisioningActionModel.cs" />
+    <Compile Include="DomainModel\Provisioning\ProvisioningPreRequirement.cs" />
     <Compile Include="DomainModel\Provisioning\ProvisioningWebhook.cs" />
     <Compile Include="DomainModel\Provisioning\SharePointSite.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="IAccessTokenProvider.cs" />
-    <Compile Include="ITemplatesProvider.cs" />
+    <Compile Include="IProvisioningPreRequirement.cs" />
     <Compile Include="KeyVaultService.cs" />
     <Compile Include="Mail\MailBodyHandler.cs" />
     <Compile Include="Mail\MailHandler.cs" />

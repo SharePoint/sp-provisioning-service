@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.WebJobServiceBus", "SharePointPnP.ProvisioningApp.WebJobServiceBus\SharePointPnP.ProvisioningApp.WebJobServiceBus.csproj", "{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.ProvisioningPreRequirements", "SharePointPnP.ProvisioningApp.ProvisioningPreRequirements\SharePointPnP.ProvisioningApp.ProvisioningPreRequirements.csproj", "{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		3Sharp|Any CPU = 3Sharp|Any CPU
@@ -404,8 +406,8 @@ Global
 		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site.Test|Any CPU.Build.0 = Release|Any CPU
 		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site|Any CPU.ActiveCfg = Release|Any CPU
 		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Site|Any CPU.Build.0 = Release|Any CPU
-		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Dev|Any CPU.ActiveCfg = Release|Any CPU
-		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Dev|Any CPU.Build.0 = Release|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Dev|Any CPU.Build.0 = Debug|Any CPU
 		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Prod|Any CPU.ActiveCfg = Release|Any CPU
 		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Prod|Any CPU.Build.0 = Release|Any CPU
 		{74F745D6-6EC4-40B7-978C-635D77BF9302}.Tenant.Test|Any CPU.ActiveCfg = Release|Any CPU
@@ -430,8 +432,8 @@ Global
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Site.Test|Any CPU.Build.0 = Release|Any CPU
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Site|Any CPU.ActiveCfg = Release|Any CPU
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Site|Any CPU.Build.0 = Release|Any CPU
-		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Tenant.Dev|Any CPU.ActiveCfg = Release|Any CPU
-		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Tenant.Dev|Any CPU.Build.0 = Release|Any CPU
+		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Tenant.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Tenant.Dev|Any CPU.Build.0 = Debug|Any CPU
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Tenant.Prod|Any CPU.ActiveCfg = Release|Any CPU
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Tenant.Prod|Any CPU.Build.0 = Release|Any CPU
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Tenant.Test|Any CPU.ActiveCfg = Release|Any CPU
@@ -440,6 +442,32 @@ Global
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Tenant|Any CPU.Build.0 = Release|Any CPU
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{683AED42-E5F9-4D4B-B070-5CE18D4BBA95}.Test|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.3Sharp|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.3Sharp|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Dev|Any CPU.Build.0 = Debug|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Site.Dev|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Site.Dev|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Site.Prod|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Site.Prod|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Site.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Site.Test|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Site|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Site|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Tenant.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Tenant.Dev|Any CPU.Build.0 = Debug|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Tenant.Prod|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Tenant.Prod|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Tenant.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Tenant.Test|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Tenant|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Tenant|Any CPU.Build.0 = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{0D32AB6F-BC40-4B78-A610-41DC3E9C2C24}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
