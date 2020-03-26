@@ -26,6 +26,11 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         public string TypeName { get; set; }
 
         /// <summary>
+        /// The configuration of the PreRequirement
+        /// </summary>
+        public string Configuration { get; set; }
+
+        /// <summary>
         /// Text of the Pre-Requirement, in case of need
         /// </summary>
         public string PreRequirementContent { get; set; }

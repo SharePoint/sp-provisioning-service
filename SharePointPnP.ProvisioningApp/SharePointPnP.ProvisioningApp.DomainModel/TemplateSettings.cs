@@ -131,6 +131,11 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public string typeName { get; set; }
 
         /// <summary>
+        /// The configuration for the custom pre-check component
+        /// </summary>
+        public string configuration { get; set; }
+
+        /// <summary>
         /// The id of the document with the pre-requirement description
         /// </summary>
         public string preRequirementContent { get; set; }

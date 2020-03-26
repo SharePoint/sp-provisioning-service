@@ -26,7 +26,8 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         /// </summary>
         /// <param name="canProvisionModel">Object with information about the current provisioning</param>
         /// <param name="tokenId">Token ID to retrieve access tokens, in case of need</param>
+        /// <param name="jsonConfiguration">An optional JSON string with additional configuration settings for the validation rule</param>
         /// <returns>True if the pre-requirement is fullfilled, or false otherwise</returns>
-        Task<bool> Validate(CanProvisionModel canProvisionModel, string tokenId);
+        Task<bool> Validate(CanProvisionModel canProvisionModel, string tokenId, string jsonConfiguration = null);
     }
 }

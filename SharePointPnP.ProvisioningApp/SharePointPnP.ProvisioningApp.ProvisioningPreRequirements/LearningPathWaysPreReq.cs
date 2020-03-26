@@ -3,7 +3,9 @@
 // Licensed under the MIT license.
 //
 using Microsoft.SharePoint.Client;
+using Newtonsoft.Json;
 using OfficeDevPnP.Core;
+using OfficeDevPnP.Core.ALM;
 using SharePointPnP.ProvisioningApp.Infrastructure;
 using SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning;
 using System;
@@ -33,8 +35,20 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
         /// 1) Existence of the Tenant Property called 'MicrosoftCustomLearningSite'
         /// 2) Existence of the site at the URL declared in the 'MicrosoftCustomLearningSite' property
         /// </remarks>
-        public async Task<bool> Validate(CanProvisionModel canProvisionModel, string tokenId)
+        public async Task<bool> Validate(CanProvisionModel canProvisionModel, string tokenId, string jsonConfiguration = null)
         {
+            // Load the configuration, if any or throw an exception
+            if (string.IsNullOrEmpty(jsonConfiguration))
+            {
+                throw new ArgumentNullException(nameof(jsonConfiguration));
+            }
+
+            var config = JsonConvert.DeserializeAnonymousType(jsonConfiguration, new
+            {
+                minVersion = 0,
+            });
+
+            // Prepare the AuthenticationManager to access the target environment
             AuthenticationManager authManager = new AuthenticationManager();
 
             // Retrieve the SPO URL for the Admin Site
@@ -73,6 +87,30 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
                             var web = lpwContext.Web;
                             lpwContext.Load(web, w => w.Title);
                             await lpwContext.ExecuteQueryRetryAsync();
+
+                            // Check if the Learning Pathways app is installed and is the latest one
+                            bool lpAppValid = false;
+                            var manager = new AppManager(clientContext);
+                            var siteApps = manager.GetAvailable()?.Where(a => a.InstalledVersion != null)?.ToList();
+                            if (siteApps != null && siteApps.Any())
+                            {
+                                var lpApp = siteApps.FirstOrDefault(p => p.Title.Equals("Microsoft 365 learning pathways", StringComparison.InvariantCultureIgnoreCase));
+                                if (lpApp != null)
+                                {
+                                    if (lpApp.InstalledVersion.Major >= config.minVersion)
+                                    {
+                                        lpAppValid = true;
+                                    }
+                                }
+                            }
+
+
+
+                            if (!lpAppValid)
+                            {
+                                // Setup can't continue, please install LP or upgrade to the latest version
+                                return false;
+                            }
 
                             return true;
                         }

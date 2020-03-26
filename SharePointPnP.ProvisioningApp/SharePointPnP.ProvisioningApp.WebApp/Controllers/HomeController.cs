@@ -741,6 +741,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                                     new {
                                         assemblyName = "",
                                         typeName = "",
+                                        configuration = "",
                                         preRequirementContent = "",
                                     }
                                 }
@@ -768,6 +769,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         { 
                             AssemblyName = i.assemblyName, 
                             TypeName = i.typeName,
+                            Configuration = i.configuration,
                             PreRequirementContent = context.ContentPages.FirstOrDefault(cp => cp.Id == i.preRequirementContent)?.Content
                         }).ToList();
                 }
@@ -824,7 +826,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 if (preReq != null)
                 {
                     // Validate the Pre-Requirement
-                    var requirementFullfilled = await preReq.Validate(canProvisionModel, tokenId);
+                    var requirementFullfilled = await preReq.Validate(canProvisionModel, tokenId, pr.Configuration);
                     if (!requirementFullfilled)
                     {
                         // Collect any Pre-Requirement result

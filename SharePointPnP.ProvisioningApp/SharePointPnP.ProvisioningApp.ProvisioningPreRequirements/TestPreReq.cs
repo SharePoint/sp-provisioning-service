@@ -16,7 +16,7 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
     {
         public string Name { get => this.GetType().Name; }
 
-        public async Task<bool> Validate(CanProvisionModel canProvisionModel, string tokenId)
+        public async Task<bool> Validate(CanProvisionModel canProvisionModel, string tokenId, string jsonConfiguration = null)
         {
             return false;
         }
