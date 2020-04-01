@@ -90,7 +90,7 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
 
                             // Check if the Learning Pathways app is installed and is the latest one
                             bool lpAppValid = false;
-                            var manager = new AppManager(clientContext);
+                            var manager = new AppManager(lpwContext);
                             var siteApps = manager.GetAvailable()?.Where(a => a.InstalledVersion != null)?.ToList();
                             if (siteApps != null && siteApps.Any())
                             {

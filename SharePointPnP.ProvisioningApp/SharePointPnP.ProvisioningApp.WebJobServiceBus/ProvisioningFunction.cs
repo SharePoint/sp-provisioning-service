@@ -178,6 +178,8 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                         // Add or Update the Key Vault accordingly
                         await vault.AddOrUpdateAsync(tokenId, properties);
 
+                        logger.LogInformationWithPnPCorrelation("Updated Azure KeyVault with SPORootSite property", action.CorrelationId);
+
                         #endregion
 
                         #region Provision the package
@@ -191,6 +193,8 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                             dbContext.SaveChanges();
 
                             #region Get the Provisioning Hierarchy file
+
+                            logger.LogInformationWithPnPCorrelation("Reading the Provisioning Hierarchy file {PackageUrl}", action.CorrelationId, package.PackageUrl);
 
                             // Determine reference path variables
                             var blobConnectionString = ConfigurationManager.AppSettings["BlobTemplatesProvider:ConnectionString"];
@@ -219,6 +223,8 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                             MemoryStream mem = new MemoryStream();
                             await blockBlob.DownloadToStreamAsync(mem);
                             mem.Position = 0;
+
+                            logger.LogInformationWithPnPCorrelation("Read the Provisioning Hierarchy file {PackageUrl}", action.CorrelationId, package.PackageUrl);
 
                             // Prepare the output hierarchy
                             ProvisioningHierarchy hierarchy = null;
@@ -262,6 +268,8 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                 hierarchy = provider.GetHierarchy(xmlTemplateFileName);
                                 hierarchy.Connector = provider.Connector;
                             }
+
+                            logger.LogInformationWithPnPCorrelation("Provisioning Hierarchy ready for processing", action.CorrelationId);
 
                             #endregion
 
