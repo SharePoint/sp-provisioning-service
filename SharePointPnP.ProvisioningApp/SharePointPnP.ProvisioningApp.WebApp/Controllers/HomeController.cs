@@ -322,7 +322,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             // Get all the Categories together with the Packages
             ProvisioningAppDBContext context = new ProvisioningAppDBContext();
 
-            var tempCategories = context.Categories
+            var queryCategories = context.Categories
                 .AsNoTracking()
                 .Where(c => c.Packages.Any(
                     p => p.Visible &&
@@ -331,9 +331,28 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 ))
                 .OrderBy(c => c.Order)
                 .Include("Packages")
+                .Include("Packages.TargetPlatforms")
                 .ToList();
 
-            model.Categories = tempCategories;
+            // Cleanup packages
+            var tempCategories = queryCategories;
+            for (int cIndex = 0; cIndex < tempCategories.Count; cIndex++)
+            {
+                var c = tempCategories[cIndex];
+                for (int pIndex = 0; pIndex < c.Packages.Count; pIndex++)
+                {
+                    var p = c.Packages[pIndex];
+                    if (!p.Visible ||
+                        (p.Preview && !testEnvironment) ||
+                        (!p.TargetPlatforms.Any(pf => pf.Id == targetPlatform)))
+                    {
+                        queryCategories[cIndex].Packages.RemoveAt(pIndex);
+                        pIndex--;
+                    }
+                }
+            }
+
+            model.Categories = queryCategories;
 
             return PartialView("CategoriesMenu", model);
         }
