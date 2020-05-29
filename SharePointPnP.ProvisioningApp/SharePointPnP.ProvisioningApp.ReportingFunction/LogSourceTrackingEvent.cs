@@ -46,6 +46,8 @@ namespace SharePointPnP.ProvisioningApp.ReportingFunction
                         command.Parameters.Add("@SourceTrackingUrl", SqlDbType.NVarChar, 500).Value = sourceTrackingEvent.SourceTrackingUrl;
                         command.Parameters.Add("@SourceTrackingFromProduction", SqlDbType.Bit).Value = sourceTrackingEvent.SourceTrackingFromProduction;
                         command.Parameters.Add("@TemplateId", SqlDbType.UniqueIdentifier).Value = sourceTrackingEvent.TemplateId;
+                        command.Parameters.Add("@TenantId", SqlDbType.UniqueIdentifier).Value = sourceTrackingEvent.TenantId;
+                        command.Parameters.Add("@SiteId", SqlDbType.UniqueIdentifier).Value = sourceTrackingEvent.SiteId;
 
                         connection.Open();
                         await command.ExecuteNonQueryAsync();
@@ -96,6 +98,16 @@ namespace SharePointPnP.ProvisioningApp.ReportingFunction
         /// The ID of the target Provisioning Template package, if any
         /// </summary>
         public Guid TemplateId { get; set; }
+
+        /// <summary>
+        /// The ID of the target tenant, if any
+        /// </summary>
+        public Guid TenantId { get; set; }
+
+        /// <summary>
+        /// The ID of the target site provisioned, if any
+        /// </summary>
+        public Guid SiteId { get; set; }
     }
 
     /// <summary>
@@ -111,5 +123,9 @@ namespace SharePointPnP.ProvisioningApp.ReportingFunction
         /// The provisioning of a template
         /// </summary>
         Provisioning,
+        /// <summary>
+        /// The provisioning of a template is now complete
+        /// </summary>
+        Provisioned,
     }
 }

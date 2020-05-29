@@ -33,7 +33,9 @@ CREATE TABLE [dbo].[SourcesTracking](
 	[SourceTrackingAction] [tinyint] NOT NULL,
 	[SourceTrackingUrl] [nvarchar](500) NULL,
 	[SourceTrackingFromProduction] bit NOT NULL,
-	[TemplateId] [uniqueidentifier] NULL
+	[TemplateId] [uniqueidentifier] NULL,
+	[TenantId] [uniqueidentifier] NULL,
+	[SiteId] [uniqueidentifier] NULL
 )
 
 GO
@@ -69,7 +71,9 @@ CREATE PROCEDURE [dbo].[InsertSourceTracking]
 @SourceTrackingAction tinyint,
 @SourceTrackingUrl nvarchar(500) = NULL,
 @SourceTrackingFromProduction bit,
-@TemplateId uniqueidentifier = NULL
+@TemplateId uniqueidentifier = NULL,
+@TenantId uniqueidentifier = NULL,
+@SiteId uniqueidentifier = NULL
 )
 AS
 
@@ -80,7 +84,9 @@ INSERT INTO dbo.SourcesTracking VALUES
 	@SourceTrackingAction,
 	@SourceTrackingUrl,
 	@SourceTrackingFromProduction,
-	@TemplateId
+	@TemplateId,
+	@TenantId,
+	@SiteId
 )
 
 GO

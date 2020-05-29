@@ -322,7 +322,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                         pnpTenantContext.PropertyBag["AccessTokens"] = accessTokens;
                                         ptai.AccessTokens = accessTokens;
 
-#region Theme handling
+                                        #region Theme handling
 
                                         // Process the graphical Theme
                                         if (action.ApplyTheme)
@@ -342,7 +342,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                             }
                                         }
 
-#endregion
+                                        #endregion
 
                                         // Configure provisioning parameters
                                         if (action.PackageProperties != null)
@@ -430,14 +430,14 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                             {
                                                 logger.LogInformationWithPnPCorrelation("Applying custom Theme to provisioned sites", action.CorrelationId);
 
-#region Palette generation for Theme
+                                                #region Palette generation for Theme
 
                                                 var jsonPalette = ThemeUtility.GetThemeAsJSON(
                                                     action.ThemePrimaryColor,
                                                     action.ThemeBodyTextColor,
                                                     action.ThemeBodyBackgroundColor);
 
-#endregion
+                                                #endregion
 
                                                 // Apply the custom theme to all of the provisioned sites
                                                 foreach (var ps in provisionedSites)
@@ -484,6 +484,9 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
 
                                         // Log reporting event (1 = Success)
                                         LogReporting(action, provisioningEnvironment, startProvisioning, package, 1);
+
+                                        // Log source tracking for provisioned sites
+                                        LogSourceTrackingProvisionedSites(action, spoAccessToken, authManager, provisionedSites);
                                     }
                                 }
                             }
@@ -768,6 +771,52 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                 // Make the Azure Function call for reporting
                 HttpHelper.MakePostRequest(ConfigurationManager.AppSettings["SPPA:ReportingFunctionUrl"],
                     provisioningEvent, "application/json", null);
+            }
+            catch
+            {
+                // Intentionally ignore any reporting issue
+            }
+        }
+
+        private static void LogSourceTrackingProvisionedSites(ProvisioningActionModel action, string spoAccessToken, AuthenticationManager authManager, List<Tuple<string, string>> provisionedSites)
+        {
+            // Log source tracking (2 = Provisioned) for every provisioned site
+            foreach (var provisionedSite in provisionedSites)
+            {
+                // Get the provisioned site URL
+                var provisionedSiteUrl = provisionedSite.Item2;
+
+                // Connect to the provisioned site
+                using (var provisionedSiteContext = authManager.GetAzureADAccessTokenAuthenticatedContext(provisionedSiteUrl, spoAccessToken))
+                {
+                    // Retrieve the Site ID
+                    var provisionedSiteId = provisionedSiteContext.Site.EnsureProperty(s => s.Id);
+
+                    // Log the source tracking event
+                    LogSourceTracking(action.Source, 2, null, action.PackageId, action.TenantId, provisionedSiteId.ToString());
+                }
+            }
+        }
+
+        private static void LogSourceTracking(string source, int action, string url, string packageId, string tenantId, string siteId)
+        {
+            // Prepare the Source Tracking event data
+            var sourceTrackingEvent = new
+            {
+                SourceId = source,
+                SourceTrackingAction = action,
+                SourceTrackingUrl = url,
+                SourceTrackingFromProduction = !ProvisioningAppManager.IsTestingEnvironment,
+                TemplateId = packageId,
+                TenantId = tenantId,
+                SiteId = siteId,
+            };
+
+            try
+            {
+                // Make the Azure Function call for reporting
+                HttpHelper.MakePostRequest(ConfigurationManager.AppSettings["SPPA:SourceTrackingFunctionUrl"],
+                    sourceTrackingEvent, "application/json", null);
             }
             catch
             {

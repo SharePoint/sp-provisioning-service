@@ -298,7 +298,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult CategoriesMenu(String returnUrl = null)
+        public ActionResult CategoriesMenu(String returnUrl = null, String source = null)
         {
             CategoriesMenuViewModel model = new CategoriesMenuViewModel();
 
@@ -355,6 +355,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
 
             model.Categories = queryCategories;
+            model.Source = source;
 
             return PartialView("CategoriesMenu", model);
         }
