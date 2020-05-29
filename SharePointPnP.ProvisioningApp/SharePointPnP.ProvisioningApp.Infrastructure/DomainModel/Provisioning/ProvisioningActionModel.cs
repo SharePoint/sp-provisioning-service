@@ -160,6 +160,9 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public String ReturnUrl { get; set; }
+
+        [JsonIgnore]
+        public String Source { get; set; }
     }
 
     /// <summary>

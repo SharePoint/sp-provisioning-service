@@ -36,7 +36,6 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using TenantAdmin = Microsoft.Online.SharePoint.TenantAdministration;
 
-
 namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 {
     [Authorize]
@@ -83,7 +82,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Provision(String packageId = null, String returnUrl = null)
+        public async Task<ActionResult> Provision(String packageId = null, String returnUrl = null, String source = null)
         {
             if (String.IsNullOrEmpty(packageId))
             {
@@ -92,6 +91,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             CheckBetaFlag();
             PrepareHeaderData(returnUrl);
+            LogSourceTracking(source, 0, Request.Url.ToString(), packageId); // 0 = PageView
 
             ProvisioningActionModel model = new ProvisioningActionModel();
 
@@ -133,6 +133,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             model.NotificationEmail = upn;
 
                             model.ReturnUrl = returnUrl;
+                            model.Source = source;
 
                             #endregion
 
@@ -171,6 +172,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         {
             CheckBetaFlag();
             PrepareHeaderData(model.ReturnUrl);
+            LogSourceTracking(model.Source, 1, Request.Url.ToString(), model.PackageId); // 1 = Provisioning
 
             if (model != null && ModelState.IsValid)
             {
@@ -518,6 +520,30 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
 
             ViewBag.HeaderData = headerData;
+        }
+
+        private void LogSourceTracking(string source, int action, string url, string packageId)
+        {
+            // Prepare the Source Tracking event data
+            var sourceTrackingEvent = new
+            {
+                SourceId = source,
+                SourceTrackingAction = action,
+                SourceTrackingUrl = url,
+                SourceTrackingFromProduction = !ProvisioningAppManager.IsTestingEnvironment,
+                TemplateId = packageId
+            };
+
+            try
+            {
+                // Make the Azure Function call for reporting
+                HttpHelper.MakePostRequest(ConfigurationManager.AppSettings["SPPA:SourceTrackingFunctionUrl"],
+                    sourceTrackingEvent, "application/json", null);
+            }
+            catch
+            {
+                // Intentionally ignore any reporting issue
+            }
         }
 
         /// <summary>

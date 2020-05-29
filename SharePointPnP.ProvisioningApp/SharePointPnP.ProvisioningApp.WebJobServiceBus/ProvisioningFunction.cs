@@ -298,11 +298,11 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                         var ptai = new ProvisioningTemplateApplyingInformation();
                                         ptai.MessagesDelegate += delegate (string message, ProvisioningMessageType messageType)
                                         {
-                                            logger.LogInformationWithPnPCorrelation($"{messageType} - {message}", action.CorrelationId);
+                                            logger.LogInformationWithPnPCorrelation($"{messageType} - {message.Replace("{", "{{").Replace("}", "}}")}", action.CorrelationId);
                                         };
                                         ptai.ProgressDelegate += delegate (string message, int step, int total)
                                         {
-                                            logger.LogInformationWithPnPCorrelation($"{step:00}/{total:00} - {message}", action.CorrelationId);
+                                            logger.LogInformationWithPnPCorrelation($"{step:00}/{total:00} - {message.Replace("{", "{{").Replace("}", "}}")}", action.CorrelationId);
                                         };
                                         ptai.SiteProvisionedDelegate += delegate (string title, string url)
                                         {
