@@ -413,6 +413,12 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                                 }
                                             }
 
+                                            // Disable the WebSettings handler for non-admin users
+                                            if (!TenantExtensions.IsCurrentUserTenantAdmin(tenantContext))
+                                            {
+                                                ptai.HandlersToProcess &= ~Handlers.WebSettings;
+                                            }
+
                                             // Apply the hierarchy
                                             logger.LogInformationWithPnPCorrelation("Hierarchy Provisioning Started: {ProvisioningStartDateTime}", action.CorrelationId, DateTime.Now.ToString("hh.mm.ss"));
                                             tenant.ApplyProvisionHierarchy(hierarchy,
