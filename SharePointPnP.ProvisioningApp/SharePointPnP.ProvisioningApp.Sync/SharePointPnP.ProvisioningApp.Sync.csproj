@@ -278,6 +278,8 @@
     <Compile Include="SyncEngine.cs" />
     <Compile Include="ITemplateItem.cs" />
     <Compile Include="TemplateExtensions.cs" />
+    <Compile Include="TenantDistinctComparer.cs" />
+    <Compile Include="TenantItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.csproj">

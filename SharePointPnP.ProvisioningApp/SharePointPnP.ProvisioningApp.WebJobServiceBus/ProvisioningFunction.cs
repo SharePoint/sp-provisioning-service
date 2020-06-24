@@ -543,28 +543,28 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                 // Skip logging exception for Recycled Site
                 if (ex is RecycledSiteException)
                 {
-                    // rather log an event
-                    telemetry?.LogEvent("ProvisioningFunction.RecycledSite", telemetryProperties);
-
                     // Log reporting event (3 = RecycledSite)
                     LogReporting(action, provisioningEnvironment, startProvisioning, null, 3, ex.ToDetailedString());
+
+                    // rather log an event
+                    telemetry?.LogEvent("ProvisioningFunction.RecycledSite", telemetryProperties);
                 }
                 // Skip logging exception for Concurrent Provisioning 
                 else if (ex is ConcurrentProvisioningException)
                 {
-                    // rather log an event
-                    telemetry?.LogEvent("ProvisioningFunction.ConcurrentProvisioning", telemetryProperties);
-
                     // Log reporting event (4 = ConcurrentProvisioningException)
                     LogReporting(action, provisioningEnvironment, startProvisioning, null, 4, ex.ToDetailedString());
+
+                    // rather log an event
+                    telemetry?.LogEvent("ProvisioningFunction.ConcurrentProvisioning", telemetryProperties);
                 }
                 else
                 {
-                    // Log telemetry event
-                    telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
-
                     // Log reporting event (2 = Failed)
                     LogReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
+
+                    // Log telemetry event
+                    telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
                 }
 
                 if (!String.IsNullOrEmpty(action.NotificationEmail))

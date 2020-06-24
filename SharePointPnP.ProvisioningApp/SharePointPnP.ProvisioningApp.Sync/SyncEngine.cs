@@ -100,14 +100,11 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 // Deserialize the json
                 var tenantsList = await file.DownloadAsJsonAsync(new
                 {
-                    tenants = new[]
-                        {
-                            new {id = "", tenantName = "", referenceOwner = ""}
-                        }
-                });
+                    tenants = new TenantItem[] { }
+                });                
 
                 var existingDbTenants = context.Tenants.ToDictionary(t => t.Id, StringComparer.OrdinalIgnoreCase);
-                foreach (var tenant in tenantsList.tenants)
+                foreach (var tenant in tenantsList.tenants.Distinct())
                 {
                     // Update tenant, if already exists
                     if (existingDbTenants.TryGetValue(tenant.id, out Tenant dbTenant))
@@ -131,7 +128,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                     existingDbTenants.Remove(tenant.id);
                 }
 
-                // Remove exceed categories
+                // Remove exceeding tenants
                 var objectStateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
                 foreach (var dbTenant in existingDbTenants)
                 {
@@ -393,14 +390,14 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 var existingDbPackages = context.Packages
                     .Include(c => c.Categories)
                     .Include(c => c.TargetPlatforms)
-                    .Where(p => p.PackageType == type)
-                    .ToDictionary(c => c.PackageUrl, StringComparer.OrdinalIgnoreCase);
+                    // .Where(p => p.PackageType == type)
+                    .ToDictionary(c => c.Id);
                 foreach (DomainModel.Package package in packages)
                 {
                     package.PackageType = type;
 
                     // Update package, if already exists
-                    if (existingDbPackages.TryGetValue(package.PackageUrl, out DomainModel.Package dbPackage))
+                    if (existingDbPackages.TryGetValue(package.Id, out DomainModel.Package dbPackage))
                     {
                         // Copy info into existing item
                         dbPackage.DisplayName = package.DisplayName;
@@ -439,6 +436,9 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                         // New properties for Wave 8
                         dbPackage.PackageProperties = package.PackageProperties;
 
+                        // Wave 12 - Allowed to move from one type to another
+                        dbPackage.PackageType = package.PackageType;
+
                         context.Entry(dbPackage).State = EntityState.Modified;
 
                         // Add new categories
@@ -463,7 +463,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                             objectStateManager.ChangeRelationshipState(dbPackage, c, d => d.TargetPlatforms, EntityState.Deleted);
                         }
 
-                        existingDbPackages.Remove(dbPackage.PackageUrl);
+                        existingDbPackages.Remove(dbPackage.Id);
                     }
                     else
                     {
@@ -472,8 +472,8 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                     }
                 }
 
-                // Remove leftover packages
-                foreach (var dbPackage in existingDbPackages)
+                // Remove leftover packages from current category
+                foreach (var dbPackage in existingDbPackages.Where(p => p.Value.PackageType == type))
                 {
                     await context.Entry(dbPackage.Value).Collection(d => d.Categories).LoadAsync();
 
@@ -580,7 +580,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
             var package = new DomainModel.Package
             {
-                Id = Guid.NewGuid(),
+                Id = !string.IsNullOrEmpty(settings.templateId) ? new Guid(settings.templateId) : Guid.NewGuid(),
                 PackageUrl = packageFile.DownloadUri.ToString(),
                 // New properties for Wave2
                 Promoted = settings.promoted,

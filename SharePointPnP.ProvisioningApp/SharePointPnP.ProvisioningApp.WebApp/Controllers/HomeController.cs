@@ -89,6 +89,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 throw new ArgumentNullException("packageId");
             }
 
+            if (String.IsNullOrEmpty(source))
+            {
+                source = "default";
+            }
+
             CheckBetaFlag();
             PrepareHeaderData(returnUrl);
             LogSourceTracking(source, 0, Request.Url.ToString(), packageId); // 0 = PageView

@@ -11,6 +11,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
     /// </summary>
     public class TemplateSettings
     {
+        public string templateId { get; set; }
+
         public string @abstract { get; set; }
 
         public int sortOrder { get; set; }

@@ -202,6 +202,10 @@
     <Compile Include="Migrations\201910091854580_Wave11-LookBookSite-Step5.Designer.cs">
       <DependentUpon>201910091854580_Wave11-LookBookSite-Step5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006241213349_Wave12-Provisioning-PackagesId.cs" />
+    <Compile Include="Migrations\202006241213349_Wave12-Provisioning-PackagesId.Designer.cs">
+      <DependentUpon>202006241213349_Wave12-Provisioning-PackagesId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
@@ -275,6 +279,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910091854580_Wave11-LookBookSite-Step5.resx">
       <DependentUpon>201910091854580_Wave11-LookBookSite-Step5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006241213349_Wave12-Provisioning-PackagesId.resx">
+      <DependentUpon>202006241213349_Wave12-Provisioning-PackagesId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
