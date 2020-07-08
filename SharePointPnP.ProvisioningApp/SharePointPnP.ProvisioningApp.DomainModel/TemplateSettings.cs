@@ -31,6 +31,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
 
         public bool forceNewSite { get; set; }
 
+        public bool forceExistingSite { get; set; }
+
         public bool visible { get; set; }
 
         public TemplateSettingsMetadata metadata { get; set; }
@@ -61,6 +63,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
     public class TemplateSettingsMetadataDisplayInfo
     {
         public string pageTemplateId { get; set; }
+
+        public string siteTitle { get; set; }
 
         public string siteDescriptor { get; set; }
 

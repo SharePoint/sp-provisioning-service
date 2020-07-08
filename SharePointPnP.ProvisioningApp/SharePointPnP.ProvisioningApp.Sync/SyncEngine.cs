@@ -438,6 +438,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
                         // Wave 12 - Allowed to move from one type to another
                         dbPackage.PackageType = package.PackageType;
+                        dbPackage.ForceExistingSite = package.ForceExistingSite;
 
                         context.Entry(dbPackage).State = EntityState.Modified;
 
@@ -596,6 +597,9 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 ForceNewSite = settings.forceNewSite,
                 Visible = settings.visible,
                 PageTemplateId = settings.metadata?.displayInfo?.pageTemplateId,
+                // New properties for Wave 12
+                DisplayName = settings.metadata?.displayInfo?.siteTitle,
+                ForceExistingSite = settings.forceExistingSite,
             };
 
             // Read the instructions.md and the provisioning.md files
@@ -698,7 +702,11 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
 
                 if (hierarchy != null)
                 {
-                    package.DisplayName = hierarchy.DisplayName;
+                    // We se the DisplayName to the DisplayName of the hierarchy if we don't have a siteTitle in the settings.json file
+                    if (string.IsNullOrEmpty(package.DisplayName))
+                    {
+                        package.DisplayName = hierarchy.DisplayName;
+                    }
                     package.ImagePreviewUrl = ChangeUri(packageFile.DownloadUri, hierarchy?.ImagePreviewUrl ?? String.Empty);
                     package.Description = await GetDescriptionAsync(packageFile.GetDirectoryPath()) ?? hierarchy?.Description ?? "";
                     package.Version = hierarchy?.Version.ToString();

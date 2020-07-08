@@ -206,6 +206,10 @@
     <Compile Include="Migrations\202006241213349_Wave12-Provisioning-PackagesId.Designer.cs">
       <DependentUpon>202006241213349_Wave12-Provisioning-PackagesId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007010515497_Wave12-ForceExistingSite.cs" />
+    <Compile Include="Migrations\202007010515497_Wave12-ForceExistingSite.Designer.cs">
+      <DependentUpon>202007010515497_Wave12-ForceExistingSite.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CustomHistoryContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NotificationRecipient.cs" />
@@ -282,6 +286,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006241213349_Wave12-Provisioning-PackagesId.resx">
       <DependentUpon>202006241213349_Wave12-Provisioning-PackagesId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007010515497_Wave12-ForceExistingSite.resx">
+      <DependentUpon>202007010515497_Wave12-ForceExistingSite.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

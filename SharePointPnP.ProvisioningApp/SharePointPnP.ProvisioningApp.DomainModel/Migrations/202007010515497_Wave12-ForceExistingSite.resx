@@ -117,52 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AuthenticationFailureRequiredAdmin" xml:space="preserve">
-    <value>Required permissions are not available. Please contact your administrator.</value>
+  <data name="Target" xml:space="preserve">
+    <value>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</value>
   </data>
-  <data name="CannotProvisionOntoExistingSite" xml:space="preserve">
-    <value>The provided site is already in use and the current template cannot be provisioned onto an already existing site. Please provide a different URL.</value>
-  </data>
-  <data name="CannotProvisionOntoNotExistingSite" xml:space="preserve">
-    <value>This template is only supported to be applied on top of existing site.</value>
-  </data>
-  <data name="InvalidSiteTemplateDialogTitle" xml:space="preserve">
-    <value>Invalid target site template</value>
-  </data>
-  <data name="ProvisioningCompleted" xml:space="preserve">
-    <value>Provisioning completed.</value>
-  </data>
-  <data name="ProvisioningFailed" xml:space="preserve">
-    <value>Unfortunately your site provisioning at least partially failed!</value>
-  </data>
-  <data name="ProvisioningInProgress" xml:space="preserve">
-    <value>Provisioning in progress ...</value>
-  </data>
-  <data name="ProvisioningStatusTitle" xml:space="preserve">
-    <value>Provisioning Status</value>
-  </data>
-  <data name="SiteDoesntExistDialogTitle" xml:space="preserve">
-    <value>Site is not usable</value>
-  </data>
-  <data name="SiteExistsDialogTitle" xml:space="preserve">
-    <value>Site is not usable</value>
-  </data>
-  <data name="SiteExistsDialogTitleKind" xml:space="preserve">
-    <value>Notice</value>
-  </data>
-  <data name="TargetSiteAlreadyExists" xml:space="preserve">
-    <value>The provided site is already in use and the current template cannot be provisioned onto an already existing site. Please provide a different URL.</value>
-  </data>
-  <data name="TargetSiteAlreadyExistsKind" xml:space="preserve">
-    <value>As you will be applying the template on top of an existing site, any changes on the welcome page will be overriden.</value>
-  </data>
-  <data name="TargetSiteBaseTemplateIdIsInvalid" xml:space="preserve">
-    <value>The URL provided is already in use and the target site is based on a template that is not valid for the current package. Please provide a different URL.</value>
-  </data>
-  <data name="ValidatingPreRequisites" xml:space="preserve">
-    <value>Validating prerequisites ...</value>
-  </data>
-  <data name="ValidatingSiteUrl" xml:space="preserve">
-    <value>Validating site URL...</value>
+  <data name="DefaultSchema" xml:space="preserve">
+    <value>pnp</value>
   </data>
 </root>

@@ -67,6 +67,7 @@
                     @Html.HiddenFor(m => m.TargetSiteAlreadyExists)
                     @Html.HiddenFor(m => m.TargetSiteBaseTemplateId)
                     @Html.HiddenFor(m => m.ForceNewSite)
+                    @Html.HiddenFor(m => m.ForceExistingSite)
                     @Html.HiddenFor(m => m.MatchingSiteBaseTemplateId)
                     @Html.HiddenFor(m => m.ReturnUrl)
                     @Html.HiddenFor(m => m.Source)
@@ -258,7 +259,7 @@
 
 <div id="siteExistsDialog" class="siteExistsDialog hide">
     <span onclick="document.getElementById('siteExistsCancelDialog').click()" class="dialogCloseButton topright">&times;</span>
-    <h2>Site URL already in use</h2>
+    <h2><span id="siteExistsDialogTitle">Site URL already in use</span></h2>
     <div id="siteExistsDialogContent" class="siteExistsDialogContent"></div>
     <div class="dialog-commands">
         <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision slb-button" value="Cancel" />
@@ -284,11 +285,11 @@
 
 @section scripts
 {
-        <!-- build:js scripts/main.js -->
-        <script src="/app/scripts/main.js"></script>
-        <!-- endbuild -->
+    <!-- build:js scripts/main.js -->
+    <script src="/app/scripts/main.js"></script>
+    <!-- endbuild -->
 
-        <script>
+    <script>
 
         // global state variable
         var focusingOutToProvision = false;
@@ -421,11 +422,17 @@
             }
         }
 
-        function showSiteExistsDialog(message) {
+        function showSiteExistsDialog(title, message) {
             var siteExistsDialog = document.getElementById('siteExistsDialog');
+
             if (siteExistsDialog && siteExistsDialog.classList.contains('hide')) {
                 siteExistsDialog.classList.toggle('hide');
                 siteExistsDialog.classList.toggle('show');
+
+                var siteExistsDialogTitle = document.getElementById('siteExistsDialogTitle');
+                if (title != undefined && title != "") {
+                    siteExistsDialogTitle.innerHTML = title;
+                }
 
                 var siteExistsDialogContent = document.getElementById('siteExistsDialogContent');
                 siteExistsDialogContent.innerHTML = ((message != undefined && message != "") ? message : "@Resources.Messages.TargetSiteAlreadyExists") + "<br/>&nbsp;";
@@ -474,8 +481,9 @@
                     // Share the resulting values back with the back-end engine
                     document.getElementById("TargetSiteAlreadyExists").value = !data.result;
                     document.getElementById("TargetSiteBaseTemplateId").value = data.baseTemplateId;
+                    var forceExistingSite = document.getElementById("ForceExistingSite").value.toLowerCase() == "true";
 
-                    if (data.result != true) {
+                    if (data.result != true || forceExistingSite) {
 
                         // hide the working on it dialog
                         hideWorkingOnIt();
@@ -494,7 +502,7 @@
                         toggleFormSubmitStatus();
 
                         // show the Site already exists dialog
-                        showSiteExistsDialog(existingSiteValidation.message);
+                        showSiteExistsDialog(existingSiteValidation.title, existingSiteValidation.message);
                     }
                     else {
                         hideWorkingOnIt();
@@ -517,12 +525,32 @@
 
             var siteAlreadyExists = document.getElementById("TargetSiteAlreadyExists").value.toLowerCase() == "true";
             var forceNewSite = document.getElementById("ForceNewSite").value.toLowerCase() == "true";
+            var forceExistingSite = document.getElementById("ForceExistingSite").value.toLowerCase() == "true";
 
             // First of all double-check if the site has to be forcibly created
             if (siteAlreadyExists && forceNewSite) {
                 return ({
                     blockProvisioning : true,
-                    message: "@Resources.Messages.CannotProvisionOntoExistingSite"
+                    message: "@Resources.Messages.CannotProvisionOntoExistingSite",
+                    title: "@Resources.Messages.SiteExistsDialogTitle"
+                });
+            }
+
+            // Secondly double-check if the site has to exist
+            if (!siteAlreadyExists && forceExistingSite) {
+                return ({
+                    blockProvisioning : true,
+                    message: "@Resources.Messages.CannotProvisionOntoNotExistingSite",
+                    title: "@Resources.Messages.SiteDoesntExistDialogTitle"
+                });
+            }
+
+            // Then double-check if the site has to exist and it does effectively exist
+            if (siteAlreadyExists && forceExistingSite) {
+                return ({
+                    blockProvisioning : false,
+                    message: "@Resources.Messages.TargetSiteAlreadyExistsKind",
+                    title: "@Resources.Messages.SiteExistsDialogTitleKind"
                 });
             }
 
@@ -537,7 +565,8 @@
                     existingSiteBaseTemplateId != matchingSiteBaseTemplateId) {
                     return ({
                         blockProvisioning: true,
-                        message: "@Resources.Messages.TargetSiteBaseTemplateIdIsInvalid"
+                        message: "@Resources.Messages.TargetSiteBaseTemplateIdIsInvalid",
+                        title: "@Resources.Messages.InvalidSiteTemplateDialogTitle"
                     });
                 }
             }
@@ -545,7 +574,8 @@
             // otherwise just show a kind warning
             return ({
                 blockProvisioning: false,
-                message: "@Resources.Messages.TargetSiteAlreadyExists"
+                message: "@Resources.Messages.TargetSiteAlreadyExists",
+                title: "@Resources.Messages.SiteExistsDialogTitle"
             });
         }
 
@@ -1130,8 +1160,8 @@
             }*@
         });
 
-        </script>
-    }
+    </script>
+}
 
-    <img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />
+<img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />
 

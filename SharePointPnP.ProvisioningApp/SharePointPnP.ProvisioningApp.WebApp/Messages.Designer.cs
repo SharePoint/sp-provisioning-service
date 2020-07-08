@@ -61,11 +61,38 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The URL provided is already in use and the current package cannot be provisioned onto an already existing site. Please provide a different URL..
+        ///   Looks up a localized string similar to Required permissions are not available. Please contact your administrator..
+        /// </summary>
+        public static string AuthenticationFailureRequiredAdmin {
+            get {
+                return ResourceManager.GetString("AuthenticationFailureRequiredAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The provided site is already in use and the current template cannot be provisioned onto an already existing site. Please provide a different URL..
         /// </summary>
         public static string CannotProvisionOntoExistingSite {
             get {
                 return ResourceManager.GetString("CannotProvisionOntoExistingSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This template is only supported to be applied on top of existing site..
+        /// </summary>
+        public static string CannotProvisionOntoNotExistingSite {
+            get {
+                return ResourceManager.GetString("CannotProvisionOntoNotExistingSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid target site template.
+        /// </summary>
+        public static string InvalidSiteTemplateDialogTitle {
+            get {
+                return ResourceManager.GetString("InvalidSiteTemplateDialogTitle", resourceCulture);
             }
         }
         
@@ -106,11 +133,47 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The URL provided is already in use. If you will proceed, the template will be applied on top of the already existing site and its contents might be replaced..
+        ///   Looks up a localized string similar to Site is not usable.
+        /// </summary>
+        public static string SiteDoesntExistDialogTitle {
+            get {
+                return ResourceManager.GetString("SiteDoesntExistDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Site is not usable.
+        /// </summary>
+        public static string SiteExistsDialogTitle {
+            get {
+                return ResourceManager.GetString("SiteExistsDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notice.
+        /// </summary>
+        public static string SiteExistsDialogTitleKind {
+            get {
+                return ResourceManager.GetString("SiteExistsDialogTitleKind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The provided site is already in use and the current template cannot be provisioned onto an already existing site. Please provide a different URL..
         /// </summary>
         public static string TargetSiteAlreadyExists {
             get {
                 return ResourceManager.GetString("TargetSiteAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to As you will be applying the template on top of an existing site, any changes on the welcome page will be overriden..
+        /// </summary>
+        public static string TargetSiteAlreadyExistsKind {
+            get {
+                return ResourceManager.GetString("TargetSiteAlreadyExistsKind", resourceCulture);
             }
         }
         

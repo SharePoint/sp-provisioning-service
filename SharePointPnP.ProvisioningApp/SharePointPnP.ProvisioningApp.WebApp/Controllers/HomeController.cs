@@ -303,6 +303,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult CategoriesMenu(String returnUrl = null, String source = null)
         {
             CategoriesMenuViewModel model = new CategoriesMenuViewModel();
@@ -720,6 +721,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 model.DisplayName = package.DisplayName;
                 model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
                 model.ForceNewSite = package.ForceNewSite;
+                model.ForceExistingSite = package.ForceExistingSite;
                 model.MatchingSiteBaseTemplateId = package.MatchingSiteBaseTemplateId;
                 model.PackageImagePreviewUrl = GetTemplatePreviewImage(package);
 
