@@ -76,10 +76,10 @@
                         <tr>
                             <th class="provisioning-local-header-box">
                                 <div class="provisioning-local-header">
-                                    <div class="title">Great choice!</div>
-                                    <div class="subtitle">We just need a bit of information before we start provisioning</div>
+                                    <div class="title">@(!String.IsNullOrEmpty(Model.ProvisionPageTitle) ? Html.Raw(Model.ProvisionPageTitle) : Html.Raw("Great choice!"))</div>
+                                    <div class="subtitle">@(!String.IsNullOrEmpty(Model.ProvisionPageSubTitle) ? Html.Raw(Model.ProvisionPageSubTitle) : Html.Raw("We just need a bit of information before we start provisioning"))</div>
                                     <p class="normal-text">
-                                        The following settings are used for your example site. You can keep them as is, or change them to suit your needs.
+                                        @(!String.IsNullOrEmpty(Model.ProvisionPageText) ? Html.Raw(Model.ProvisionPageText) : Html.Raw("The following settings are used for your example site. You can keep them as is, or change them to suit your needs."))
                                     </p>
                                 </div>
                             </th>
@@ -120,7 +120,7 @@
                                         <th>
                                             <input type="hidden" name="PackageProperties[@i].Key" value="@parameter.Key" />
                                             <label class="ms-Label pnp-field-label" for="PackageProperties[@i].Key">@(Model.MetadataProperties[parameter.Key].Caption)</label>
-                                            <div class="pnp-field-description">@(Model.MetadataProperties[parameter.Key].Description)</div>
+                                            <div class="pnp-field-description">@(Html.Raw(Model.MetadataProperties[parameter.Key].Description))</div>
                                         </th>
                                         <td>
                                             @if (String.IsNullOrEmpty(Model.MetadataProperties[parameter.Key].Editor))
@@ -133,9 +133,8 @@
                                             }
                                         </td>
                                     </tr>
+                                    i++;
                                 }
-
-                                i++;
                             }
                         }
 
@@ -226,7 +225,7 @@
                             </td>
                             <td class="provisioning-commands">
                                 <input type="button" id="cancelButton" class="pnp-btn-provision slb-button" value="Cancel" />
-                                <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="Provision" />
+                                <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="@(Model.ActionType == SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ActionType.Tenant ? "Add to your tenant" : "Add to your site")" />
                             </td>
                         </tr>
 
@@ -258,12 +257,12 @@
 </div>
 
 <div id="siteExistsDialog" class="siteExistsDialog hide">
-    <span onclick="document.getElementById('siteExistsCancelDialog').click()" class="dialogCloseButton topright">&times;</span>
+    <span onclick="document.getElementById('siteExistsConfirmDialog').click()" class="dialogCloseButton topright">&times;</span>
     <h2><span id="siteExistsDialogTitle">Site URL already in use</span></h2>
     <div id="siteExistsDialogContent" class="siteExistsDialogContent"></div>
     <div class="dialog-commands">
-        <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision slb-button" value="Cancel" />
-        <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="Confirm" />
+        @*<input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision slb-button" value="Cancel" />*@
+        <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="Ok" />
     </div>
 </div>
 
@@ -435,7 +434,7 @@
                 }
 
                 var siteExistsDialogContent = document.getElementById('siteExistsDialogContent');
-                siteExistsDialogContent.innerHTML = ((message != undefined && message != "") ? message : "@Resources.Messages.TargetSiteAlreadyExists") + "<br/>&nbsp;";
+                siteExistsDialogContent.innerHTML = ((message != undefined && message != "") ? message : "@Html.Raw(Resources.Messages.TargetSiteAlreadyExists)") + "<br/>&nbsp;";
 
                 showDialogOverlay();
             }
@@ -531,8 +530,8 @@
             if (siteAlreadyExists && forceNewSite) {
                 return ({
                     blockProvisioning : true,
-                    message: "@Resources.Messages.CannotProvisionOntoExistingSite",
-                    title: "@Resources.Messages.SiteExistsDialogTitle"
+                    message: "@Html.Raw(Resources.Messages.CannotProvisionOntoExistingSite)",
+                    title: "@Html.Raw(Resources.Messages.SiteExistsDialogTitle)"
                 });
             }
 
@@ -540,8 +539,8 @@
             if (!siteAlreadyExists && forceExistingSite) {
                 return ({
                     blockProvisioning : true,
-                    message: "@Resources.Messages.CannotProvisionOntoNotExistingSite",
-                    title: "@Resources.Messages.SiteDoesntExistDialogTitle"
+                    message: "@Html.Raw(Resources.Messages.CannotProvisionOntoNotExistingSite)",
+                    title: "@Html.Raw(Resources.Messages.SiteDoesntExistDialogTitle)"
                 });
             }
 
@@ -549,8 +548,8 @@
             if (siteAlreadyExists && forceExistingSite) {
                 return ({
                     blockProvisioning : false,
-                    message: "@Resources.Messages.TargetSiteAlreadyExistsKind",
-                    title: "@Resources.Messages.SiteExistsDialogTitleKind"
+                    message: "@Html.Raw(Resources.Messages.TargetSiteAlreadyExistsKind)",
+                    title: "@Html.Raw(Resources.Messages.SiteExistsDialogTitleKind)"
                 });
             }
 
@@ -565,8 +564,8 @@
                     existingSiteBaseTemplateId != matchingSiteBaseTemplateId) {
                     return ({
                         blockProvisioning: true,
-                        message: "@Resources.Messages.TargetSiteBaseTemplateIdIsInvalid",
-                        title: "@Resources.Messages.InvalidSiteTemplateDialogTitle"
+                        message: "@Html.Raw(Resources.Messages.TargetSiteBaseTemplateIdIsInvalid)",
+                        title: "@Html.Raw(Resources.Messages.InvalidSiteTemplateDialogTitle)"
                     });
                 }
             }
@@ -574,8 +573,8 @@
             // otherwise just show a kind warning
             return ({
                 blockProvisioning: false,
-                message: "@Resources.Messages.TargetSiteAlreadyExists",
-                title: "@Resources.Messages.SiteExistsDialogTitle"
+                message: "@Html.Raw(Resources.Messages.TargetSiteAlreadyExists)",
+                title: "@Html.Raw(Resources.Messages.SiteExistsDialogTitle)"
             });
         }
 
@@ -586,7 +585,7 @@
             disableProvisionButton();
 
             // show the Working on it dialog
-            showWorkingOnIt("@Resources.Messages.ValidatingPreRequisites");
+            showWorkingOnIt("@Html.Raw(Resources.Messages.ValidatingPreRequisites)");
 
             fetch('../home/CanProvisionPackage', {
                 headers: {
@@ -849,7 +848,7 @@
                             }
 
                             // show the Working on it dialog
-                            showWorkingOnIt("@Resources.Messages.ValidatingSiteUrl");
+                            showWorkingOnIt("@Html.Raw(Resources.Messages.ValidatingSiteUrl)");
 
                             // check if the URL is available
                             urlIsAvailableInSPO(e.target, e.target.previousElementSibling.value + e.target.value);

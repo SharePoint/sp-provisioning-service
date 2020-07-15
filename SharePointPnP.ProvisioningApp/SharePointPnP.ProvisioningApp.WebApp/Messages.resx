@@ -124,7 +124,7 @@
     <value>The provided site is already in use and the current template cannot be provisioned onto an already existing site. Please provide a different URL.</value>
   </data>
   <data name="CannotProvisionOntoNotExistingSite" xml:space="preserve">
-    <value>This template is only supported to be applied on top of existing site.</value>
+    <value>This template is designed to be applied to an existing team site. To use it, you must provide an URL to an existing team site. &lt;a href='https://go.microsoft.com/fwlink/?linkid=2135144'&gt;Learn more.&lt;/a&gt;</value>
   </data>
   <data name="InvalidSiteTemplateDialogTitle" xml:space="preserve">
     <value>Invalid target site template</value>
@@ -142,19 +142,19 @@
     <value>Provisioning Status</value>
   </data>
   <data name="SiteDoesntExistDialogTitle" xml:space="preserve">
-    <value>Site is not usable</value>
+    <value>Can't add this template</value>
   </data>
   <data name="SiteExistsDialogTitle" xml:space="preserve">
-    <value>Site is not usable</value>
+    <value>Can't add this template</value>
   </data>
   <data name="SiteExistsDialogTitleKind" xml:space="preserve">
-    <value>Notice</value>
+    <value>Important</value>
   </data>
   <data name="TargetSiteAlreadyExists" xml:space="preserve">
     <value>The provided site is already in use and the current template cannot be provisioned onto an already existing site. Please provide a different URL.</value>
   </data>
   <data name="TargetSiteAlreadyExistsKind" xml:space="preserve">
-    <value>As you will be applying the template on top of an existing site, any changes on the welcome page will be overriden.</value>
+    <value>This template will be applied to your existing team site. It will override layout and content displayed on your site home page. It will also add sample pages and documents. Existing content like documents, lists, other pages, and news posts will not be affected. &lt;a href='https://go.microsoft.com/fwlink/?linkid=2135144'&gt;Learn more.&lt;/a&gt;</value>
   </data>
   <data name="TargetSiteBaseTemplateIdIsInvalid" xml:space="preserve">
     <value>The URL provided is already in use and the target site is based on a template that is not valid for the current package. Please provide a different URL.</value>

@@ -79,7 +79,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This template is only supported to be applied on top of existing site..
+        ///   Looks up a localized string similar to This template is designed to be applied to an existing team site. To use it, you must provide an URL to an existing team site. &lt;a href=&apos;https://go.microsoft.com/fwlink/?linkid=2135144&apos;&gt;Learn more.&lt;/a&gt;.
         /// </summary>
         public static string CannotProvisionOntoNotExistingSite {
             get {
@@ -133,7 +133,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Site is not usable.
+        ///   Looks up a localized string similar to Can&apos;t add this template.
         /// </summary>
         public static string SiteDoesntExistDialogTitle {
             get {
@@ -142,7 +142,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Site is not usable.
+        ///   Looks up a localized string similar to Can&apos;t add this template.
         /// </summary>
         public static string SiteExistsDialogTitle {
             get {
@@ -151,7 +151,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Notice.
+        ///   Looks up a localized string similar to Important.
         /// </summary>
         public static string SiteExistsDialogTitleKind {
             get {
@@ -169,7 +169,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to As you will be applying the template on top of an existing site, any changes on the welcome page will be overriden..
+        ///   Looks up a localized string similar to This template will be applied to your existing team site. It will override layout and content displayed on your site home page. It will also add sample pages and documents. Existing content like documents, lists, other pages, and news posts will not be affected. &lt;a href=&apos;https://go.microsoft.com/fwlink/?linkid=2135144&apos;&gt;Learn more.&lt;/a&gt;.
         /// </summary>
         public static string TargetSiteAlreadyExistsKind {
             get {

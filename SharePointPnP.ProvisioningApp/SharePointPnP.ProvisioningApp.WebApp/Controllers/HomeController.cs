@@ -755,6 +755,9 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     }
                 }
 
+                // Retrieve provisioning text messages
+                GetProvisionTextMessages(package, model);
+
                 // Retrieve parameters from the package/template definition
                 var packageFileUrl = new Uri(package.PackageUrl);
                 var packageLocalFolder = packageFileUrl.AbsolutePath.Substring(1,
@@ -871,6 +874,16 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return (package.ImagePreviewUrl);
         }
 
+        private static void GetProvisionTextMessages(SharePointPnP.ProvisioningApp.DomainModel.Package package, ProvisioningActionModel model)
+        {
+            var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<SharePointPnP.ProvisioningApp.DomainModel.TemplateSettingsMetadata>(package.PropertiesMetadata);
+            if (settings?.displayInfo?.provisionMessages != null)
+            {
+                model.ProvisionPageTitle = settings.displayInfo.provisionMessages.provisionPageTitle;
+                model.ProvisionPageSubTitle = settings.displayInfo.provisionMessages.provisionPageSubTitle;
+                model.ProvisionPageText = settings.displayInfo.provisionMessages.provisionPageText;
+            }
+        }
 
         private async Task<CanProvisionResult> CanProvisionInternal(CanProvisionModel model, Boolean validateUser = true)
         {

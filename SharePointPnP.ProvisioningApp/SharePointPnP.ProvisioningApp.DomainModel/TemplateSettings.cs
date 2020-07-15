@@ -70,11 +70,22 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
 
         public string[] descriptionParagraphs { get; set; }
 
+        public TemplateSettingsMetadataDisplayInfoProvisionMessages provisionMessages { get; set; }
+
         public TemplateSettingsMetadataDisplayInfoPreviewImage[] previewImages { get; set; }
 
         public TemplateSettingsMetadataDisplayInfoDetailItemCategory[] detailItemCategories { get; set; }
 
         public TemplateSettingsMetadataDisplayInfoSystemRequirement[] systemRequirements { get; set; }
+    }
+
+    public class TemplateSettingsMetadataDisplayInfoProvisionMessages
+    {
+        public string provisionPageTitle { get; set; }
+
+        public string provisionPageSubTitle { get; set; }
+
+        public string provisionPageText { get; set; }
     }
 
     public class TemplateSettingsMetadataDisplayInfoPreviewImage
