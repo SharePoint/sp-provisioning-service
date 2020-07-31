@@ -34,6 +34,15 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
             get { return (_accessTokenProvider.Value); }
         }
 
+        private static readonly Lazy<ISecurityTokensService> _securityTokensServiceProvider = new Lazy<ISecurityTokensService>(() => {
+            return (ProvisioningAppManager.CreateProviderInstance<ISecurityTokensService>(ConfigurationManager.AppSettings["SPPA:SecurityTokensServiceProvider"]));
+        });
+
+        public static ISecurityTokensService SecurityTokensServiceProvider
+        {
+            get { return (_securityTokensServiceProvider.Value); }
+        }
+
         private static TProvider CreateProviderInstance<TProvider>(String providerTypeName)
             where TProvider : class
         {

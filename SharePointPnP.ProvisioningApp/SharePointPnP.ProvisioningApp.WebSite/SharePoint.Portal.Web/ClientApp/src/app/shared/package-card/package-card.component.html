@@ -1,17 +1,17 @@
 <ng-template [ngIf]="packageData">
-    <a [routerLink]="['/details', packageData.id]">
-        <div class="hero-image aspect-ratio-wrapper">
-            <div class="aspect-ratio-image-wrapper">
-                <img *ngIf="heroImage" src="{{ heroImage.url }}" alt="{{ heroImage.altText }}" />
-            </div>
-        </div>
+  <a [routerLink]="['/details', packageData.id]" queryParamsHandling="preserve">
+    <div class="hero-image aspect-ratio-wrapper">
+      <div class="aspect-ratio-image-wrapper">
+        <img *ngIf="heroImage" src="{{ heroImage.url }}" alt="{{ heroImage.altText }}" />
+      </div>
+    </div>
 
-        <div class="site-name">
-            {{ packageData.displayName }}
-        </div>
+    <div class="site-name">
+      {{ packageData.displayName }}
+    </div>
 
-        <h5>
-            {{ packageData.displayInfo?.siteDescriptor }}
-        </h5>
-    </a>
+    <h5>
+      {{ packageData.displayInfo?.siteDescriptor }}
+    </h5>
+  </a>
 </ng-template>

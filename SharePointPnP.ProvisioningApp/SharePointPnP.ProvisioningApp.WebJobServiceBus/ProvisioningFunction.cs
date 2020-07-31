@@ -160,8 +160,8 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
 
                         #region Store the main site URL in KeyVault
 
-                        // Store the main site URL in KeyVault
-                        var vault = new KeyVaultService();
+                        // Store the main site URL in the Vault
+                        var vault = ProvisioningAppManager.SecurityTokensServiceProvider;
 
                         // Read any existing properties for the current tenantId
                         var properties = await vault.GetAsync(tokenId);

@@ -371,6 +371,7 @@
     <Compile Include="DomainModel\Provisioning\SharePointSite.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="IAccessTokenProvider.cs" />
+    <Compile Include="ISecurityTokensService.cs" />
     <Compile Include="ITemplatesProvider.cs" />
     <Compile Include="KeyVaultService.cs" />
     <Compile Include="Mail\MailBodyHandler.cs" />
@@ -380,6 +381,7 @@
     <Compile Include="QueueUtilities\BlobStorageQueueUtility.cs" />
     <Compile Include="QueueUtilities\ServiceBusQueueUtility.cs" />
     <Compile Include="RetryWithExponentialBackoff.cs" />
+    <Compile Include="SqlServerVaultService.cs" />
     <Compile Include="Telemetry\TelemetryUtility.cs" />
     <Compile Include="UrlUtilities.cs" />
     <Compile Include="Utilities.cs" />

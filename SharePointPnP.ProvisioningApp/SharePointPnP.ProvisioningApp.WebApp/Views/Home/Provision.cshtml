@@ -225,7 +225,7 @@
                             </td>
                             <td class="provisioning-commands">
                                 <input type="button" id="cancelButton" class="pnp-btn-provision slb-button" value="Cancel" />
-                                <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="@(Model.ActionType == SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning.ActionType.Tenant ? "Add to your tenant" : "Add to your site")" />
+                                <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="@(Model.ForceExistingSite ? "Add to your site" : "Provision")" />
                             </td>
                         </tr>
 
@@ -262,7 +262,7 @@
     <div id="siteExistsDialogContent" class="siteExistsDialogContent"></div>
     <div class="dialog-commands">
         @*<input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision slb-button" value="Cancel" />*@
-        <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="Ok" />
+        <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="OK" />
     </div>
 </div>
 
@@ -285,7 +285,7 @@
 @section scripts
 {
     <!-- build:js scripts/main.js -->
-    <script src="/app/scripts/main.js"></script>
+    @*<script src="/app/scripts/main.js"></script>*@
     <!-- endbuild -->
 
     <script>

@@ -1,6 +1,6 @@
 <header class="slb-header">
     <div class="header-container">
-        <div class="header-part-one" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+        <div class="header-part-one">
             <button type="button" class="hamburger-button collapsed-nav-item has-glyph"
                 [appNavMenuActivatorFor]="microsoftMegamenu.mainPanel"
                 aria-label="All Microsoft expand to see list of Microsoft products and services"
@@ -12,14 +12,14 @@
             </a>
         </div>
 
-        <div class="expanded-home-nav-item expanded-nav-item" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+        <div class="expanded-home-nav-item expanded-nav-item">
             <a class="logo" href="https://www.microsoft.com/en-us/microsoft-365">
                 <span>Microsoft 365</span>
             </a>
         </div>
 
         <div class="page-nav" #menuElement>
-            <div class="collapsed-nav-opener collapsed-nav-item" [ngClass]="{'is-open': isShowingMainMenu}" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+            <div class="collapsed-nav-opener collapsed-nav-item" [ngClass]="{'is-open': isShowingMainMenu}">
                 <button class="has-glyph" (click)="toggleMainMenu()">
                     <span>Microsoft 365</span>
                 </button>
@@ -27,18 +27,12 @@
 
             <nav class="menu" [ngClass]="{'is-open': isShowingMainMenu}">
               <ul>
-                <li class="collapsed-nav-item" (click)="closeMainMenu()" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+                <li class="collapsed-nav-item" (click)="closeMainMenu()">
                   <a href="https://www.microsoft.com/en-us/microsoft-365">Home</a>
                 </li>
-                <li *ngIf="(targetPlatformId | async) !== 'LOOKBOOK'">
-                  <img src="../../assets/images/beta-tag.png" alt="Beta" style="height: 50px; padding: 1em .75em 1em .75em;">
-                </li>
                 <li>
-                  <a routerLink="/" (click)="closeMainMenu()" *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+                  <a routerLink="/" queryParamsHandling="preserve" (click)="closeMainMenu()">
                     <span>SharePoint look book</span>
-                  </a>
-                  <a routerLink="/" (click)="closeMainMenu()" *ngIf="(targetPlatformId | async) !== 'LOOKBOOK'">
-                    <span>SharePoint provisioning service</span>
                   </a>
                 </li>
                 <li *ngFor="let item of navItems" [ngClass]="{'open-left': !isLargeScreen}">
@@ -55,7 +49,7 @@
         </div>
 
         <div class="right-nav">
-            <nav class="menu" [ngClass]="{'is-open': microsoftMegamenu.mainPanel.isOpen}" #megamenuElement  *ngIf="(targetPlatformId | async) === 'LOOKBOOK'">
+            <nav class="menu" [ngClass]="{'is-open': microsoftMegamenu.mainPanel.isOpen}" #megamenuElement >
                 <div>
                     <button type="button" class="expanded-nav-item"
                         [appNavMenuActivatorFor]="microsoftMegamenu.mainPanel"

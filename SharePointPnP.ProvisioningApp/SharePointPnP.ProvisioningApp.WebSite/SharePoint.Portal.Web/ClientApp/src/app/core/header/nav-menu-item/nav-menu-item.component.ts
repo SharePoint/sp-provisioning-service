@@ -101,11 +101,9 @@ export class NavMenuItemComponent implements AfterViewChecked {
      * @param item
      */
     handleItemSelected(event: MouseEvent, item: NavMenuItem) {
-        if (item.routerLink) {
-            event.preventDefault();
-            this.router.navigate(item.routerLink);
+        if (!item.routerLink) {
+            this.itemSelected.emit(item);
         }
-        this.itemSelected.emit(item);
     }
 
     /**

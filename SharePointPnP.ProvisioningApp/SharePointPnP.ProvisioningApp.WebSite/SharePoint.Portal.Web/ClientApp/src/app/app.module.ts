@@ -20,12 +20,14 @@ import { AppRouterModule } from './app-router.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { DetailsComponent } from './details/details.component';
+import { ServiceDescriptionComponent } from './service-description/service-description.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
         DetailsComponent,
+        ServiceDescriptionComponent
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
