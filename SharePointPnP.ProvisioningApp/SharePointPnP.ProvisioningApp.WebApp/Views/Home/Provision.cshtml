@@ -288,7 +288,7 @@
     @*<script src="/app/scripts/main.js"></script>*@
     <!-- endbuild -->
 
-    <script>
+<script>
 
         // global state variable
         var focusingOutToProvision = false;
@@ -465,6 +465,16 @@
                 url.toLowerCase() != 'aux' &&
                 url.toLowerCase() != 'nul' &&
                 url.length > 0);
+        }
+
+        function fullUrlIsValidForSPO(fullUrl) {
+
+            // regex for the full SPO URL
+            var fullUrlregex = new RegExp(/^(?:https:\/\/)[\w.-]+(?:\.[\w\.-]+)+\/(sites|teams)\/[\w\-\._~:\/?#[\]@@!\$&'\(\)\*\+,;=.]+$/, 'i');
+
+            // exclude all invalid URLs
+            return (fullUrl.match(fullUrlregex) &&
+                fullUrl.length > 0);
         }
 
         // determines if the the URL is available in SPO or not, using a backend API
@@ -902,6 +912,73 @@
                 }
             }
 
+            // validation events for any Full URL control fields
+            var fullSiteUrlControls = document.getElementsByClassName('fullSiteUrl');
+            if (fullSiteUrlControls != null && fullSiteUrlControls.length > 0) {
+                for (var i = 0; i < fullSiteUrlControls.length; i++) {
+                    fullSiteUrlControls[i].addEventListener('keyup', function (e) {
+
+                        // get the relative URL of the target site
+                        var relativeSiteUrl = e.target.value.substring(@Model.SPORootSiteUrl.Length);
+
+                        if (fullUrlIsValidForSPO(e.target.value)) {
+                            // remove the validation exception, if any
+                            if (e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+                        else {
+                            // add the validation exception
+                            if (!e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+
+                        // toggle the Provision button accordingly
+                        toggleFormSubmitStatus();
+
+                        // save the new value in the supporting hidden field
+                        e.target.nextElementSibling.value = relativeSiteUrl;
+                    });
+                    fullSiteUrlControls[i].addEventListener('focusout', function (e) {
+
+                        // get the relative URL of the target site
+                        var relativeSiteUrl = e.target.value.substring(@Model.SPORootSiteUrl.Length);
+
+                        // if we lost the focus because the user clicked on the Provision button
+                        if (e.relatedTarget != null && e.relatedTarget.id == "provisionButton") {
+                            // store it in the state variable
+                            focusingOutToProvision = true;
+                        }
+
+                        if (fullUrlIsValidForSPO(e.target.value)) {
+                            // remove the validation exception, if any
+                            if (e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+
+                            // show the Working on it dialog
+                            showWorkingOnIt("@Html.Raw(Resources.Messages.ValidatingSiteUrl)");
+
+                            // check if the URL is available
+                            urlIsAvailableInSPO(e.target, relativeSiteUrl);
+
+                            // save the new value in the supporting hidden field
+                            e.target.nextElementSibling.value = relativeSiteUrl;
+                        }
+                        else {
+                            // add the validation exception
+                            if (!e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+
+                        // toggle the Provision button accordingly
+                        toggleFormSubmitStatus();
+                    });
+                }
+            }
+
             // validation events for any regex editor fields
             var regexEditorControls = document.getElementsByClassName('regexEditor');
             if (regexEditorControls != null && regexEditorControls.length > 0) {
@@ -1159,7 +1236,7 @@
             }*@
         });
 
-    </script>
+</script>
 }
 
 <img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />

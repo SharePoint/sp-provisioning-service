@@ -478,6 +478,8 @@
     </Content>
     <Content Include="Views\Shared\_TopHeader.cshtml" />
     <Content Include="Views\Home\CategoriesMenu.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\FullSiteUrl.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FullSiteUrl.cshtml" />
     <None Include="Web.Dev.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
