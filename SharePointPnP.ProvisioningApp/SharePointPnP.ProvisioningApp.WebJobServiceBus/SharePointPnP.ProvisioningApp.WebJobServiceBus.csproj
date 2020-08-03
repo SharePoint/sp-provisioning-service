@@ -472,9 +472,12 @@
     <None Include="App.config" />
     <EmbeddedResource Include="known-exceptions.json" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Test.pubxml" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp-dev - Dev.pubxml" />
+    <None Include="Properties\PublishProfiles\sppnpprovisioningapp-test - Test.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />
     <None Include="Settings.job">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

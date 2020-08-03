@@ -942,6 +942,11 @@
                     });
                     fullSiteUrlControls[i].addEventListener('focusout', function (e) {
 
+                        // Double check if the URL starts with https://
+                        if (!e.target.value.startsWith("https://") && !e.target.value.startsWith("http://")) {
+                            e.target.value = "https://" + e.target.value;
+                        }
+
                         // get the relative URL of the target site
                         var relativeSiteUrl = e.target.value.substring(@Model.SPORootSiteUrl.Length);
 

@@ -430,15 +430,12 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
-    <None Include="Properties\PublishProfiles\piasys-splb-dev - Tenant - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Test.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Test.pubxml" />
-    <None Include="Properties\PublishProfiles\spprovisioningappdev - Tenant.pubxml" />
-    <None Include="Properties\PublishProfiles\spprovisioningappdev - Site.pubxml" />
     <None Include="Properties\PublishProfiles\spprovisioningappdev - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
