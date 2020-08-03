@@ -122,6 +122,7 @@ publish/
 *.[Pp]ublish.xml
 *.azurePubxml
 *.pubxml
+*.pubxml.user
 *.publishproj
 **/PublishProfiles/*
 

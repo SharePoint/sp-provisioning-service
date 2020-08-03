@@ -436,7 +436,6 @@
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Tenant - Test.pubxml" />
-    <None Include="Properties\PublishProfiles\spprovisioningappdev - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
