@@ -36,7 +36,6 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using TenantAdmin = Microsoft.Online.SharePoint.TenantAdministration;
 
-
 namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 {
     [Authorize]
@@ -83,73 +82,91 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Provision(String packageId = null, String returnUrl = null)
+        public async Task<ActionResult> Provision(String packageId = null, String returnUrl = null, String source = null)
         {
             if (String.IsNullOrEmpty(packageId))
             {
                 throw new ArgumentNullException("packageId");
             }
 
+            if (String.IsNullOrEmpty(source))
+            {
+                source = "default";
+            }
+
             CheckBetaFlag();
             PrepareHeaderData(returnUrl);
+            LogSourceTracking(source, 0, Request.Url.ToString(), packageId); // 0 = PageView
 
             ProvisioningActionModel model = new ProvisioningActionModel();
 
-            if (IsValidUser())
+            try
             {
-                var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
-                if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
+                if (IsValidUser())
                 {
-                    var issuerValue = issuer.Value.Substring(0, issuer.Value.Length - 1);
-                    var tenantId = issuerValue.Substring(issuerValue.LastIndexOf("/") + 1);
-                    var upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst(ClaimTypes.Upn)?.Value;
-
-                    if (this.IsAllowedUpnTenant(upn))
+                    var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
+                    if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
                     {
-                        #region Prepare model generic context data
+                        var issuerValue = issuer.Value.Substring(0, issuer.Value.Length - 1);
+                        var tenantId = issuerValue.Substring(issuerValue.LastIndexOf("/") + 1);
+                        var upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst(ClaimTypes.Upn)?.Value;
 
-                        // Prepare the model data
-                        model.TenantId = tenantId;
-                        model.UserPrincipalName = upn;
-                        model.PackageId = packageId;
-                        model.ApplyTheme = false;
-                        model.ApplyCustomTheme = false;
-
-                        String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
-                        String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
-
-                        var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
-                        var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                            tokenId, "https://graph.microsoft.com/");
-
-                        model.UserIsTenantAdmin = Utilities.UserIsTenantGlobalAdmin(graphAccessToken);
-                        model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
-                        model.NotificationEmail = upn;
-
-                        model.ReturnUrl = returnUrl;
-
-                        #endregion
-
-                        // Determine the URL of the root SPO site for the current tenant
-                        var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
-                        SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
-
-                        // Store the SPO Root Site URL in the Model
-                        model.SPORootSiteUrl = rootSite.WebUrl;
-
-                        // If the current user is an admin, we can get the available Themes
-                        if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
+                        if (this.IsAllowedUpnTenant(upn))
                         {
-                            await LoadThemesFromTenant(model, tokenId, rootSite, graphAccessToken);
-                        }
+                            #region Prepare model generic context data
 
-                        LoadPackageDataIntoModel(packageId, model);
-                    }
-                    else
-                    {
-                        throw new ApplicationException("Invalid request, the current tenant is not allowed to use this solution!");
+                            // Prepare the model data
+                            model.TenantId = tenantId;
+                            model.UserPrincipalName = upn;
+                            model.PackageId = packageId;
+                            model.ApplyTheme = false;
+                            model.ApplyCustomTheme = false;
+
+                            String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                            String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                            var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                            var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                tokenId, "https://graph.microsoft.com/");
+                            if (string.IsNullOrEmpty(graphAccessToken))
+                            {
+                                throw new ApplicationException($"Cannot retrieve a valid Access Token for user {model.UserPrincipalName.ToLower()} in tenant {model.TenantId}");
+                            }
+
+                            model.UserIsTenantAdmin = Utilities.UserIsTenantGlobalAdmin(graphAccessToken);
+                            model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
+                            model.NotificationEmail = upn;
+
+                            model.ReturnUrl = returnUrl;
+                            model.Source = source;
+
+                            #endregion
+
+                            // Determine the URL of the root SPO site for the current tenant
+                            var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
+                            SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
+
+                            // Store the SPO Root Site URL in the Model
+                            model.SPORootSiteUrl = rootSite.WebUrl;
+
+                            // If the current user is an admin, we can get the available Themes
+                            if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
+                            {
+                                await LoadThemesFromTenant(model, tokenId, rootSite, graphAccessToken);
+                            }
+
+                            LoadPackageDataIntoModel(packageId, model);
+                        }
+                        else
+                        {
+                            throw new ApplicationException("Invalid request, the current tenant is not allowed to use this solution!");
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return View("Provision", model);
@@ -160,6 +177,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         {
             CheckBetaFlag();
             PrepareHeaderData(model.ReturnUrl);
+            LogSourceTracking(model.Source, 1, Request.Url.ToString(), model.PackageId); // 1 = Provisioning
 
             if (model != null && ModelState.IsValid)
             {
@@ -201,7 +219,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                     String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                    var tokenId = $"{tenantId}-{upn.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                    var tokenId = $"{tenantId}-{upn.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                     var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                         tokenId, "https://graph.microsoft.com/");
 
@@ -285,7 +303,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult CategoriesMenu(String returnUrl = null)
+        [AllowAnonymous]
+        public ActionResult CategoriesMenu(String returnUrl = null, String source = null)
         {
             CategoriesMenuViewModel model = new CategoriesMenuViewModel();
 
@@ -311,7 +330,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             // Get all the Categories together with the Packages
             ProvisioningAppDBContext context = new ProvisioningAppDBContext();
 
-            var tempCategories = context.Categories
+            var queryCategories = context.Categories
                 .AsNoTracking()
                 .Where(c => c.Packages.Any(
                     p => p.Visible &&
@@ -320,9 +339,29 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 ))
                 .OrderBy(c => c.Order)
                 .Include("Packages")
+                .Include("Packages.TargetPlatforms")
                 .ToList();
 
-            model.Categories = tempCategories;
+            // Cleanup packages
+            var tempCategories = queryCategories;
+            for (int cIndex = 0; cIndex < tempCategories.Count; cIndex++)
+            {
+                var c = tempCategories[cIndex];
+                for (int pIndex = 0; pIndex < c.Packages.Count; pIndex++)
+                {
+                    var p = c.Packages[pIndex];
+                    if (!p.Visible ||
+                        (p.Preview && !testEnvironment) ||
+                        (!p.TargetPlatforms.Any(pf => pf.Id == targetPlatform)))
+                    {
+                        queryCategories[cIndex].Packages.RemoveAt(pIndex);
+                        pIndex--;
+                    }
+                }
+            }
+
+            model.Categories = queryCategories;
+            model.Source = source;
 
             return PartialView("CategoriesMenu", model);
         }
@@ -390,7 +429,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     String provisioningScope = package.PackageType == PackageType.Tenant ? "tenant" : "site";
                     String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
 
                     try
                     {
@@ -488,6 +527,30 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
 
             ViewBag.HeaderData = headerData;
+        }
+
+        private void LogSourceTracking(string source, int action, string url, string packageId)
+        {
+            // Prepare the Source Tracking event data
+            var sourceTrackingEvent = new
+            {
+                SourceId = source,
+                SourceTrackingAction = action,
+                SourceTrackingUrl = url,
+                SourceTrackingFromProduction = !ProvisioningAppManager.IsTestingEnvironment,
+                TemplateId = packageId
+            };
+
+            try
+            {
+                // Make the Azure Function call for reporting
+                HttpHelper.MakePostRequest(ConfigurationManager.AppSettings["SPPA:SourceTrackingFunctionUrl"],
+                    sourceTrackingEvent, "application/json", null);
+            }
+            catch
+            {
+                // Intentionally ignore any reporting issue
+            }
         }
 
         /// <summary>
@@ -658,6 +721,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 model.DisplayName = package.DisplayName;
                 model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
                 model.ForceNewSite = package.ForceNewSite;
+                model.ForceExistingSite = package.ForceExistingSite;
                 model.MatchingSiteBaseTemplateId = package.MatchingSiteBaseTemplateId;
                 model.PackageImagePreviewUrl = GetTemplatePreviewImage(package);
 
@@ -690,6 +754,9 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         model.ProvisionRecap = provisionRecapPage.Content;
                     }
                 }
+
+                // Retrieve provisioning text messages
+                GetProvisionTextMessages(package, model);
 
                 // Retrieve parameters from the package/template definition
                 var packageFileUrl = new Uri(package.PackageUrl);
@@ -807,6 +874,16 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return (package.ImagePreviewUrl);
         }
 
+        private static void GetProvisionTextMessages(SharePointPnP.ProvisioningApp.DomainModel.Package package, ProvisioningActionModel model)
+        {
+            var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<SharePointPnP.ProvisioningApp.DomainModel.TemplateSettingsMetadata>(package.PropertiesMetadata);
+            if (settings?.displayInfo?.provisionMessages != null)
+            {
+                model.ProvisionPageTitle = settings.displayInfo.provisionMessages.provisionPageTitle;
+                model.ProvisionPageSubTitle = settings.displayInfo.provisionMessages.provisionPageSubTitle;
+                model.ProvisionPageText = settings.displayInfo.provisionMessages.provisionPageText;
+            }
+        }
 
         private async Task<CanProvisionResult> CanProvisionInternal(CanProvisionModel model, Boolean validateUser = true)
         {
@@ -817,7 +894,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                 String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                     tokenId, "https://graph.microsoft.com/");
 

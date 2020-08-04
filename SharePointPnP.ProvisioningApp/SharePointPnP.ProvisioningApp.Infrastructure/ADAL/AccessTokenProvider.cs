@@ -111,7 +111,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.ADAL
 
         public async Task<String> ReadRefreshTokenAsync(string keyId)
         {
-            var vault = new KeyVaultService();
+            var vault = ProvisioningAppManager.SecurityTokensServiceProvider;
 
             // Read any existing properties for the current tenantId
             var properties = await vault.GetAsync(keyId);
@@ -122,7 +122,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.ADAL
 
         public async Task WriteRefreshTokenAsync(string keyId, string refreshTokenValue)
         {
-            var vault = new KeyVaultService();
+            var vault = ProvisioningAppManager.SecurityTokensServiceProvider;
 
             // Read any existing properties for the current tenantId
             var properties = await vault.GetAsync(keyId);

@@ -16,6 +16,9 @@
                 <nav aria-label="Microsoft corporate links" class="links">
                     <ul>
                         <li>
+                            <a href="/service-description">Service description</a>
+                        </li>
+                        <li>
                             <a href="https://www.microsoft.com/en-us/sitemap1.aspx">Sitemap</a>
                         </li>
                         <li>
@@ -38,7 +41,7 @@
                         </li>
                         @if (ViewBag.HeaderData != null && !ViewBag.HeaderData.RenderProvisioningService)
                         {
-                            <li>© Microsoft 2019</li>
+                            <li>© Microsoft @(DateTime.Now.Year)</li>
                         }
                     </ul>
                 </nav>

@@ -53,6 +53,8 @@ namespace SharePoint.Portal.Web
                     options.IsTestEnvironment = isTestEnvironment;
                     options.ProvisioningPageBaseUrl = Configuration["ProvisioningPageBaseUrl"];
                     options.PlatformId = Configuration["PlatformId"];
+                    options.TrackingUrl = Configuration["TrackingUrl"];
+                    options.TelemetryUrl = Configuration["TelemetryUrl"];
                 });
 
             // Add application insights

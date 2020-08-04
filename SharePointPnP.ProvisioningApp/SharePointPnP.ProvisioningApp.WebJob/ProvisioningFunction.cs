@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Text;
 using System.Threading;
@@ -61,11 +62,13 @@ namespace SharePointPnP.ProvisioningApp.WebJob
 
             String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-            log.WriteLine($"Processing queue trigger function for {action.UserPrincipalName} on tenant {action.TenantId}");
+            log.WriteLine($"Processing queue trigger function for tenant {action.TenantId}");
             log.WriteLine($"PnP Correlation ID: {action.CorrelationId.ToString()}");
 
             // Instantiate and use the telemetry model
-            TelemetryUtility telemetry = new TelemetryUtility(log);
+            TelemetryUtility telemetry = new TelemetryUtility((s) => {
+                log.WriteLine(s);
+            });
             Dictionary<string, string> telemetryProperties = new Dictionary<string, string>();
 
             // Configure telemetry properties
@@ -74,13 +77,6 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             telemetryProperties.Add("PnPCorrelationId", action.CorrelationId.ToString());
             telemetryProperties.Add("TargetSiteAlreadyExists", action.TargetSiteAlreadyExists.ToString());
             telemetryProperties.Add("TargetSiteBaseTemplateId", action.TargetSiteBaseTemplateId);
-
-            var appOnlyAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAppOnlyAccessTokenAsync(
-                "https://graph.microsoft.com/",
-                ConfigurationManager.AppSettings["OfficeDevPnP:TenantId"],
-                ConfigurationManager.AppSettings["OfficeDevPnP:ClientId"],
-                ConfigurationManager.AppSettings["OfficeDevPnP:ClientSecret"],
-                ConfigurationManager.AppSettings["OfficeDevPnP:AppUrl"]);
 
             // Get a reference to the data context
             ProvisioningAppDBContext dbContext = new ProvisioningAppDBContext();
@@ -95,7 +91,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     throw new ConcurrentProvisioningException("The requested package is currently provisioning in the selected target tenant and cannot be applied in parallel. Please wait for the previous provisioning action to complete.");
                 }
 
-                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
+                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.ToLower().GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
 
                 // Retrieve the SPO target tenant via Microsoft Graph
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
@@ -103,6 +99,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                     ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
                     ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
                     ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
+                log.WriteLine($"Retrieved target Microsoft Graph Access Token.");
 
                 if (!String.IsNullOrEmpty(graphAccessToken))
                 {
@@ -156,12 +153,15 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                         context.Load(web, w => w.Title, w => w.Id);
                         await context.ExecuteQueryAsync();
 
+                        // Save the current SPO Correlation ID
+                        telemetryProperties.Add("SPOCorrelationId", context.TraceCorrelationId);
+
                         log.WriteLine($"SharePoint Online Root Site Collection title: {web.Title}");
 
                         #region Store the main site URL in KeyVault
 
-                        // Store the main site URL in KeyVault
-                        var vault = new KeyVaultService();
+                        // Store the main site URL in the vault
+                        var vault = ProvisioningAppManager.SecurityTokensServiceProvider;
 
                         // Read any existing properties for the current tenantId
                         var properties = await vault.GetAsync(tokenId);
@@ -414,6 +414,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                                 {
                                                     AddProvisioningWebhook(hierarchy, wh, ProvisioningTemplateWebhookKind.ProvisioningStarted);
                                                     AddProvisioningWebhook(hierarchy, wh, ProvisioningTemplateWebhookKind.ProvisioningCompleted);
+                                                    AddProvisioningWebhook(hierarchy, wh, ProvisioningTemplateWebhookKind.ProvisioningExceptionOccurred);
                                                 }
                                             }
 
@@ -465,19 +466,29 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                                         telemetry?.LogEvent("ProvisioningFunction.EndProvisioning", telemetryProperties);
 
                                         // Notify user about the provisioning outcome
-                                        MailHandler.SendMailNotification(
-                                            "ProvisioningCompleted",
-                                            action.NotificationEmail,
-                                            null,
-                                            new
-                                            {
-                                                TemplateName = action.DisplayName,
-                                                ProvisionedSites = provisionedSites,
-                                            },
-                                            appOnlyAccessToken);
+                                        if (!String.IsNullOrEmpty(action.NotificationEmail))
+                                        {
+                                            var appOnlyAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAppOnlyAccessTokenAsync(
+                                                "https://graph.microsoft.com/",
+                                                ConfigurationManager.AppSettings["OfficeDevPnP:TenantId"],
+                                                ConfigurationManager.AppSettings["OfficeDevPnP:ClientId"],
+                                                ConfigurationManager.AppSettings["OfficeDevPnP:ClientSecret"],
+                                                ConfigurationManager.AppSettings["OfficeDevPnP:AppUrl"]);
+
+                                            MailHandler.SendMailNotification(
+                                                "ProvisioningCompleted",
+                                                action.NotificationEmail,
+                                                null,
+                                                new
+                                                {
+                                                    TemplateName = action.DisplayName,
+                                                    ProvisionedSites = provisionedSites,
+                                                },
+                                                appOnlyAccessToken);
+                                        }
 
                                         // Log reporting event (1 = Success)
-                                        logReporting(action, provisioningEnvironment, startProvisioning, package, 1);
+                                        LogReporting(action, provisioningEnvironment, startProvisioning, package, 1);
                                     }
                                 }
                             }
@@ -518,40 +529,64 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 }
                 else
                 {
-                    var noTokensErrorMessage = $"Cannot retrieve Refresh Token or Access Token for {action.UserPrincipalName} in tenant {action.TenantId}!";
+                    var noTokensErrorMessage = $"Cannot retrieve Refresh Token or Access Token for {action.CorrelationId} in tenant {action.TenantId}!";
                     log.WriteLine(noTokensErrorMessage);
                     throw new ApplicationException(noTokensErrorMessage);
                 }
             }
             catch (Exception ex)
             {
-                // Skip logging exception for Concurrent Provisioning 
-                if (!(ex is ConcurrentProvisioningException))
+                // Skip logging exception for Recycled Site
+                if (ex is RecycledSiteException)
                 {
-                    // Log telemetry event
-                    telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
+                    // rather log an event
+                    telemetry?.LogEvent("ProvisioningFunction.RecycledSite", telemetryProperties);
+
+                    // Log reporting event (3 = RecycledSite)
+                    LogReporting(action, provisioningEnvironment, startProvisioning, null, 3, ex.ToDetailedString());
                 }
-                else
+                // Skip logging exception for Concurrent Provisioning 
+                else if (ex is ConcurrentProvisioningException)
                 {
                     // rather log an event
                     telemetry?.LogEvent("ProvisioningFunction.ConcurrentProvisioning", telemetryProperties);
+
+                    // Log reporting event (4 = ConcurrentProvisioningException)
+                    LogReporting(action, provisioningEnvironment, startProvisioning, null, 4, ex.ToDetailedString());
+                }
+                else
+                {
+                    // Log telemetry event
+                    telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
+
+                    // Log reporting event (2 = Failed)
+                    LogReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
                 }
 
-                // Notify user about the provisioning outcome
-                MailHandler.SendMailNotification(
-                    "ProvisioningFailed",
-                    action.NotificationEmail,
-                    null,
-                    new
-                    {
-                        TemplateName = action.DisplayName,
-                        ExceptionDetails = SimplifyException(ex),
-                        PnPCorrelationId = action.CorrelationId.ToString(),
-                    },
-                    appOnlyAccessToken);
+                if (!String.IsNullOrEmpty(action.NotificationEmail))
+                {
+                    var appOnlyAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAppOnlyAccessTokenAsync(
+                        "https://graph.microsoft.com/",
+                        ConfigurationManager.AppSettings["OfficeDevPnP:TenantId"],
+                        ConfigurationManager.AppSettings["OfficeDevPnP:ClientId"],
+                        ConfigurationManager.AppSettings["OfficeDevPnP:ClientSecret"],
+                        ConfigurationManager.AppSettings["OfficeDevPnP:AppUrl"]);
 
-                // Log reporting event (2 = Failed)
-                logReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
+                    // Notify user about the provisioning outcome
+                    MailHandler.SendMailNotification(
+                        "ProvisioningFailed",
+                        action.NotificationEmail,
+                        null,
+                        new
+                        {
+                            TemplateName = action.DisplayName,
+                            ExceptionDetails = SimplifyException(ex),
+                            PnPCorrelationId = action.CorrelationId.ToString(),
+                        },
+                        appOnlyAccessToken);
+                }
+
+                ProcessWebhooksExceptionNotification(action, ex);
 
                 // Track the failure in the local action log
                 MarkCurrentActionItemAsFailed(action, dbContext);
@@ -567,6 +602,36 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
         }
 
+        /// <summary>
+        /// Notifies an exception through the configured webhooks
+        /// </summary>
+        /// <param name="action">The provisioning action</param>
+        /// <param name="ex">The exception that occurred</param>
+        private static void ProcessWebhooksExceptionNotification(ProvisioningActionModel action, Exception ex)
+        {
+            if (action.Webhooks != null && action.Webhooks.Count > 0)
+            {
+                foreach (var wh in action.Webhooks)
+                {
+                    var provisioningWebhook = new OfficeDevPnP.Core.Framework.Provisioning.Model.ProvisioningWebhook
+                    {
+                        Kind = ProvisioningTemplateWebhookKind.ExceptionOccurred,
+                        Url = wh.Url,
+                        Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), wh.Method.ToString(), true),
+                        BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
+                        Async = false, // force sync webhooks
+                        Parameters = wh.Parameters,
+                    };
+
+                    var httpClient = new HttpClient();
+
+                    WebhookSender.InvokeWebhook(provisioningWebhook, httpClient, 
+                        ProvisioningTemplateWebhookKind.ExceptionOccurred,
+                        exception: ex);
+                }
+            }
+        }
+
         private static void AddProvisioningTemplateWebhook(ProvisioningTemplate template, 
             Infrastructure.DomainModel.Provisioning.ProvisioningWebhook webhook, ProvisioningTemplateWebhookKind kind)
         {
@@ -576,7 +641,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 Url = webhook.Url,
                 Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
                 BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
-                Async = true, // force sync webhooks
+                Async = false, // force sync webhooks
                 Parameters = webhook.Parameters,
             });
         }
@@ -590,7 +655,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 Url = webhook.Url,
                 Method = (ProvisioningTemplateWebhookMethod)Enum.Parse(typeof(ProvisioningTemplateWebhookMethod), webhook.Method.ToString(), true),
                 BodyFormat = ProvisioningTemplateWebhookBodyFormat.Json, // force JSON format
-                Async = true, // force sync webhooks
+                Async = false, // force sync webhooks
                 Parameters = webhook.Parameters,
             });
         }
@@ -688,7 +753,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
             }
         }
 
-        private static void logReporting(ProvisioningActionModel action, string provisioningEnvironment, DateTime startProvisioning, DomainModel.Package package, Int32 outcome, String details = null)
+        private static void LogReporting(ProvisioningActionModel action, string provisioningEnvironment, DateTime startProvisioning, DomainModel.Package package, Int32 outcome, String details = null)
         {
             // Prepare the reporting event
             var provisioningEvent = new
@@ -698,7 +763,7 @@ namespace SharePointPnP.ProvisioningApp.WebJob
                 EventEndDateTime = DateTime.Now,
                 EventOutcome = outcome,
                 EventDetails = details,
-                EventFromProduction = provisioningEnvironment.ToUpper() != "TEST" ? 1 : 0,
+                EventFromProduction = provisioningEnvironment.ToUpper() == "PROD" ? 1 : 0,
                 TemplateId = action.PackageId,
                 TemplateDisplayName = package?.DisplayName,
             };

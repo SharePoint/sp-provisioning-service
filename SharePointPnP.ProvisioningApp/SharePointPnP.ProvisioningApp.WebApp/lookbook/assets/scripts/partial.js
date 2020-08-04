@@ -11,9 +11,9 @@ $(function () {
         return (width > 767);
     }
 
+    var categoriesMenuUrl = '/' + window.location.pathname.split('/')[1] + '/home/CategoriesMenu';
     
-
-    $.post("./CategoriesMenu" + window.location.search, null, function (html) {
+    $.post(categoriesMenuUrl + window.location.search, null, function (html) {
         // Get a reference to the menu
         var menu = $("#packagesMenu");
 

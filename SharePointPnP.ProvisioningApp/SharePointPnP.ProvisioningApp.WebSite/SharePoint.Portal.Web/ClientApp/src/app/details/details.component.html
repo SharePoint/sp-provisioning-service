@@ -1,3 +1,5 @@
+<img *ngIf="pageData" src="{{pageData.telemetryUrl}}" />        
+
 <app-dynamic-template *ngIf="detailsTemplateDefinition" [moduleDefinition]="detailsTemplateDefinition.moduleDefinition"
     [html]="detailsTemplateDefinition.html" [css]="detailsTemplateDefinition.css"
     [context]="detailsTemplateDefinition.context" (error)="handleDyanmicComponentError()">

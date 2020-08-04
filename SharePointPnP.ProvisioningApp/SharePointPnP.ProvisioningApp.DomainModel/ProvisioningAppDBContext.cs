@@ -44,6 +44,10 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
                 .Where(p => p.Name == "Id" && (p.PropertyType == typeof(Int32) || p.PropertyType == typeof(Guid)))
                 .Configure(p => p.HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity));
 
+            // Make the Package ID manually configurable
+            modelBuilder.Entity<Package>()
+                .Property(p => p.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+
             // Define the many-to-many relationship between Packages and Categories
             modelBuilder.Entity<Package>()
                 .HasMany<Category>(p => p.Categories) // One Package can have many Categories

@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Web.Routing;
 using System.Web.Mvc;
 using SharePointPnP.ProvisioningApp.WebApp.Controllers;
+using Microsoft.IdentityModel.Protocols;
 
 namespace SharePointPnP.ProvisioningApp.WebApp
 {
@@ -106,13 +107,21 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                                 // Store the Refresh Token in the Azure Key Vault
                                 if (tenandIdClaim != null && !String.IsNullOrEmpty(tenandIdClaim.Value))
                                 {
-                                    String tokenId = $"{tenandIdClaim.Value}-{upnClaim.Value.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                                    String tokenId = $"{tenandIdClaim.Value}-{upnClaim.Value.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                                     await ProvisioningAppManager.AccessTokenProvider.WriteRefreshTokenAsync(tokenId, token.RefreshToken);
                                 }
 
                                 //context.AuthenticationTicket.Identity.AddClaims(
                                 //    ((System.Security.Claims.ClaimsIdentity)System.Threading.Thread.CurrentPrincipal.Identity).Claims);
                             }
+                        },
+                        MessageReceived = (context) =>
+                        {
+                            if (context?.ProtocolMessage?.Error == "access_denied")
+                            {
+                                throw new OpenIdConnectProtocolException(Resources.Messages.AuthenticationFailureRequiredAdmin);
+                            }
+                            return Task.FromResult(0);
                         },
                         AuthenticationFailed = (context) =>
                         {

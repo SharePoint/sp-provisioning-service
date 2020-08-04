@@ -1,4 +1,4 @@
 <ng-container [ngSwitch]="packageType | async">
-    <span *ngSwitchCase="packageTypes.tenant">You must be a tenant administrator to deploy this solution.</span>
-    <span *ngSwitchCase="packageTypes.siteCollection">You must be a site administrator to deploy this solution.</span>
+  <span *ngSwitchCase="packageTypes.tenant">You must be a tenant administrator to deploy this template.</span>
+  <span *ngSwitchCase="packageTypes.siteCollection">You must be a site owner to deploy this template.</span>
 </ng-container>

@@ -6,10 +6,12 @@ import { catchError } from 'rxjs/operators';
 
 import { appConstants } from '../app-constants';
 import { Category } from '../core/api/models';
-import { CategoriesService } from '../core/api/services';
+import { CategoriesService, TrackingService } from '../core/api/services';
 
 import { map } from 'rxjs/operators';
 import { ApplicationSettingsService } from '../core/api/services/application-settings.service';
+import { ActivatedRoute } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 interface Quote {
     quoteText: string;
@@ -42,7 +44,11 @@ export class HomeComponent implements OnInit {
     categories: Observable<Category[]>;
     quotes: Quote[];
 
+    telemetryUrl: Observable<string>;
+
     constructor(
+        private route: ActivatedRoute,
+        private trackingService: TrackingService,
         private categoriesService: CategoriesService,
         private appSettings: ApplicationSettingsService,
         private matSnackBar: MatSnackBar,
@@ -51,6 +57,8 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.quotes = quotes;
+
+        this.trackingService.track(this.route);
 
         this.categories = this.categoriesService.getAll()
             .pipe(catchError(() => {
@@ -61,6 +69,10 @@ export class HomeComponent implements OnInit {
         this.targetPlatformId = this.appSettings
             .getSettings()
             .pipe(map(settings => settings.targetPlatformId));
+
+        this.telemetryUrl = this.appSettings
+            .getSettings()
+            .pipe(map(settings => settings.telemetryUrl + 'home'));
 
         this.targetPlatformId
             .subscribe(s => this.titleService.setTitle(appConstants.getSiteTitle(s)));

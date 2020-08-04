@@ -41,6 +41,7 @@ namespace SharePoint.Portal.Web.Business.Implementation
                             (doIncludePreview || !pc.Package.Preview) &&
                             pc.Package.PackagePlatforms.Any(pp => pp.PlatformId == GlobalOptions.PlatformId)
                         )
+                        .OrderBy(pc => pc.Package.SortOrder)
                         .Select(pc => pc.Package.ToUiFormat(GlobalOptions.ProvisioningPageBaseUrl, doIncludeDisplayInfo))
                         .ToList()
                 })

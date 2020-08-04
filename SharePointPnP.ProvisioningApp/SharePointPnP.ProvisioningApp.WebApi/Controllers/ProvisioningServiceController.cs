@@ -155,7 +155,7 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
                     String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                     String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
 
                     try
                     {
@@ -235,7 +235,7 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
                         request.UserIsSPOAdmin = true; // We don't use this in the job
                         request.UserIsTenantAdmin = true; // We don't use this in the job
                         request.UserPrincipalName = provisionRequest.UserPrincipalName.ToLower();
-                        request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
+                        request.NotificationEmail = provisionRequest.NotificationEmail;
                         request.PackageProperties = item.Parameters;
                         request.ChildrenItems = childrenItems;
                         request.Webhooks = provisionRequest.Webhooks;
@@ -324,7 +324,7 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
             String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
             String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-            var tokenId = $"{model.TenantId}-{model.UserPrincipalName.GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+            var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
             var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                 tokenId, "https://graph.microsoft.com/");
 

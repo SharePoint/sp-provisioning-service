@@ -22,7 +22,10 @@ namespace SharePoint.Portal.Web.Controllers
             {
                 ServerDateTime = DateTime.UtcNow,
                 globalOptions.ProvisioningPageBaseUrl,
-                TargetPlatformId = globalOptions.PlatformId
+                TargetPlatformId = globalOptions.PlatformId,
+                IsTestEnvironment = globalOptions.IsTestEnvironment,
+                TrackingUrl = globalOptions.TrackingUrl,
+                TelemetryUrl = globalOptions.TelemetryUrl
             });
         }
     }

@@ -440,7 +440,7 @@ li:not(:first-child) {
                 Id = Guid.Parse("c715eb26-3b70-48b6-b4cf-a18aea24bd10"),
                 Visible = true,
                 DisplayName = "Contoso Enterprise Landing",
-                Abstract = "Put the power of your content, people and information in easy reach of everyone in your organization. Use a distributed news system and a variety of web parts to highlight what's happening in your organization as well as events and social conversations.",
+                Abstract = "Put the <b>power</b> of your content, people and information in easy reach of everyone in your organization. Use a distributed news system and a variety of web parts to highlight what's happening in your organization as well as events and social conversations.",
                 Description = "",
                 Version = "",
                 ImagePreviewUrl = "",

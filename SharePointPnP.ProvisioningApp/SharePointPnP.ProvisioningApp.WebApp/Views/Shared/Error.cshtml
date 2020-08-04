@@ -20,19 +20,19 @@
         <article class="pnp-error">
             <h1>Sorry, something went wrong</h1>
             <div class="errorMessage">
-                There was an unexpected issue. Please try again after a while.<br />
-                @Model.Exception.Message
+                There was an unexpected issue.<br />
+                @(Model?.Exception != null ? Model.Exception.Message : "")
             </div>
-            <div class="showErrorLink"><a href="#">Click here to see more details</a></div>
+            @*<div class="showErrorLink"><a href="#">Click here to see more details</a></div>
             <div class="errorStack" style="display: none;">
                 <hr />
-                <div>@Model.Exception.StackTrace</div>
-            </div>
+                <div>@(Model?.Exception != null ? Model.Exception.StackTrace : "")</div>
+            </div>*@
         </article>
     </div>
 </div>
 
-<script language="javascript">
+@*<script language="javascript">
 
     document.addEventListener("DOMContentLoaded", function (event) {
 
@@ -45,5 +45,5 @@
         });
     })
 
-</script>
+</script>*@
 

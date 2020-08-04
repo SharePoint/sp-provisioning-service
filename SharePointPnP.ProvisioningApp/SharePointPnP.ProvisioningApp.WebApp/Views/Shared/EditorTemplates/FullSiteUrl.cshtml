@@ -1,0 +1,7 @@
+﻿@model SharePointPnP.ProvisioningApp.WebApp.Models.TemplateParameterModel
+
+<!-- FullSiteUrl Custom Editor -->
+<div class="fullSiteUrlContainer">
+    <input value="@(Model.ParameterValue.StartsWith("/sites/") || Model.ParameterValue.StartsWith("/teams/") ? (Model.SPORootSiteUrl + Model.ParameterValue) : Model.ParameterValue)" class="pnp-tb fullSiteUrl fullSiteUrlField" />
+    <input type="hidden" name="PackageProperties[@Model.Index].Value" value="@Model.ParameterValue" />
+</div>

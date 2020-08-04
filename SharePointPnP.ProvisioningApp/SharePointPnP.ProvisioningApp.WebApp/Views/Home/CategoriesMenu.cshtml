@@ -12,7 +12,7 @@
                             <li class="">
                                 <div class="app-nav-menu-item">
                                     <div class="">
-                                        <a href="@(String.IsNullOrEmpty(Model.BaseLinksUrl) ? "/home/details?packageId=" : Model.BaseLinksUrl)@p.Id" class=""><span>@p.DisplayName</span></a>
+                                        <a href="@(String.IsNullOrEmpty(Model.BaseLinksUrl) ? "/details/" : Model.BaseLinksUrl)@p.Id@(!String.IsNullOrEmpty(Model.Source) ? String.Format("?source={0}", Model.Source) : String.Empty)" class=""><span>@p.DisplayName</span></a>
                                     </div>
                                 </div>
                             </li>

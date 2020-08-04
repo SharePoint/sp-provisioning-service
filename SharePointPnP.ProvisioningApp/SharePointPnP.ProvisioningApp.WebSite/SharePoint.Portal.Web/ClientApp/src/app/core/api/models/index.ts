@@ -7,3 +7,4 @@ export * from './package.model';
 export * from './page-template.model';
 export * from './preview-image.model';
 export * from './system-requirement.model';
+export * from './tracking.model';

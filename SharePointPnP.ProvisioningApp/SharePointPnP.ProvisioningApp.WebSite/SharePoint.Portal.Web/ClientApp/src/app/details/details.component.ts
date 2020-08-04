@@ -7,7 +7,7 @@ import { Subject, EMPTY } from 'rxjs';
 import { switchMap, catchError, map, tap, distinctUntilChanged } from 'rxjs/operators';
 
 import { appConstants } from '../app-constants';
-import { PageTemplatesService, ApplicationSettingsService } from '../core/api/services';
+import { PageTemplatesService, ApplicationSettingsService, TrackingService } from '../core/api/services';
 import { ResolvedPackage } from '../core/resolvers/package-resolver.service';
 import { DetailsPageTemplateData } from '../shared/slb/details-page-template/details-page-template-data.service';
 
@@ -19,6 +19,7 @@ import { SlbTabsModule } from '../shared/slb/tabs/tabs.module';
 import { SlbDetailsPageTemplateModule } from '../shared/slb/details-page-template/details-page-template.module';
 
 import { ApplicationSettings } from '../core/api/models';
+import { environment } from 'src/environments/environment';
 
 interface DetailsTemplateDefinition {
     moduleDefinition: NgModule;
@@ -53,6 +54,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
     constructor(
         private route: ActivatedRoute,
+        private trackingService: TrackingService,
         private snackBar: MatSnackBar,
         private appSettings: ApplicationSettingsService,
         private titleService: Title,
@@ -101,9 +103,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
                         previewImages,
                         detailItemCategories,
                         systemRequirements,
+                        telemetryUrl: data.settings.telemetryUrl + packageData.displayName
                     };
 
-                    this.titleService.setTitle(`${appConstants.getSiteTitle(data.settings.targetPlatformId)} - ${packageData.displayName}`);
+                    this.titleService.setTitle(`${appConstants.getSiteTitle(data.settings.targetPlatformId)} - ${packageData.displayName}`);    
+                    this.trackingService.track(this.route, { TemplateId: packageData.id });
 
                     return this.loadTemplate(templateId);
                 }),

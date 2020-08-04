@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AuthenticationFailureRequiredAdmin" xml:space="preserve">
+    <value>Required permissions are not available. Please contact your administrator.</value>
+  </data>
   <data name="CannotProvisionOntoExistingSite" xml:space="preserve">
-    <value>The URL provided is already in use and the current package cannot be provisioned onto an already existing site. Please provide a different URL.</value>
+    <value>The provided site is already in use and the current template cannot be provisioned onto an already existing site. Please provide a different URL.</value>
+  </data>
+  <data name="CannotProvisionOntoNotExistingSite" xml:space="preserve">
+    <value>This template is designed to be applied to an existing team site. To use it, you must provide an URL to an existing team site. &lt;a href='https://go.microsoft.com/fwlink/?linkid=2135144'&gt;Learn more.&lt;/a&gt;</value>
+  </data>
+  <data name="InvalidSiteTemplateDialogTitle" xml:space="preserve">
+    <value>Invalid target site template</value>
   </data>
   <data name="ProvisioningCompleted" xml:space="preserve">
     <value>Provisioning completed.</value>
@@ -132,8 +141,20 @@
   <data name="ProvisioningStatusTitle" xml:space="preserve">
     <value>Provisioning Status</value>
   </data>
+  <data name="SiteDoesntExistDialogTitle" xml:space="preserve">
+    <value>Can't add this template</value>
+  </data>
+  <data name="SiteExistsDialogTitle" xml:space="preserve">
+    <value>Can't add this template</value>
+  </data>
+  <data name="SiteExistsDialogTitleKind" xml:space="preserve">
+    <value>Important</value>
+  </data>
   <data name="TargetSiteAlreadyExists" xml:space="preserve">
-    <value>The URL provided is already in use. If you will proceed, the template will be applied on top of the already existing site and its contents might be replaced.</value>
+    <value>The provided site is already in use and the current template cannot be provisioned onto an already existing site. Please provide a different URL.</value>
+  </data>
+  <data name="TargetSiteAlreadyExistsKind" xml:space="preserve">
+    <value>This template will be applied to your existing team site. It will override layout and content displayed on your site home page. It will also add sample pages and documents. Existing content like documents, lists, other pages, and news posts will not be affected. &lt;a href='https://go.microsoft.com/fwlink/?linkid=2135144'&gt;Learn more.&lt;/a&gt;</value>
   </data>
   <data name="TargetSiteBaseTemplateIdIsInvalid" xml:space="preserve">
     <value>The URL provided is already in use and the target site is based on a template that is not valid for the current package. Please provide a different URL.</value>
