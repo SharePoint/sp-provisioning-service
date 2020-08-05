@@ -26,17 +26,14 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         public async Task AddOrUpdateAsync(string key, IDictionary<string, string> values)
         {
             // Prepare the SQL Connection
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString);
-
-            // Prepare the SQL Command
-            SqlCommand cmd = new SqlCommand("WriteSecurityTokens", connection);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("@KeyId", SqlDbType.NVarChar, 100).Value = key;
-            cmd.Parameters.Add("@Tokens", SqlDbType.NVarChar, -1).Value = JsonConvert.SerializeObject(new { values });
-
-            // Execute the command
-            using (connection)
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString))
             {
+                // Prepare the SQL Command
+                SqlCommand cmd = new SqlCommand("WriteSecurityTokens", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@KeyId", SqlDbType.NVarChar, 100).Value = key;
+                cmd.Parameters.Add("@Tokens", SqlDbType.NVarChar, -1).Value = JsonConvert.SerializeObject(new { values });
+
                 connection.Open();
                 await cmd.ExecuteNonQueryAsync();
             }
@@ -47,17 +44,15 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
             IDictionary<string, string> result = null;
 
             // Prepare the SQL Connection
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString);
-
-            // Prepare the SQL Command
-            SqlCommand cmd = new SqlCommand("ReadSecurityTokens", connection);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("@KeyId", SqlDbType.NVarChar, 100).Value = key;
-            cmd.Parameters.Add("@Tokens", SqlDbType.NVarChar, -1).Direction = ParameterDirection.Output;
-
-            // Execute the command
-            using (connection)
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString))
             {
+                // Prepare the SQL Command
+                SqlCommand cmd = new SqlCommand("ReadSecurityTokens", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@KeyId", SqlDbType.NVarChar, 100).Value = key;
+                cmd.Parameters.Add("@Tokens", SqlDbType.NVarChar, -1).Direction = ParameterDirection.Output;
+
+                // Execute the command
                 connection.Open();
                 await cmd.ExecuteNonQueryAsync();
 
@@ -66,11 +61,11 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
                 {
                     result = JsonConvert.DeserializeAnonymousType(values, new { values = new Dictionary<string, string>() })?.values;
                 }
-            }
 
-            if (result == null)
-            {
-                result = new Dictionary<string, string>();
+                if (result == null)
+                {
+                    result = new Dictionary<string, string>();
+                }
             }
 
             return result;
@@ -81,15 +76,13 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
             var result = new List<string>();
 
             // Prepare the SQL Connection
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString);
-
-            // Prepare the SQL Command
-            SqlCommand cmd = new SqlCommand("ListSecurityTokensKeys", connection);
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            // Execute the command
-            using (connection)
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString))
             {
+                // Prepare the SQL Command
+                SqlCommand cmd = new SqlCommand("ListSecurityTokensKeys", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                // Execute the command
                 connection.Open();
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
@@ -106,16 +99,14 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         public async Task RemoveKeyAsync(string key)
         {
             // Prepare the SQL Connection
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString);
-
-            // Prepare the SQL Command
-            SqlCommand cmd = new SqlCommand("RemoveSecurityTokens", connection);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("@KeyId", SqlDbType.NVarChar, 100).Value = key;
-
-            // Execute the command
-            using (connection)
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString))
             {
+                // Prepare the SQL Command
+                SqlCommand cmd = new SqlCommand("RemoveSecurityTokens", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@KeyId", SqlDbType.NVarChar, 100).Value = key;
+
+                // Execute the command
                 connection.Open();
                 await cmd.ExecuteNonQueryAsync();
             }
@@ -124,15 +115,13 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         public async Task CleanupTokensAsync()
         {
             // Prepare the SQL Connection
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString);
-
-            // Prepare the SQL Command
-            SqlCommand cmd = new SqlCommand("CleanupSecurityTokens", connection);
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            // Execute the command
-            using (connection)
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SqlVault"].ConnectionString))
             {
+                // Prepare the SQL Command
+                SqlCommand cmd = new SqlCommand("CleanupSecurityTokens", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                // Execute the command
                 connection.Open();
                 await cmd.ExecuteNonQueryAsync();
             }

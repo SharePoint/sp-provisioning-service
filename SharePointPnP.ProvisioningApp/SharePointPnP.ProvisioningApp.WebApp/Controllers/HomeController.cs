@@ -937,6 +937,12 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     {
                         var accessTokens = new Dictionary<String, String>();
 
+                        // Store the Graph Access Token for any further context cloning
+                        if (!string.IsNullOrEmpty(graphAccessToken))
+                        {
+                            accessTokens.Add(new Uri("https://graph.microsoft.com/").Authority, graphAccessToken);
+                        }
+
                         AuthenticationManager authManager = new AuthenticationManager();
                         var ptai = new ProvisioningTemplateApplyingInformation();
 
