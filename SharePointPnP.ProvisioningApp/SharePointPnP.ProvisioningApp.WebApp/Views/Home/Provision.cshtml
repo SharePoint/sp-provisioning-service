@@ -292,6 +292,7 @@
 
         // global state variable
         var focusingOutToProvision = false;
+        var forceSiteExists = false;
 
         // defines whether the field is disabled or not
         function fieldIsDisabled(field) {
@@ -518,6 +519,10 @@
 
                         // if the user clicked on the Provision button
                         if (focusingOutToProvision) {
+                            // reset the focusing out
+                            focusingOutToProvision = false;
+
+                            // try to start the actual provisioning
                             var provisionButton = document.getElementById('provisionButton');
                             if (provisionButton != null) {
                                 provisionButton.click();
@@ -954,6 +959,7 @@
                         if (e.relatedTarget != null && e.relatedTarget.id == "provisionButton") {
                             // store it in the state variable
                             focusingOutToProvision = true;
+                            forceSiteExists = true;
                         }
 
                         if (fullUrlIsValidForSPO(e.target.value)) {
@@ -1158,6 +1164,19 @@
                         siteExistsDialog.classList.toggle("hide");
 
                         hideDialogOverlay();
+
+                        // if the user clicked on the Provision button
+                        if (focusingOutToProvision && forceSiteExists) {
+                            // reset the focusing out
+                            focusingOutToProvision = false;
+                            forceSiteExists = false;
+
+                            // try to start the actual provisioning
+                            var provisionButton = document.getElementById('provisionButton');
+                            if (provisionButton != null) {
+                                provisionButton.click();
+                            }
+                        }
                     }
                 });
             }
