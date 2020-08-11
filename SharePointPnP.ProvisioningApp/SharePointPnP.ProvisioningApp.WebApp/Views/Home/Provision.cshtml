@@ -770,7 +770,12 @@
                 // check if the form fields are all valid
                 var siteUrlControls = document.getElementsByClassName('siteUrl');
                 for (var i = 0; i < siteUrlControls.length; i++) {
-                    isValid = isValid && !siteUrlControls[i].classList.contains("invalid");
+                    isValid = isValid && !siteUrlControls[i].classList.contains("invalid") && siteUrlControls[i].value != '';
+                }
+
+                var fullSiteUrlControls = document.getElementsByClassName('fullSiteUrl');
+                for (var i = 0; i < fullSiteUrlControls.length; i++) {
+                    isValid = isValid && !fullSiteUrlControls[i].classList.contains("invalid") && fullSiteUrlControls[i].value != '' && fullUrlIsValidForSPO(fullSiteUrlControls[i].value);
                 }
 
                 var regexEditorControls = document.getElementsByClassName('regexEditor');
