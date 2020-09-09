@@ -539,6 +539,10 @@
       <Project>{59d12a73-dfca-4e54-b15d-1958d0b1705d}</Project>
       <Name>SharePointPnP.ProvisioningApp.DomainModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharePointPnP.ProvisioningApp.Infrastructure\SharePointPnP.ProvisioningApp.Infrastructure.csproj">
+      <Project>{94821355-d352-4230-a3d8-884c2a4dd1f7}</Project>
+      <Name>SharePointPnP.ProvisioningApp.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharePointPnP.ProvisioningApp.ProvisioningPreRequirements\SharePointPnP.ProvisioningApp.ProvisioningPreRequirements.csproj">
       <Project>{0d32ab6f-bc40-4b78-a610-41dc3e9c2c24}</Project>
       <Name>SharePointPnP.ProvisioningApp.ProvisioningPreRequirements</Name>
