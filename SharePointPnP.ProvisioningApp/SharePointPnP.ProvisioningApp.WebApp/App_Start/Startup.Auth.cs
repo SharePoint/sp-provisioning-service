@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Web.Routing;
 using System.Web.Mvc;
 using SharePointPnP.ProvisioningApp.WebApp.Controllers;
+using Microsoft.IdentityModel.Protocols;
 
 namespace SharePointPnP.ProvisioningApp.WebApp
 {
@@ -113,6 +114,14 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                                 //context.AuthenticationTicket.Identity.AddClaims(
                                 //    ((System.Security.Claims.ClaimsIdentity)System.Threading.Thread.CurrentPrincipal.Identity).Claims);
                             }
+                        },
+                        MessageReceived = (context) =>
+                        {
+                            if (context?.ProtocolMessage?.Error == "access_denied")
+                            {
+                                throw new OpenIdConnectProtocolException(Resources.Messages.AuthenticationFailureRequiredAdmin);
+                            }
+                            return Task.FromResult(0);
                         },
                         AuthenticationFailed = (context) =>
                         {

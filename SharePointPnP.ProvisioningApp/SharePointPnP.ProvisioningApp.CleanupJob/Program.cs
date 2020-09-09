@@ -20,6 +20,7 @@ namespace SharePointPnP.ProvisioningApp.CleanupJob
             Task.Run(async () =>
             {
                 await CleanupKeyVault();
+                await CleanupSqlVault();
                 await CleanupSqlServer();
             }).GetAwaiter().GetResult();
         }
@@ -55,6 +56,17 @@ namespace SharePointPnP.ProvisioningApp.CleanupJob
                 // Delay to avoid throttling
                 System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
             }
+        }
+
+        private static async Task CleanupSqlVault()
+        {
+            Console.WriteLine("Cleaning up SQL Vault");
+
+            // This job cleans up the expired keys from the Sql Azure Database
+            var sqlVault = new SqlServerVaultService();
+            await sqlVault.CleanupTokensAsync();
+
+            Console.WriteLine("Cleaned SQL Vault");
         }
 
         private static async Task CleanupSqlServer()

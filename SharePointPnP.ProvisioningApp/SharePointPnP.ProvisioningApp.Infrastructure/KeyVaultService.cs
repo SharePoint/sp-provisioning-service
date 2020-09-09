@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SharePointPnP.ProvisioningApp.Infrastructure
 {
-    public class KeyVaultService
+    public class KeyVaultService: ISecurityTokensService
     {
         private const string SETTINGS_CLIENT_ID = "KeyVault:ClientId";
         private const string SETTINGS_VAULT_ADDRESS = "KeyVault:VaultAddress";
@@ -216,7 +216,6 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
 
             return (retrievedKey);
         }
-
 
         /// <summary>
         /// Removes a specific key

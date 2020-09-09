@@ -138,6 +138,11 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public Boolean ForceNewSite { get; set; }
 
         /// <summary>
+        /// Defines whether the package should be deployed on an already existing site collections only
+        /// </summary>
+        public Boolean ForceExistingSite { get; set; }
+
+        /// <summary>
         /// Defines whether the package should be visible on the public web site or not
         /// </summary>
         public Boolean Visible { get; set; } = true;

@@ -48,6 +48,11 @@ export class DetailsPageTemplateData {
      * The url for the provisioning form
      */
     provisioningFormUrl: string;
+
+    /**
+     * The url to use for hidden image in order to track the visit
+     */
+    telemetryUrl: string;
 }
 
 @Injectable()

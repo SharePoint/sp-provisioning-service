@@ -1,6 +1,6 @@
 # SharePoint Provisioning Service
 
-Code for the provisioning service hosted at http://provisioning.sharepointpnp.com. 
+Code for the provisioning service hosted at https://lookbook.microsoft.com/. 
 
 All the **SharePoint Look Book templates** hosted from this service are also open-sourced and are available from seperate [repository](https://github.com/SharePoint/sp-dev-provisioning-templates), which is the content source for the release information.
 

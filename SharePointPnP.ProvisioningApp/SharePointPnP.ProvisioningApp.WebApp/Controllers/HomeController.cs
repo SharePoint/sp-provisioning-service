@@ -36,7 +36,6 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using TenantAdmin = Microsoft.Online.SharePoint.TenantAdministration;
 
-
 namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 {
     [Authorize]
@@ -83,15 +82,21 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Provision(String packageId = null, String returnUrl = null)
+        public async Task<ActionResult> Provision(String packageId = null, String returnUrl = null, String source = null)
         {
             if (String.IsNullOrEmpty(packageId))
             {
                 throw new ArgumentNullException("packageId");
             }
 
+            if (String.IsNullOrEmpty(source))
+            {
+                source = "default";
+            }
+
             CheckBetaFlag();
             PrepareHeaderData(returnUrl);
+            LogSourceTracking(source, 0, Request.Url.ToString(), packageId); // 0 = PageView
 
             ProvisioningActionModel model = new ProvisioningActionModel();
 
@@ -133,6 +138,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             model.NotificationEmail = upn;
 
                             model.ReturnUrl = returnUrl;
+                            model.Source = source;
 
                             #endregion
 
@@ -176,6 +182,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         {
             CheckBetaFlag();
             PrepareHeaderData(model.ReturnUrl);
+            LogSourceTracking(model.Source, 1, Request.Url.ToString(), model.PackageId); // 1 = Provisioning
 
             if (model != null && ModelState.IsValid)
             {
@@ -301,7 +308,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult CategoriesMenu(String returnUrl = null)
+        [AllowAnonymous]
+        public ActionResult CategoriesMenu(String returnUrl = null, String source = null)
         {
             CategoriesMenuViewModel model = new CategoriesMenuViewModel();
 
@@ -327,7 +335,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             // Get all the Categories together with the Packages
             ProvisioningAppDBContext context = new ProvisioningAppDBContext();
 
-            var tempCategories = context.Categories
+            var queryCategories = context.Categories
                 .AsNoTracking()
                 .Where(c => c.Packages.Any(
                     p => p.Visible &&
@@ -336,9 +344,29 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 ))
                 .OrderBy(c => c.Order)
                 .Include("Packages")
+                .Include("Packages.TargetPlatforms")
                 .ToList();
 
-            model.Categories = tempCategories;
+            // Cleanup packages
+            var tempCategories = queryCategories;
+            for (int cIndex = 0; cIndex < tempCategories.Count; cIndex++)
+            {
+                var c = tempCategories[cIndex];
+                for (int pIndex = 0; pIndex < c.Packages.Count; pIndex++)
+                {
+                    var p = c.Packages[pIndex];
+                    if (!p.Visible ||
+                        (p.Preview && !testEnvironment) ||
+                        (!p.TargetPlatforms.Any(pf => pf.Id == targetPlatform)))
+                    {
+                        queryCategories[cIndex].Packages.RemoveAt(pIndex);
+                        pIndex--;
+                    }
+                }
+            }
+
+            model.Categories = queryCategories;
+            model.Source = source;
 
             return PartialView("CategoriesMenu", model);
         }
@@ -504,6 +532,30 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
 
             ViewBag.HeaderData = headerData;
+        }
+
+        private void LogSourceTracking(string source, int action, string url, string packageId)
+        {
+            // Prepare the Source Tracking event data
+            var sourceTrackingEvent = new
+            {
+                SourceId = source,
+                SourceTrackingAction = action,
+                SourceTrackingUrl = url,
+                SourceTrackingFromProduction = !ProvisioningAppManager.IsTestingEnvironment,
+                TemplateId = packageId
+            };
+
+            try
+            {
+                // Make the Azure Function call for reporting
+                HttpHelper.MakePostRequest(ConfigurationManager.AppSettings["SPPA:SourceTrackingFunctionUrl"],
+                    sourceTrackingEvent, "application/json", null);
+            }
+            catch
+            {
+                // Intentionally ignore any reporting issue
+            }
         }
 
         /// <summary>
@@ -674,6 +726,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 model.DisplayName = package.DisplayName;
                 model.ActionType = package.PackageType == PackageType.SiteCollection ? ActionType.Site : ActionType.Tenant;
                 model.ForceNewSite = package.ForceNewSite;
+                model.ForceExistingSite = package.ForceExistingSite;
                 model.MatchingSiteBaseTemplateId = package.MatchingSiteBaseTemplateId;
                 model.PackageImagePreviewUrl = GetTemplatePreviewImage(package);
 
@@ -706,6 +759,9 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         model.ProvisionRecap = provisionRecapPage.Content;
                     }
                 }
+
+                // Retrieve provisioning text messages
+                GetProvisionTextMessages(package, model);
 
                 // Retrieve parameters from the package/template definition
                 var packageFileUrl = new Uri(package.PackageUrl);
@@ -881,6 +937,16 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return (package.ImagePreviewUrl);
         }
 
+        private static void GetProvisionTextMessages(SharePointPnP.ProvisioningApp.DomainModel.Package package, ProvisioningActionModel model)
+        {
+            var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<SharePointPnP.ProvisioningApp.DomainModel.TemplateSettingsMetadata>(package.PropertiesMetadata);
+            if (settings?.displayInfo?.provisionMessages != null)
+            {
+                model.ProvisionPageTitle = settings.displayInfo.provisionMessages.provisionPageTitle;
+                model.ProvisionPageSubTitle = settings.displayInfo.provisionMessages.provisionPageSubTitle;
+                model.ProvisionPageText = settings.displayInfo.provisionMessages.provisionPageText;
+            }
+        }
 
         private async Task<CanProvisionResult> CanProvisionInternal(CanProvisionModel model, Boolean validateUser = true)
         {
@@ -933,6 +999,12 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     if (hierarchy != null)
                     {
                         var accessTokens = new Dictionary<String, String>();
+
+                        // Store the Graph Access Token for any further context cloning
+                        if (!string.IsNullOrEmpty(graphAccessToken))
+                        {
+                            accessTokens.Add(new Uri("https://graph.microsoft.com/").Authority, graphAccessToken);
+                        }
 
                         AuthenticationManager authManager = new AuthenticationManager();
                         var ptai = new ProvisioningTemplateApplyingInformation();

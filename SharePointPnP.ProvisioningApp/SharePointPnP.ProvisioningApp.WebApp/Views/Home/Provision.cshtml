@@ -51,7 +51,7 @@
             </div>*@
         <div class="pnp-form">
             <div class="pnp-svcteaser-inner">
-                @using (Html.BeginForm("Provision", "Home", new { returnUrl = Model.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("Provision", "Home", new { returnUrl = Model.ReturnUrl, source = Model.Source }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
 
@@ -67,8 +67,10 @@
                     @Html.HiddenFor(m => m.TargetSiteAlreadyExists)
                     @Html.HiddenFor(m => m.TargetSiteBaseTemplateId)
                     @Html.HiddenFor(m => m.ForceNewSite)
+                    @Html.HiddenFor(m => m.ForceExistingSite)
                     @Html.HiddenFor(m => m.MatchingSiteBaseTemplateId)
                     @Html.HiddenFor(m => m.ReturnUrl)
+                    @Html.HiddenFor(m => m.Source)
 
                 <table>
                     <tr>
@@ -90,10 +92,10 @@
                                 }
                                 else
                                 {
-                                    <div class="title">Great choice!</div>
-                                    <div class="subtitle">We just need a bit of information before we start provisioning</div>
+                                    <div class="title">@(!String.IsNullOrEmpty(Model.ProvisionPageTitle) ? Html.Raw(Model.ProvisionPageTitle) : Html.Raw("Great choice!"))</div>
+                                    <div class="subtitle">@(!String.IsNullOrEmpty(Model.ProvisionPageSubTitle) ? Html.Raw(Model.ProvisionPageSubTitle) : Html.Raw("We just need a bit of information before we start provisioning"))</div>
                                     <p class="normal-text">
-                                        The following settings are used for your example site. You can keep them as is, or change them to suit your needs.
+                                        @(!String.IsNullOrEmpty(Model.ProvisionPageText) ? Html.Raw(Model.ProvisionPageText) : Html.Raw("The following settings are used for your example site. You can keep them as is, or change them to suit your needs."))
                                     </p>
                                 }
                             </div>
@@ -130,7 +132,7 @@
                                         <th>
                                             <input type="hidden" name="PackageProperties[@i].Key" value="@parameter.Key" />
                                             <label class="ms-Label pnp-field-label" for="PackageProperties[@i].Key">@(Model.MetadataProperties[parameter.Key].Caption)</label>
-                                            <div class="pnp-field-description">@(Model.MetadataProperties[parameter.Key].Description)</div>
+                                            <div class="pnp-field-description">@(Html.Raw(Model.MetadataProperties[parameter.Key].Description))</div>
                                         </th>
                                         <td>
                                             @if (String.IsNullOrEmpty(Model.MetadataProperties[parameter.Key].Editor))
@@ -143,9 +145,8 @@
                                             }
                                         </td>
                                     </tr>
+                                    i++;
                                 }
-
-                                i++;
                             }
                         }
 
@@ -170,20 +171,69 @@
                                     @Html.DropDownListFor(m => m.SelectedTheme, GetAvailableThemes(), new { @class = "pnp-tb" })
                                 </td>
                             </tr>
+                            @*<tr>
+                                    <th>
+                                        Apply custom theme
+                                        <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
+                                    </th>
+                                    <td>
+                                        @Html.EditorFor(m => m.ApplyCustomTheme)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemePrimaryColor)
+                                        <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
+                                    </th>
+                                    <td>
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemeBodyTextColor)
+                                        <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
+                                    </th>
+                                    <td>
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
+                                        <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
+                                    </th>
+                                    <td>
+                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
+                                        @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
+                                    </td>
+                                </tr>*@
+                            @*
+                                <tr>
+                                    <th>
+                                        <label for="CustomLogoFile">Logo</label>
+                                    </th>
+                                    <td>
+                                        <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
+                                    </td>
+                                </tr>
+                            *@
                         }
-                    }
-
-                    <tr>
-                        <td>
-                        </td>
-                        <td class="provisioning-commands">
-                            <input type="button" id="cancelButton" class="pnp-btn-provision slb-button" value="Cancel" />
-                            @if (Model.PreRequirementIssues == null || Model.PreRequirementIssues.Count == 0)
-                            {
-                                <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="Provision" />
-                            }
-                        </td>
-                    </tr>
+                        @*<tr>
+                                <td colspan="2">
+                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                                </td>
+                            </tr>*@
+                        <tr>
+                            <td>
+                            </td>
+                            <td class="provisioning-commands">
+                                <input type="button" id="cancelButton" class="pnp-btn-provision slb-button" value="Cancel" />
+                                <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="@(Model.ForceExistingSite ? "Add to your site" : "Provision")" />
+                            </td>
+                        </tr>
 
                 </table>
                 }
@@ -212,12 +262,12 @@
 </div>
 
 <div id="siteExistsDialog" class="siteExistsDialog hide">
-    <span onclick="document.getElementById('siteExistsCancelDialog').click()" class="dialogCloseButton topright">&times;</span>
-    <h2>Site URL already in use</h2>
+    <span onclick="document.getElementById('siteExistsConfirmDialog').click()" class="dialogCloseButton topright">&times;</span>
+    <h2><span id="siteExistsDialogTitle">Site URL already in use</span></h2>
     <div id="siteExistsDialogContent" class="siteExistsDialogContent"></div>
     <div class="dialog-commands">
-        <input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision slb-button" value="Cancel" />
-        <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="Confirm" />
+        @*<input type="button" id="siteExistsCancelDialog" class="pnp-btn-provision slb-button" value="Cancel" />*@
+        <input type="button" id="siteExistsConfirmDialog" class="pnp-btn-provision okDialog slb-primary-button" value="OK" />
     </div>
 </div>
 
@@ -239,14 +289,15 @@
 
 @section scripts
 {
-        <!-- build:js scripts/main.js -->
-        <script src="/app/scripts/main.js"></script>
-        <!-- endbuild -->
+    <!-- build:js scripts/main.js -->
+    @*<script src="/app/scripts/main.js"></script>*@
+    <!-- endbuild -->
 
-        <script>
+<script>
 
         // global state variable
         var focusingOutToProvision = false;
+        var forceSiteExists = false;
 
         // defines whether the field is disabled or not
         function fieldIsDisabled(field) {
@@ -376,14 +427,20 @@
             }
         }
 
-        function showSiteExistsDialog(message) {
+        function showSiteExistsDialog(title, message) {
             var siteExistsDialog = document.getElementById('siteExistsDialog');
+
             if (siteExistsDialog && siteExistsDialog.classList.contains('hide')) {
                 siteExistsDialog.classList.toggle('hide');
                 siteExistsDialog.classList.toggle('show');
 
+                var siteExistsDialogTitle = document.getElementById('siteExistsDialogTitle');
+                if (title != undefined && title != "") {
+                    siteExistsDialogTitle.innerHTML = title;
+                }
+
                 var siteExistsDialogContent = document.getElementById('siteExistsDialogContent');
-                siteExistsDialogContent.innerHTML = ((message != undefined && message != "") ? message : "@Resources.Messages.TargetSiteAlreadyExists") + "<br/>&nbsp;";
+                siteExistsDialogContent.innerHTML = ((message != undefined && message != "") ? message : "@Html.Raw(Resources.Messages.TargetSiteAlreadyExists)") + "<br/>&nbsp;";
 
                 showDialogOverlay();
             }
@@ -416,6 +473,16 @@
                 url.length > 0);
         }
 
+        function fullUrlIsValidForSPO(fullUrl) {
+
+            // regex for the full SPO URL
+            var fullUrlregex = new RegExp(/^(?:https:\/\/)[\w.-]+(?:\.[\w\.-]+)+\/(sites|teams)\/[\w\-\._~:\/?#[\]@@!\$&'\(\)\*\+,;=.]+$/, 'i');
+
+            // exclude all invalid URLs
+            return (fullUrl.match(fullUrlregex) &&
+                fullUrl.length > 0);
+        }
+
         // determines if the the URL is available in SPO or not, using a backend API
         function urlIsAvailableInSPO(field, url) {
             fetch('../home/urlIsAvailableInSPO?url=' + encodeURI(url), {
@@ -429,8 +496,9 @@
                     // Share the resulting values back with the back-end engine
                     document.getElementById("TargetSiteAlreadyExists").value = !data.result;
                     document.getElementById("TargetSiteBaseTemplateId").value = data.baseTemplateId;
+                    var forceExistingSite = document.getElementById("ForceExistingSite").value.toLowerCase() == "true";
 
-                    if (data.result != true) {
+                    if (data.result != true || forceExistingSite) {
 
                         // hide the working on it dialog
                         hideWorkingOnIt();
@@ -449,13 +517,17 @@
                         toggleFormSubmitStatus();
 
                         // show the Site already exists dialog
-                        showSiteExistsDialog(existingSiteValidation.message);
+                        showSiteExistsDialog(existingSiteValidation.title, existingSiteValidation.message);
                     }
                     else {
                         hideWorkingOnIt();
 
                         // if the user clicked on the Provision button
                         if (focusingOutToProvision) {
+                            // reset the focusing out
+                            focusingOutToProvision = false;
+
+                            // try to start the actual provisioning
                             var provisionButton = document.getElementById('provisionButton');
                             if (provisionButton != null) {
                                 provisionButton.click();
@@ -472,12 +544,32 @@
 
             var siteAlreadyExists = document.getElementById("TargetSiteAlreadyExists").value.toLowerCase() == "true";
             var forceNewSite = document.getElementById("ForceNewSite").value.toLowerCase() == "true";
+            var forceExistingSite = document.getElementById("ForceExistingSite").value.toLowerCase() == "true";
 
             // First of all double-check if the site has to be forcibly created
             if (siteAlreadyExists && forceNewSite) {
                 return ({
                     blockProvisioning : true,
-                    message: "@Resources.Messages.CannotProvisionOntoExistingSite"
+                    message: "@Html.Raw(Resources.Messages.CannotProvisionOntoExistingSite)",
+                    title: "@Html.Raw(Resources.Messages.SiteExistsDialogTitle)"
+                });
+            }
+
+            // Secondly double-check if the site has to exist
+            if (!siteAlreadyExists && forceExistingSite) {
+                return ({
+                    blockProvisioning : true,
+                    message: "@Html.Raw(Resources.Messages.CannotProvisionOntoNotExistingSite)",
+                    title: "@Html.Raw(Resources.Messages.SiteDoesntExistDialogTitle)"
+                });
+            }
+
+            // Then double-check if the site has to exist and it does effectively exist
+            if (siteAlreadyExists && forceExistingSite) {
+                return ({
+                    blockProvisioning : false,
+                    message: "@Html.Raw(Resources.Messages.TargetSiteAlreadyExistsKind)",
+                    title: "@Html.Raw(Resources.Messages.SiteExistsDialogTitleKind)"
                 });
             }
 
@@ -492,7 +584,8 @@
                     existingSiteBaseTemplateId != matchingSiteBaseTemplateId) {
                     return ({
                         blockProvisioning: true,
-                        message: "@Resources.Messages.TargetSiteBaseTemplateIdIsInvalid"
+                        message: "@Html.Raw(Resources.Messages.TargetSiteBaseTemplateIdIsInvalid)",
+                        title: "@Html.Raw(Resources.Messages.InvalidSiteTemplateDialogTitle)"
                     });
                 }
             }
@@ -500,7 +593,8 @@
             // otherwise just show a kind warning
             return ({
                 blockProvisioning: false,
-                message: "@Resources.Messages.TargetSiteAlreadyExists"
+                message: "@Html.Raw(Resources.Messages.TargetSiteAlreadyExists)",
+                title: "@Html.Raw(Resources.Messages.SiteExistsDialogTitle)"
             });
         }
 
@@ -511,7 +605,7 @@
             disableProvisionButton();
 
             // show the Working on it dialog
-            showWorkingOnIt("@Resources.Messages.ValidatingPreRequisites");
+            showWorkingOnIt("@Html.Raw(Resources.Messages.ValidatingPreRequisites)");
 
             fetch('../home/CanProvisionPackage', {
                 headers: {
@@ -681,7 +775,12 @@
                 // check if the form fields are all valid
                 var siteUrlControls = document.getElementsByClassName('siteUrl');
                 for (var i = 0; i < siteUrlControls.length; i++) {
-                    isValid = isValid && !siteUrlControls[i].classList.contains("invalid");
+                    isValid = isValid && !siteUrlControls[i].classList.contains("invalid") && siteUrlControls[i].value != '';
+                }
+
+                var fullSiteUrlControls = document.getElementsByClassName('fullSiteUrl');
+                for (var i = 0; i < fullSiteUrlControls.length; i++) {
+                    isValid = isValid && !fullSiteUrlControls[i].classList.contains("invalid") && fullSiteUrlControls[i].value != '' && fullUrlIsValidForSPO(fullSiteUrlControls[i].value);
                 }
 
                 var regexEditorControls = document.getElementsByClassName('regexEditor');
@@ -774,7 +873,7 @@
                             }
 
                             // show the Working on it dialog
-                            showWorkingOnIt("@Resources.Messages.ValidatingSiteUrl");
+                            showWorkingOnIt("@Html.Raw(Resources.Messages.ValidatingSiteUrl)");
 
                             // check if the URL is available
                             urlIsAvailableInSPO(e.target, e.target.previousElementSibling.value + e.target.value);
@@ -819,6 +918,79 @@
                             // add the validation exception
                             if (!e.target.nextElementSibling.classList.contains("invalid")) {
                                 e.target.nextElementSibling.classList.toggle("invalid");
+                            }
+                        }
+
+                        // toggle the Provision button accordingly
+                        toggleFormSubmitStatus();
+                    });
+                }
+            }
+
+            // validation events for any Full URL control fields
+            var fullSiteUrlControls = document.getElementsByClassName('fullSiteUrl');
+            if (fullSiteUrlControls != null && fullSiteUrlControls.length > 0) {
+                for (var i = 0; i < fullSiteUrlControls.length; i++) {
+                    fullSiteUrlControls[i].addEventListener('keyup', function (e) {
+
+                        // get the relative URL of the target site
+                        var relativeSiteUrl = e.target.value.substring(@Model.SPORootSiteUrl.Length);
+
+                        if (fullUrlIsValidForSPO(e.target.value)) {
+                            // remove the validation exception, if any
+                            if (e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+                        else {
+                            // add the validation exception
+                            if (!e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+                        }
+
+                        // toggle the Provision button accordingly
+                        toggleFormSubmitStatus();
+
+                        // save the new value in the supporting hidden field
+                        e.target.nextElementSibling.value = relativeSiteUrl;
+                    });
+                    fullSiteUrlControls[i].addEventListener('focusout', function (e) {
+
+                        // Double check if the URL starts with https://
+                        if (!e.target.value.startsWith("https://") && !e.target.value.startsWith("http://")) {
+                            e.target.value = "https://" + e.target.value;
+                        }
+
+                        // get the relative URL of the target site
+                        var relativeSiteUrl = e.target.value.substring(@Model.SPORootSiteUrl.Length);
+
+                        // if we lost the focus because the user clicked on the Provision button
+                        if (e.relatedTarget != null && e.relatedTarget.id == "provisionButton") {
+                            // store it in the state variable
+                            focusingOutToProvision = true;
+                            forceSiteExists = true;
+                        }
+
+                        if (fullUrlIsValidForSPO(e.target.value)) {
+                            // remove the validation exception, if any
+                            if (e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
+                            }
+
+                            // show the Working on it dialog
+                            showWorkingOnIt("@Html.Raw(Resources.Messages.ValidatingSiteUrl)");
+
+                            // check if the URL is available
+                            urlIsAvailableInSPO(e.target, relativeSiteUrl);
+
+                            // save the new value in the supporting hidden field
+                            e.target.nextElementSibling.value = relativeSiteUrl;
+                        }
+                        else {
+                            // add the validation exception
+                            if (!e.target.classList.contains("invalid")) {
+                                e.target.classList.toggle("invalid");
                             }
                         }
 
@@ -1002,6 +1174,19 @@
                         siteExistsDialog.classList.toggle("hide");
 
                         hideDialogOverlay();
+
+                        // if the user clicked on the Provision button
+                        if (focusingOutToProvision && forceSiteExists) {
+                            // reset the focusing out
+                            focusingOutToProvision = false;
+                            forceSiteExists = false;
+
+                            // try to start the actual provisioning
+                            var provisionButton = document.getElementById('provisionButton');
+                            if (provisionButton != null) {
+                                provisionButton.click();
+                            }
+                        }
                     }
                 });
             }
@@ -1085,8 +1270,8 @@
             }*@
         });
 
-        </script>
-    }
+</script>
+}
 
-    <img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />
+<img src="https://telemetry.sharepointpnp.com/provisioning-service/provisioning-page" />
 

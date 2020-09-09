@@ -15,6 +15,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
     /// </summary>
     public class TemplateSettings
     {
+        public string templateId { get; set; }
+
         public string @abstract { get; set; }
 
         public int sortOrder { get; set; }
@@ -32,6 +34,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public string matchingSiteBaseTemplateId { get; set; }
 
         public bool forceNewSite { get; set; }
+
+        public bool forceExistingSite { get; set; }
 
         public bool visible { get; set; }
 
@@ -72,11 +76,22 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
 
         public string[] descriptionParagraphs { get; set; }
 
+        public TemplateSettingsMetadataDisplayInfoProvisionMessages provisionMessages { get; set; }
+
         public TemplateSettingsMetadataDisplayInfoPreviewImage[] previewImages { get; set; }
 
         public TemplateSettingsMetadataDisplayInfoDetailItemCategory[] detailItemCategories { get; set; }
 
         public TemplateSettingsMetadataDisplayInfoSystemRequirement[] systemRequirements { get; set; }
+    }
+
+    public class TemplateSettingsMetadataDisplayInfoProvisionMessages
+    {
+        public string provisionPageTitle { get; set; }
+
+        public string provisionPageSubTitle { get; set; }
+
+        public string provisionPageText { get; set; }
     }
 
     public class TemplateSettingsMetadataDisplayInfoPreviewImage

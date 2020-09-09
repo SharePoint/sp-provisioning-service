@@ -5,11 +5,17 @@ import { PackageResolver } from './core/resolvers/package-resolver.service';
 
 import { HomeComponent } from './home/home.component';
 import { DetailsComponent } from './details/details.component';
+import { ServiceDescriptionComponent } from './service-description/service-description.component';
 
 const routes: Routes = [
     {
         path: '',
         component: HomeComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'service-description',
+        component: ServiceDescriptionComponent,
         pathMatch: 'full'
     },
     {
@@ -32,7 +38,8 @@ const routes: Routes = [
     imports: [
         RouterModule.forRoot(routes, {
             scrollPositionRestoration: 'enabled',
-            anchorScrolling: 'enabled'
+            anchorScrolling: 'enabled',
+            paramsInheritanceStrategy: "always"
         })
     ],
     exports: [

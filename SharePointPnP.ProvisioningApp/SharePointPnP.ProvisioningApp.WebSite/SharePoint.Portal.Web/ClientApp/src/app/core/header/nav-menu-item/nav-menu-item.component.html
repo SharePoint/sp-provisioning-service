@@ -2,6 +2,7 @@
     <ng-template [ngIf]="!item.subItems || !item.subItems.length" [ngIfElse]="hasSubItemsTemplate">
         <div (mouseenter)="handleMouseEnterLink()">
             <a *ngIf="item.routerLink; else externalLinkTemplate" [routerLink]="item.routerLink"
+                queryParamsHandling="merge"
                 (click)="handleItemSelected($event, item)">
                 <span>{{ item.name }}</span>
             </a>

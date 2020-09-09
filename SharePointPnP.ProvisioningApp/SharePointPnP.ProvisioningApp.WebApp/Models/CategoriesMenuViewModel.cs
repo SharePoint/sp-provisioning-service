@@ -15,5 +15,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Models
         public List<Category> Categories { get; set; }
 
         public String BaseLinksUrl { get; set; }
+
+        public String Source { get; set; }
     }
 }
