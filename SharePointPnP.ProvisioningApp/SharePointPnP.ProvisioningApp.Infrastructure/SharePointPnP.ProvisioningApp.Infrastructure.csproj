@@ -372,7 +372,6 @@
     <Compile Include="HttpHelper.cs" />
     <Compile Include="IAccessTokenProvider.cs" />
     <Compile Include="ISecurityTokensService.cs" />
-    <Compile Include="ITemplatesProvider.cs" />
     <Compile Include="KeyVaultService.cs" />
     <Compile Include="Mail\MailBodyHandler.cs" />
     <Compile Include="Mail\MailHandler.cs" />
