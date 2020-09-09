@@ -490,10 +490,6 @@
       <Project>{59d12a73-dfca-4e54-b15d-1958d0b1705d}</Project>
       <Name>SharePointPnP.ProvisioningApp.DomainModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharePointPnP.ProvisioningApp.Infrastructure\SharePointPnP.ProvisioningApp.Infrastructure.csproj">
-      <Project>{94821355-d352-4230-a3d8-884c2a4dd1f7}</Project>
-      <Name>SharePointPnP.ProvisioningApp.Infrastructure</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FriendlyErrorMessages.resx">
