@@ -124,6 +124,7 @@ publish/
 *.pubxml
 *.pubxml.user
 *.publishproj
+*.arm.json
 **/PublishProfiles/*
 
 # NuGet Packages Directory

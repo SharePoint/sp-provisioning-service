@@ -174,6 +174,12 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public String ProvisionPageText { get; set; }
+
+        [JsonIgnore]
+        public List<ProvisioningPreRequirement> ProvisioningPreRequirements { get; set; }
+
+        [JsonIgnore]
+        public List<String> PreRequirementIssues { get; set; }
     }
 
     /// <summary>

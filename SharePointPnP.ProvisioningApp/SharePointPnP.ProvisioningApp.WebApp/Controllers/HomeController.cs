@@ -58,7 +58,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             HttpContext.GetOwinContext().Authentication.SignOut(HttpContext.GetOwinContext()
                            .Authentication.GetAuthenticationTypes()
                            .Select(o => o.AuthenticationType).ToArray());
-            
+
             return Redirect("/");
         }
 
@@ -156,6 +156,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             }
 
                             LoadPackageDataIntoModel(packageId, model);
+
+                            if (model.ProvisioningPreRequirements != null)
+                            {
+                                await CheckPreRequirements(model, tokenId);
+                            }
                         }
                         else
                         {
@@ -495,7 +500,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     return ThrowInternalServerError(ex);
                 }
             }
-            
+
             // Return to the requested URL
             return Json(provisionResponse);
         }
@@ -787,6 +792,14 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                                         editor = "",
                                         editorSettings = "",
                                     }
+                                },
+                    preRequirements = new[] {
+                                    new {
+                                        assemblyName = "",
+                                        typeName = "",
+                                        configuration = "",
+                                        preRequirementContent = "",
+                                    }
                                 }
                 };
 
@@ -803,6 +816,19 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                     });
 
                 model.MetadataPropertiesJson = JsonConvert.SerializeObject(model.MetadataProperties);
+
+                if (metadataProperties.preRequirements != null && metadataProperties.preRequirements.Length > 0)
+                {
+                    model.ProvisioningPreRequirements = metadataProperties
+                        .preRequirements
+                        .Select(i => new ProvisioningPreRequirement 
+                        { 
+                            AssemblyName = i.assemblyName, 
+                            TypeName = i.typeName,
+                            Configuration = i.configuration,
+                            PreRequirementContent = context.ContentPages.FirstOrDefault(cp => cp.Id == i.preRequirementContent)?.Content
+                        }).ToList();
+                }
 
                 // Get the service description content
                 var contentPage = context.ContentPages.FirstOrDefault(cp => cp.Id == "system/pages/ProvisioningIntro.md");
@@ -830,6 +856,43 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             {
                 throw new ApplicationException("Invalid request, the requested package/template is not available!");
             }
+        }
+
+        private async Task CheckPreRequirements(ProvisioningActionModel model, string tokenId)
+        {
+            var issues = new List<string>();
+
+            var canProvisionModel = new CanProvisionModel
+            {
+                PackageId = model.PackageId,
+                TenantId = model.TenantId,
+                UserPrincipalName = model.UserPrincipalName,
+                UserIsSPOAdmin = model.UserIsSPOAdmin,
+                UserIsTenantAdmin = model.UserIsTenantAdmin,
+                SPORootSiteUrl = model.SPORootSiteUrl,
+            };
+
+            foreach (var pr in model.ProvisioningPreRequirements)
+            {
+                // Try to get the type of the PreRequirements class
+                var preReqType = Type.GetType($"{pr.TypeName}, {pr.AssemblyName}", true);
+                var preReq = Activator.CreateInstance(preReqType) as IProvisioningPreRequirement;
+
+                // If we've got the object instance
+                if (preReq != null)
+                {
+                    // Validate the Pre-Requirement
+                    var requirementFullfilled = await preReq.Validate(canProvisionModel, tokenId, pr.Configuration);
+                    if (!requirementFullfilled)
+                    {
+                        // Collect any Pre-Requirement result
+                        issues.Add(pr.PreRequirementContent);
+                    }
+                }
+            }
+
+            // Return the whole set of results, if any
+            model.PreRequirementIssues = issues;
         }
 
         private static async Task LoadThemesFromTenant(ProvisioningActionModel model, string tokenId, SharePointSite rootSite, string graphAccessToken)

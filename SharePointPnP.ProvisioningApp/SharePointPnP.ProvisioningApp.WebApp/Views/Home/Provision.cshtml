@@ -72,26 +72,46 @@
                     @Html.HiddenFor(m => m.ReturnUrl)
                     @Html.HiddenFor(m => m.Source)
 
-                    <table>
-                        <tr>
-                            <th class="provisioning-local-header-box">
-                                <div class="provisioning-local-header">
+                <table>
+                    <tr>
+                        <th class="provisioning-local-header-box">
+                            <div class="provisioning-local-header">
+                                <!-- Pre-Requirements -->
+                                @if (Model.PreRequirementIssues != null && Model.PreRequirementIssues.Count > 0)
+                                {
+                                    <div class="title">Pre-requirements not fulfilled!</div>
+
+                                    @*<div>Issues #: @Model.PreRequirementIssues.Count</div>*@
+
+                                    <div class="normal-text">
+                                        @foreach (var preReqIssue in Model.PreRequirementIssues)
+                                        {
+                                            @Html.Raw(preReqIssue);
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
                                     <div class="title">@(!String.IsNullOrEmpty(Model.ProvisionPageTitle) ? Html.Raw(Model.ProvisionPageTitle) : Html.Raw("Great choice!"))</div>
                                     <div class="subtitle">@(!String.IsNullOrEmpty(Model.ProvisionPageSubTitle) ? Html.Raw(Model.ProvisionPageSubTitle) : Html.Raw("We just need a bit of information before we start provisioning"))</div>
                                     <p class="normal-text">
                                         @(!String.IsNullOrEmpty(Model.ProvisionPageText) ? Html.Raw(Model.ProvisionPageText) : Html.Raw("The following settings are used for your example site. You can keep them as is, or change them to suit your needs."))
                                     </p>
+                                }
+                            </div>
+                        </th>
+                        <td>
+                            <div class="hero-image aspect-ratio-wrapper">
+                                <div class="aspect-ratio-image-wrapper">
+                                    <img src="@Model.PackageImagePreviewUrl"
+                                         alt="@Model.DisplayName">
                                 </div>
-                            </th>
-                            <td>
-                                <div class="hero-image aspect-ratio-wrapper">
-                                    <div class="aspect-ratio-image-wrapper">
-                                        <img src="@Model.PackageImagePreviewUrl"
-                                             alt="@Model.DisplayName">
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                    </tr>
+
+                    @if (Model.PreRequirementIssues == null || Model.PreRequirementIssues.Count == 0)
+                    {
                         <tr>
                             <th>
                                 @Html.LabelFor(m => m.NotificationEmail)
@@ -101,16 +121,8 @@
                                 @Html.TextBoxFor(m => m.NotificationEmail, new { @class = "pnp-tb" })
                             </td>
                         </tr>
-                        @if (Model.PackageProperties != null && Model.PackageProperties.Count > 0)
+
                         {
-                            @*<tr>
-                                    <td colspan="2">
-                                        <div class="sectionTitle">Template Properties</div>
-                                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                                    </td>
-                                </tr>*@
-                        }
-                        @{
                             int i = 0;
                             foreach (var parameter in Model.PackageProperties)
                             {
@@ -138,15 +150,9 @@
                             }
                         }
 
-                        @if ((Model.UserIsTenantAdmin || Model.UserIsSPOAdmin) &&
+                        if ((Model.UserIsTenantAdmin || Model.UserIsSPOAdmin) &&
                             Model.Themes != null && Model.Themes.Count > 0)
                         {
-                            @*<tr>
-                                    <td colspan="2">
-                                        <div class="sectionTitle">Custom Theme Settings</div>
-                                        <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                                    </td>
-                                </tr>*@
                             <tr>
                                 <th>
                                     Theme
@@ -228,10 +234,9 @@
                                 <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="@(Model.ForceExistingSite ? "Add to your site" : "Provision")" />
                             </td>
                         </tr>
-
-                    </table>
+                    }
+                </table>
                 }
-                </
             </div>
         </div>
     </div>

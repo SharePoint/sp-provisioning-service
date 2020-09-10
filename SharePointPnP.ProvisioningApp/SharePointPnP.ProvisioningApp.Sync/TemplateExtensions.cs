@@ -39,5 +39,11 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             return items.OfType<ITemplateFile>()
                    .FirstOrDefault(c => names.Contains(Path.GetFileName(c.Path), StringComparer.OrdinalIgnoreCase));
         }
+
+        public static IEnumerable<ITemplateItem> FindFiles(this IEnumerable<ITemplateItem> items, Func<ITemplateItem, bool> predicate)
+        {
+            return items.OfType<ITemplateFile>()
+                   .Where(predicate);
+        }
     }
 }
