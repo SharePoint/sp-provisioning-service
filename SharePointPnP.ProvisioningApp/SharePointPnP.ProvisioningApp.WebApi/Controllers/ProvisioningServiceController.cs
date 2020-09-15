@@ -239,6 +239,7 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
                         request.PackageProperties = item.Parameters;
                         request.ChildrenItems = childrenItems;
                         request.Webhooks = provisionRequest.Webhooks;
+                        request.Source = "odp"; // This is hard coded, because ODP is the only system consuming this tailor made API
 
                         // Enqueue the provisioning request
                         await ProvisioningAppManager.EnqueueProvisioningRequest(request);
