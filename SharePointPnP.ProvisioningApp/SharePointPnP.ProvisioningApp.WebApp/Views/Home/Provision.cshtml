@@ -780,7 +780,7 @@
 
                 var fullSiteUrlControls = document.getElementsByClassName('fullSiteUrl');
                 for (var i = 0; i < fullSiteUrlControls.length; i++) {
-                    isValid = isValid && !fullSiteUrlControls[i].classList.contains("invalid") && fullSiteUrlControls[i].value != '' && fullUrlIsValidForSPO(fullSiteUrlControls[i].value);
+                    isValid = isValid && !fullSiteUrlControls[i].classList.contains("invalid") && (fullSiteUrlControls[i].value == '' || (fullSiteUrlControls[i].value != '' && fullUrlIsValidForSPO(fullSiteUrlControls[i].value)));
                 }
 
                 var regexEditorControls = document.getElementsByClassName('regexEditor');
