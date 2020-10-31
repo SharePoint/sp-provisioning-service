@@ -143,11 +143,15 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
         {
             using (ProvisioningAppDBContext context = GetContext())
             {
-                // Find the category file
+                // Find the content pages files
                 var files = await _cloneProvider.GetAsync(CONTENT_PATH, WriteLog);
                 if (files == null || files.Count() == 0) throw new InvalidOperationException($"Cannot find files in folder {CONTENT_PATH}");
 
-                var existingDbContentPages = context.ContentPages.ToDictionary(cp => cp.Id, StringComparer.OrdinalIgnoreCase);
+                // Consider system pages only
+                var existingDbContentPages = context.ContentPages
+                    .ToList()
+                    .Where(cp => cp.Id.StartsWith("system", StringComparison.InvariantCultureIgnoreCase))
+                    .ToDictionary(cp => cp.Id, StringComparer.OrdinalIgnoreCase);
                 foreach (ITemplateFile file in files)
                 {
                     // Get the file content
@@ -173,7 +177,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                     existingDbContentPages.Remove(file.Path);
                 }
 
-                // Remove exceed categories
+                // Remove leftover pages
                 var objectStateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
                 foreach (var dbContentPage in existingDbContentPages)
                 {
@@ -609,6 +613,53 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
             package.Instructions = instructionsContent;
             package.ProvisionRecap = provisioningContent;
 
+            // Read any pre-requirement content files
+            var preRequirementContents = items.FindFiles(i => 
+                i.Path.ToLower().Contains("prerequirement-") && 
+                i.Path.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase));
+
+            // Process content for pre-requirements, if any
+            if (preRequirementContents != null)
+            {
+                // Get the existing content pages for the current folder
+                var existingDbContentPages = context.ContentPages
+                    .ToList()
+                    .Where(cp => cp.Id.StartsWith(folder.Path, StringComparison.InvariantCultureIgnoreCase))
+                    .ToDictionary(cp => cp.Id, StringComparer.OrdinalIgnoreCase);
+
+                foreach (var prc in preRequirementContents)
+                {
+                    // Get the file content
+                    String fileContent = await GetHtmlContentAsync(folder.Path, prc.Path.Substring(prc.Path.LastIndexOf('/') + 1));
+
+                    // Update Content Page, if already exists
+                    if (existingDbContentPages.TryGetValue(prc.Path, out ContentPage dbContentPage))
+                    {
+                        dbContentPage.Content = fileContent;
+                        context.Entry(dbContentPage).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        // Add new Content Page
+                        dbContentPage = new ContentPage
+                        {
+                            Id = prc.Path,
+                            Content = fileContent,
+                        };
+                        context.Entry(dbContentPage).State = EntityState.Added;
+                    }
+
+                    existingDbContentPages.Remove(prc.Path);
+                }
+
+                // Remove leftover content pages, if any
+                var objectStateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
+                foreach (var dbContentPage in existingDbContentPages)
+                {
+                    context.Entry(dbContentPage.Value).State = EntityState.Deleted;
+                }
+            }
+
             // Find the categories to apply
             if (settings.categories != null && settings.categories.Length > 0)
             {
@@ -641,7 +692,7 @@ namespace SharePointPnP.ProvisioningApp.Synchronization
                 package.TargetPlatforms.AddRange(dbPlatforms);
             }
 
-            // Find then author and fill his informations
+            // Find then author and fill her/his information
             await FillAuthorAsync(package, packageFile.Path);
 
             // Open the package and set info

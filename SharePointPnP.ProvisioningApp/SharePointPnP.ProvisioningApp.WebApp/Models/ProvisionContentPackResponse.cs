@@ -1,4 +1,8 @@
-﻿using OfficeDevPnP.Core.Framework.Provisioning.CanProvisionRules;
+﻿//
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+//
+using OfficeDevPnP.Core.Framework.Provisioning.CanProvisionRules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
