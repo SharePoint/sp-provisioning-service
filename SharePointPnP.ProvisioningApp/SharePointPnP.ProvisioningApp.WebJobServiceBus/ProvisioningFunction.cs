@@ -572,7 +572,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                     LogReporting(action, provisioningEnvironment, startProvisioning, null, 2, ex.ToDetailedString());
 
                     // Log telemetry event
-                    telemetry?.LogException(ex, "ProvisioningFunction.RunAsync", telemetryProperties);
+                    telemetry?.LogException(ex, "ProvisioningFunction.Failed", telemetryProperties);
                 }
 
                 if (!String.IsNullOrEmpty(action.NotificationEmail))
