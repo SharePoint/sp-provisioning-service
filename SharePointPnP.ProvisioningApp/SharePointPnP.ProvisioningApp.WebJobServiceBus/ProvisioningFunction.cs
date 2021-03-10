@@ -422,7 +422,10 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                             }
 
                                             // Disable the WebSettings handler for non-admin users
-                                            if (!TenantExtensions.IsCurrentUserTenantAdmin(tenantContext))
+                                            //if (!TenantExtensions.IsCurrentUserTenantAdmin(context))
+
+                                            // Disable the WebSettings handler for provisionings with site level permissions
+                                            if (action.ActionType == ActionType.Site)
                                             {
                                                 ptai.HandlersToProcess &= ~Handlers.WebSettings;
                                             }
