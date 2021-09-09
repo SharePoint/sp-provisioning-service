@@ -180,6 +180,8 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public List<String> PreRequirementIssues { get; set; }
+
+        public Dictionary<string, string> AccessTokens { get; set; }
     }
 
     /// <summary>
