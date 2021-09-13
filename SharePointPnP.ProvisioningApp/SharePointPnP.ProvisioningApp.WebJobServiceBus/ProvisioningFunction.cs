@@ -93,12 +93,21 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
 
                 var tokenId = $"{action.TenantId}-{action.UserPrincipalName.ToLower().GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
 
+                // Initialize the container of access tokens, if needed
+                if (action.AccessTokens == null)
+                {
+                    action.AccessTokens = new Dictionary<string, string>();
+                }
+
                 // Retrieve the SPO target tenant via Microsoft Graph
-                var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                    tokenId, "https://graph.microsoft.com/",
-                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
-                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
-                    ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
+                var graphAccessToken = 
+                    action.AccessTokens.ContainsKey("graph.microsoft.com") ?
+                    action.AccessTokens["graph.microsoft.com"] :
+                    await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                        tokenId, "https://graph.microsoft.com/",
+                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
+                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
+                        ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
                 logger.LogInformationWithPnPCorrelation("Retrieved target Microsoft Graph Access Token.", action.CorrelationId);
 
                 if (!String.IsNullOrEmpty(graphAccessToken))
@@ -134,11 +143,15 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                     telemetryProperties.Add("SPOTenant", spoTenant);
 
                     // Retrieve the SPO Access Token
-                    var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                        tokenId, rootSite.WebUrl,
-                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
-                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
-                        ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
+                    var spoAuthority = new Uri(rootSite.WebUrl).Authority;
+                    var spoAccessToken =
+                        action.AccessTokens.ContainsKey(spoAuthority) ?
+                        action.AccessTokens[spoAuthority] :
+                        await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                            tokenId, rootSite.WebUrl,
+                            ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
+                            ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
+                            ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
                     logger.LogInformationWithPnPCorrelation("Retrieved target SharePoint Online Access Token.", action.CorrelationId);
 
                     #endregion
@@ -286,11 +299,15 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                 var tenantUrl = UrlUtilities.GetTenantAdministrationUrl(context.Url);
 
                                 // Retrieve the SPO Access Token
-                                var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                    tokenId, tenantUrl,
-                                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
-                                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
-                                    ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
+                                var spoAdminAuthority = new Uri(tenantUrl).Authority;
+                                var spoAdminAccessToken =
+                                    action.AccessTokens.ContainsKey(spoAdminAuthority) ?
+                                    action.AccessTokens[spoAdminAuthority] :
+                                    await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                                        tokenId, tenantUrl,
+                                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
+                                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
+                                        ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
                                 logger.LogInformationWithPnPCorrelation("Retrieved target SharePoint Online Admin Center Access Token.", action.CorrelationId);
 
                                 using (var tenantContext = authManager.GetAzureADAccessTokenAuthenticatedContext(tenantUrl, spoAdminAccessToken))

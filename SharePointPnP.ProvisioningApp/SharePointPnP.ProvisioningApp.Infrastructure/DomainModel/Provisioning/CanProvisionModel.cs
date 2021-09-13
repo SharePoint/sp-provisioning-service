@@ -45,5 +45,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
         /// The URL of the root site collection in the target tenant
         /// </summary>
         public String SPORootSiteUrl { get; set; }
+
+        /// <summary>
+        /// Dictionary of OAuth Access Tokens for consuming back-end APIs
+        /// </summary>
+        public Dictionary<string, string> AccessTokens { get; set; }
     }
 }
