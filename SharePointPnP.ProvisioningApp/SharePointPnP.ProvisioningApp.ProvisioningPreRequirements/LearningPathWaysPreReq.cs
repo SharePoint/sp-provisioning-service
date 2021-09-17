@@ -46,6 +46,7 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
             var config = JsonConvert.DeserializeAnonymousType(jsonConfiguration, new
             {
                 minVersion = 0,
+                checkSitePackage = false,
             });
 
             // Prepare the AuthenticationManager to access the target environment
@@ -97,14 +98,16 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
                                 var lpApp = siteApps.FirstOrDefault(p => p.Title.Equals("Microsoft 365 learning pathways", StringComparison.InvariantCultureIgnoreCase));
                                 if (lpApp != null)
                                 {
-                                    if (lpApp.InstalledVersion.Major >= config.minVersion)
+                                    if (config.checkSitePackage && lpApp.InstalledVersion.Major >= config.minVersion)
+                                    {
+                                        lpAppValid = true;
+                                    }
+                                    else if (!config.checkSitePackage && lpApp.AppCatalogVersion.Major >= config.minVersion)
                                     {
                                         lpAppValid = true;
                                     }
                                 }
                             }
-
-
 
                             if (!lpAppValid)
                             {

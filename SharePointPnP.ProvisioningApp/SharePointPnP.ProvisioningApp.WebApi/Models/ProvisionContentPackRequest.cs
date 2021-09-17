@@ -21,6 +21,11 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Models
         public String AuthorizationCode { get; set; }
 
         /// <summary>
+        /// The pre-defined OAuth2 Access Tokens
+        /// </summary>
+        public Dictionary<string, string> AccessTokens { get; set; }
+
+        /// <summary>
         /// The OAuth2 Redirect URI provided while requesting the Authorization Code
         /// </summary>
         public String RedirectUri { get; set; }

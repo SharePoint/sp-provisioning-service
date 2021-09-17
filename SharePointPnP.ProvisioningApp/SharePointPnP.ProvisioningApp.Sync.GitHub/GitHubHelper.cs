@@ -27,11 +27,16 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
         private readonly Uri _baseUrl;
         private readonly string _personalAccessToken;
 
+        private HttpClient _httpClient;
+
+
         public GitHubHelper(Uri baseUrl, string repositoryPath, string personalAccessToken)
         {
             _repositoryUrl = repositoryPath ?? throw new ArgumentNullException(nameof(repositoryPath));
             _baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
             _personalAccessToken = personalAccessToken ?? throw new ArgumentNullException(nameof(personalAccessToken));
+
+            _httpClient = GetNewHttpClient();
         }
 
         public async Task<RateLimitResponse> GetRateLimitAsync()
@@ -82,12 +87,11 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
                     //string url = $"{fileUrl}{(fileUrl.Contains("?") ? "&" : "?")}{GetQueryStringCredentials()}";
                     string url = $"{fileUrl}{(fileUrl.Contains("?") ? "&" : "?")}";
 
-                    HttpClient client = GetNewHttpClient();
                     // No more supported/working
                     //if (html) client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.html");
 
                     // Get the file
-                    var response = await client.GetAsync(url);
+                    var response = await _httpClient.GetAsync(url);
 
                     // Read file content as string
                     return await response.Content.ReadAsStreamAsync();
@@ -147,11 +151,9 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
         {
             try
             {
-                HttpClient client = GetNewHttpClient();
-
                 for (Int32 c = 0; c < retryCount; c++)
                 {
-                    var response = await client.GetAsync(url);
+                    var response = await _httpClient.GetAsync(url);
                     if (response.IsSuccessStatusCode)
                     {
                         string json = await response.Content.ReadAsStringAsync();
@@ -186,12 +188,11 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
             {
                 try
                 {
-                    HttpClient client = GetNewHttpClient();
                     string json = JsonConvert.SerializeObject(new
                     {
                         text = markdown
                     });
-                    var response = await client.PostAsync(url, new StringContent(json)
+                    var response = await _httpClient.PostAsync(url, new StringContent(json)
                     {
                         Headers =
                         {

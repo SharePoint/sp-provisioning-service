@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.WebApp", "SharePointPnP.ProvisioningApp.WebApp\SharePointPnP.ProvisioningApp.WebApp.csproj", "{19AC033B-8064-4BF9-93DF-28F73464CFBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.WebJob", "SharePointPnP.ProvisioningApp.WebJob\SharePointPnP.ProvisioningApp.WebJob.csproj", "{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.DomainModel", "SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.csproj", "{59D12A73-DFCA-4E54-B15D-1958D0B1705D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.Sync", "SharePointPnP.ProvisioningApp.Sync\SharePointPnP.ProvisioningApp.Sync.csproj", "{DE114A59-64D5-40A5-BA91-2916A87A7215}"
@@ -104,32 +102,6 @@ Global
 		{19AC033B-8064-4BF9-93DF-28F73464CFBB}.Tenant|Any CPU.Build.0 = Tenant|Any CPU
 		{19AC033B-8064-4BF9-93DF-28F73464CFBB}.Test|Any CPU.ActiveCfg = Test|Any CPU
 		{19AC033B-8064-4BF9-93DF-28F73464CFBB}.Test|Any CPU.Build.0 = Test|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.3Sharp|Any CPU.ActiveCfg = 3Sharp|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.3Sharp|Any CPU.Build.0 = 3Sharp|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Dev|Any CPU.ActiveCfg = Dev|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Dev|Any CPU.Build.0 = Dev|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Site.Dev|Any CPU.ActiveCfg = Site.Dev|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Site.Dev|Any CPU.Build.0 = Site.Dev|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Site.Prod|Any CPU.ActiveCfg = Site.Prod|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Site.Prod|Any CPU.Build.0 = Site.Prod|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Site.Test|Any CPU.ActiveCfg = Site.Test|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Site.Test|Any CPU.Build.0 = Site.Test|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Site|Any CPU.ActiveCfg = Site|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Site|Any CPU.Build.0 = Site|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Tenant.Dev|Any CPU.ActiveCfg = Tenant.Dev|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Tenant.Dev|Any CPU.Build.0 = Tenant.Dev|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Tenant.Prod|Any CPU.ActiveCfg = Tenant.Prod|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Tenant.Prod|Any CPU.Build.0 = Tenant.Prod|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Tenant.Test|Any CPU.ActiveCfg = Tenant.Test|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Tenant.Test|Any CPU.Build.0 = Tenant.Test|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Tenant|Any CPU.ActiveCfg = Tenant|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Tenant|Any CPU.Build.0 = Tenant|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Test|Any CPU.ActiveCfg = Test|Any CPU
-		{8C9546DD-6943-49D4-8AD2-A8437DE7DC14}.Test|Any CPU.Build.0 = Test|Any CPU
 		{59D12A73-DFCA-4E54-B15D-1958D0B1705D}.3Sharp|Any CPU.ActiveCfg = 3Sharp|Any CPU
 		{59D12A73-DFCA-4E54-B15D-1958D0B1705D}.3Sharp|Any CPU.Build.0 = 3Sharp|Any CPU
 		{59D12A73-DFCA-4E54-B15D-1958D0B1705D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
