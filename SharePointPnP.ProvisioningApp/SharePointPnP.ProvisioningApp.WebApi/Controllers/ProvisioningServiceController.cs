@@ -341,8 +341,8 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
             String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
             var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
-            var graphAccessToken = 
-                model.AccessTokens.ContainsKey("graph.microsoft.com") ?
+            var graphAccessToken =
+                model.AccessTokens != null && model.AccessTokens.ContainsKey("graph.microsoft.com") ?
                 model.AccessTokens["graph.microsoft.com"] :
                 await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                     tokenId, "https://graph.microsoft.com/");
@@ -385,18 +385,19 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
                     var rootSiteUrl = model.SPORootSiteUrl;
 
                     // Retrieve the SPO Access Token for SPO
-                    var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                        tokenId, rootSiteUrl,
-                        ConfigurationManager.AppSettings["ida:ClientId"],
-                        ConfigurationManager.AppSettings["ida:ClientSecret"],
-                        ConfigurationManager.AppSettings["ida:AppUrl"]);
+                    var spoAuthority = new Uri(rootSiteUrl).Authority;
+
+                    var spoAccessToken =
+                        model.AccessTokens != null && model.AccessTokens.ContainsKey(spoAuthority) ?
+                        model.AccessTokens[spoAuthority] : 
+                        await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                            tokenId, rootSiteUrl,
+                            ConfigurationManager.AppSettings["ida:ClientId"],
+                            ConfigurationManager.AppSettings["ida:ClientSecret"],
+                            ConfigurationManager.AppSettings["ida:AppUrl"]);
 
                     // Store the SPO Access Token for any further context cloning
-                    var spoAuthority = new Uri(rootSiteUrl).Authority;
-                    accessTokens.Add(spoAuthority,
-                        model.AccessTokens.ContainsKey(spoAuthority) ?
-                        model.AccessTokens[spoAuthority] : 
-                        spoAccessToken);
+                    accessTokens.Add(spoAuthority, spoAccessToken);
 
                     // Define a PnPProvisioningContext scope to share the security context across calls
                     using (var pnpProvisioningContext = new PnPProvisioningContext(async (r, s) =>
@@ -432,7 +433,7 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Controllers
 
                             // Retrieve the SPO Access Token for the Admin Site
                             var spoAdminAccessToken =
-                                model.AccessTokens.ContainsKey(adminSiteAuthority) ?
+                                model.AccessTokens != null && model.AccessTokens.ContainsKey(adminSiteAuthority) ?
                                 model.AccessTokens[adminSiteAuthority] :
                                 await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
                                     tokenId, adminSiteUrl,
