@@ -12,15 +12,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OfficeDevPnP.Core.Framework.Provisioning.Providers.Xml;
+using PnP.Framework.Provisioning.Providers.Xml;
 using System.Xml.Linq;
-using OfficeDevPnP.Core.Framework.Provisioning.Providers;
+using PnP.Framework.Provisioning.Providers;
 using System.Configuration;
-using OfficeDevPnP.Core.Framework.Provisioning.Connectors;
-using OfficeDevPnP.Core.Framework.Provisioning.Model;
+using PnP.Framework.Provisioning.Connectors;
+using PnP.Framework.Provisioning.Model;
 using HtmlAgilityPack;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using SharePointPnP.ProvisioningApp.Infrastructure;
 
 namespace SharePointPnP.ProvisioningApp.Synchronization
 {

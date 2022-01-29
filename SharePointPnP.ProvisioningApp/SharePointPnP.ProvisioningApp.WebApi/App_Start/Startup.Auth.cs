@@ -10,7 +10,7 @@ using System.Web;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security.ActiveDirectory;
 using Owin;
-
+using SharePointPnP.ProvisioningApp.Infrastructure.Security;
 
 namespace SharePointPnP.ProvisioningApp.WebApi
 {
@@ -24,7 +24,7 @@ namespace SharePointPnP.ProvisioningApp.WebApi
                     Tenant = "common", // To support multi-tenant
                     TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidAudience = ConfigurationManager.AppSettings["ida:Audience"],
+                        ValidAudience = AuthenticationConfig.Audience,
                         ValidateIssuer = false, // To support multi-tenant
                     }
                 });
