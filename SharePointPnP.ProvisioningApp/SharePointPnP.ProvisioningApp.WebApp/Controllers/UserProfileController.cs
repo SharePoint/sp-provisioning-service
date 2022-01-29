@@ -11,6 +11,7 @@ using System.Web.Http;
 
 namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 {
+    [Authorize]
     public class UserProfileController : ApiController
     {
         [HttpGet()]

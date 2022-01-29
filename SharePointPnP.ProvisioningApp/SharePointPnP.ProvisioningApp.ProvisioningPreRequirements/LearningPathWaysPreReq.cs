@@ -4,10 +4,11 @@
 //
 using Microsoft.SharePoint.Client;
 using Newtonsoft.Json;
-using OfficeDevPnP.Core;
-using OfficeDevPnP.Core.ALM;
+using PnP.Framework;
+using PnP.Framework.ALM;
 using SharePointPnP.ProvisioningApp.Infrastructure;
 using SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning;
+using SharePointPnP.ProvisioningApp.Infrastructure.Security;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -27,7 +28,6 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
         /// Checks the requirements about the Learning Pathways 
         /// </summary>
         /// <param name="canProvisionModel">Object with information about the current provisioning</param>
-        /// <param name="tokenId">Token ID to retrieve access tokens, in case of need</param>
         /// <returns>True if the pre-requirement is fullfilled, or false otherwise</returns>
         /// <remarks>
         /// This method checks if the Microsoft Learning Pathways portal is installed in the target tenant, and if not the pre-requirement is not satisfied
@@ -35,7 +35,7 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
         /// 1) Existence of the Tenant Property called 'MicrosoftCustomLearningSite'
         /// 2) Existence of the site at the URL declared in the 'MicrosoftCustomLearningSite' property
         /// </remarks>
-        public async Task<bool> Validate(CanProvisionModel canProvisionModel, string tokenId, string jsonConfiguration = null)
+        public async Task<bool> Validate(CanProvisionModel canProvisionModel, string jsonConfiguration = null)
         {
             // Load the configuration, if any or throw an exception
             if (string.IsNullOrEmpty(jsonConfiguration))
@@ -57,13 +57,13 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
 
             // Retrieve the SPO Access Token for SPO
             var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                tokenId, rootSiteUrl,
-                ConfigurationManager.AppSettings["ida:ClientId"],
-                ConfigurationManager.AppSettings["ida:ClientSecret"],
-                ConfigurationManager.AppSettings["ida:AppUrl"]);
+                AuthenticationConfig.ClientId,
+                AuthenticationConfig.ClientSecret,
+                AuthenticationConfig.RedirectUri,
+                AuthenticationConfig.GetSpoScopes(rootSiteUrl));
 
             // Connect to the root site collection
-            using (var clientContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
+            using (var clientContext = authManager.GetAccessTokenContext(rootSiteUrl, spoAccessToken))
             {
                 // Try to read the Tenant Property (Storage Entity) with the URL of the Learning Pathways site                
                 var learningPathwaysUrl = clientContext.Web.GetStorageEntity(MicrosoftCustomLearningSite_PropertyName);
@@ -83,7 +83,7 @@ namespace SharePointPnP.ProvisioningApp.ProvisioningPreRequirements
                     {
                         // Otherwise try to connect to the Learning Pathways site to see if it still exists
                         Uri lpwUrl = new Uri(new Uri(rootSiteUrl), learningPathwaysUrl.Value);
-                        using (var lpwContext = authManager.GetAzureADAccessTokenAuthenticatedContext(lpwUrl.AbsoluteUri, spoAccessToken))
+                        using (var lpwContext = authManager.GetAccessTokenContext(lpwUrl.AbsoluteUri, spoAccessToken))
                         {
                             var web = lpwContext.Web;
                             lpwContext.Load(web, w => w.Title);

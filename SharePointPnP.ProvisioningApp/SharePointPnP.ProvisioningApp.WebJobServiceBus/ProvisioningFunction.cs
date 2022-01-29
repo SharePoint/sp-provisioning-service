@@ -9,13 +9,13 @@ using Microsoft.SharePoint.Client;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
-using OfficeDevPnP.Core;
-using OfficeDevPnP.Core.Framework.Provisioning.Connectors;
-using OfficeDevPnP.Core.Framework.Provisioning.Model;
-using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
-using OfficeDevPnP.Core.Framework.Provisioning.Providers;
-using OfficeDevPnP.Core.Framework.Provisioning.Providers.Xml;
-using OfficeDevPnP.Core.Utilities.Themes;
+using PnP.Framework;
+using PnP.Framework.Provisioning.Connectors;
+using PnP.Framework.Provisioning.Model;
+using PnP.Framework.Provisioning.ObjectHandlers;
+using PnP.Framework.Provisioning.Providers;
+using PnP.Framework.Provisioning.Providers.Xml;
+using PnP.Framework.Utilities.Themes;
 using SharePointPnP.ProvisioningApp.DomainModel;
 using SharePointPnP.ProvisioningApp.Infrastructure;
 using SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning;
@@ -91,8 +91,6 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                     throw new ConcurrentProvisioningException("The requested package is currently provisioning in the selected target tenant and cannot be applied in parallel. Please wait for the previous provisioning action to complete.");
                 }
 
-                var tokenId = $"{action.TenantId}-{action.UserPrincipalName.ToLower().GetHashCode()}-{action.ActionType.ToString().ToLower()}-{provisioningEnvironment}";
-
                 // Initialize the container of access tokens, if needed
                 if (action.AccessTokens == null)
                 {
@@ -100,18 +98,16 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                 }
 
                 // Retrieve the SPO target tenant via Microsoft Graph
+                logger.LogInformationWithPnPCorrelation("Retrieving target Microsoft Graph Access Token.", action.CorrelationId);
                 var graphAccessToken = 
                     action.AccessTokens.ContainsKey("graph.microsoft.com") ?
-                    action.AccessTokens["graph.microsoft.com"] :
-                    await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                        tokenId, "https://graph.microsoft.com/",
-                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
-                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
-                        ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
-                logger.LogInformationWithPnPCorrelation("Retrieved target Microsoft Graph Access Token.", action.CorrelationId);
+                    action.AccessTokens["graph.microsoft.com"] : null;
+
 
                 if (!String.IsNullOrEmpty(graphAccessToken))
                 {
+                    logger.LogInformationWithPnPCorrelation("Retrieved target Microsoft Graph Access Token.", action.CorrelationId);
+
                     #region Get current context data (User, SPO Tenant, SPO Access Token)
 
                     // Get the currently connected user name and email (UPN)
@@ -144,21 +140,23 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
 
                     // Retrieve the SPO Access Token
                     var spoAuthority = new Uri(rootSite.WebUrl).Authority;
+                    logger.LogInformationWithPnPCorrelation($"Retrieving target SharePoint Online Access Token for {spoAuthority}.", action.CorrelationId);
                     var spoAccessToken =
                         action.AccessTokens.ContainsKey(spoAuthority) ?
-                        action.AccessTokens[spoAuthority] :
-                        await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                            tokenId, rootSite.WebUrl,
-                            ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
-                            ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
-                            ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
-                    logger.LogInformationWithPnPCorrelation("Retrieved target SharePoint Online Access Token.", action.CorrelationId);
+                        action.AccessTokens[spoAuthority] : null;
 
                     #endregion
 
+                    if (string.IsNullOrEmpty(spoAccessToken))
+                    {
+                        throw new ApplicationException($"Failed to retrieve target SharePoint Online Access Token for {spoAuthority}.");
+                    }
+
+                    logger.LogInformationWithPnPCorrelation($"Retrieved target SharePoint Online Access Token for {spoAuthority}.", action.CorrelationId);
+
                     // Connect to SPO, create and provision site
                     AuthenticationManager authManager = new AuthenticationManager();
-                    using (ClientContext context = authManager.GetAzureADAccessTokenAuthenticatedContext(spoTenant, spoAccessToken))
+                    using (ClientContext context = authManager.GetAccessTokenContext(spoTenant, spoAccessToken))
                     {
                         // Telemetry and startup
                         var web = context.Web;
@@ -170,30 +168,6 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                         telemetryProperties.Add("SPOCorrelationId", context.TraceCorrelationId);
 
                         logger.LogInformationWithPnPCorrelation("SharePoint Online Root Site Collection title: {WebTitle}", action.CorrelationId, web.Title);
-
-                        #region Store the main site URL in KeyVault
-
-                        // Store the main site URL in the Vault
-                        var vault = ProvisioningAppManager.SecurityTokensServiceProvider;
-
-                        // Read any existing properties for the current tenantId
-                        var properties = await vault.GetAsync(tokenId);
-
-                        if (properties == null)
-                        {
-                            // If there are no properties, create a new dictionary
-                            properties = new Dictionary<String, String>();
-                        }
-
-                        // Set/Update the RefreshToken value
-                        properties["SPORootSite"] = spoTenant;
-
-                        // Add or Update the Key Vault accordingly
-                        await vault.AddOrUpdateAsync(tokenId, properties);
-
-                        logger.LogInformationWithPnPCorrelation("Updated Azure KeyVault with SPORootSite property", action.CorrelationId);
-
-                        #endregion
 
                         #region Provision the package
 
@@ -300,17 +274,19 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
 
                                 // Retrieve the SPO Access Token
                                 var spoAdminAuthority = new Uri(tenantUrl).Authority;
+                                logger.LogInformationWithPnPCorrelation($"Retrieving target SharePoint Online Admin Center Access Token for {spoAdminAuthority}.", action.CorrelationId);
                                 var spoAdminAccessToken =
                                     action.AccessTokens.ContainsKey(spoAdminAuthority) ?
-                                    action.AccessTokens[spoAdminAuthority] :
-                                    await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                        tokenId, tenantUrl,
-                                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
-                                        ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
-                                        ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
-                                logger.LogInformationWithPnPCorrelation("Retrieved target SharePoint Online Admin Center Access Token.", action.CorrelationId);
+                                    action.AccessTokens[spoAdminAuthority] : null;
 
-                                using (var tenantContext = authManager.GetAzureADAccessTokenAuthenticatedContext(tenantUrl, spoAdminAccessToken))
+                                if (string.IsNullOrEmpty(spoAdminAccessToken))
+                                {
+                                    throw new ApplicationException($"Failed to retrieve target SharePoint Online Admin Center Access Token for {spoAdminAuthority}.");
+                                }    
+
+                                logger.LogInformationWithPnPCorrelation($"Retrieved target SharePoint Online Admin Center Access Token for {spoAdminAuthority}.", action.CorrelationId);
+
+                                using (var tenantContext = authManager.GetAccessTokenContext(tenantUrl, spoAdminAccessToken))
                                 {
                                     using (var pnpTenantContext = PnPClientContext.ConvertFrom(tenantContext))
                                     {
@@ -402,16 +378,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                             }
                                             else
                                             {
-                                                // Try to get a fresh new Access Token
-                                                var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                                    tokenId, $"https://{r}",
-                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientId"],
-                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:ClientSecret"],
-                                                    ConfigurationManager.AppSettings[$"{action.ActionType}:AppUrl"]);
-
-                                                accessTokens.Add(r, token);
-
-                                                return (token);
+                                                return null;
                                             }
                                         }))
                                         {
@@ -476,7 +443,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                                 // Apply the custom theme to all of the provisioned sites
                                                 foreach (var ps in provisionedSites)
                                                 {
-                                                    using (var provisionedSiteContext = authManager.GetAzureADAccessTokenAuthenticatedContext(ps.Item2, spoAccessToken))
+                                                    using (var provisionedSiteContext = authManager.GetAccessTokenContext(ps.Item2, spoAccessToken))
                                                     {
                                                         if (provisionedSiteContext.Web.ApplyTheme(jsonPalette))
                                                         {
@@ -490,6 +457,29 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                                                 }
                                             }
                                         }
+
+                                        #region Process any Post-Action
+
+                                        // If we have the URL of the provisioned site
+                                        // and if we have any Post-Action
+                                        if (provisionedSites != null && provisionedSites.Count > 0 &&
+                                            !string.IsNullOrEmpty(action.ProvisioningPostActionsJson))
+                                        {
+                                            var provisioningPostActions = JsonConvert.DeserializeObject<List<ProvisioningPostAction>>(action.ProvisioningPostActionsJson);
+
+                                            foreach (var postAction in provisioningPostActions)
+                                            {
+                                                var postActionTelemetryProperties = new Dictionary<string, string>(telemetryProperties);
+                                                postActionTelemetryProperties.Add("PostAction", postAction.TypeName);
+
+                                                // Log telemetry event
+                                                telemetry?.LogEvent("ProvisioningFunction.PostAction", postActionTelemetryProperties);
+
+                                                await ProcessPostAction(accessTokens, provisionedSites[0].Item2, postAction);
+                                            }
+                                        }
+
+                                        #endregion
 
                                         // Log telemetry event
                                         telemetry?.LogEvent("ProvisioningFunction.EndProvisioning", telemetryProperties);
@@ -536,9 +526,9 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                             throw new ApplicationException($"Cannot find the package with ID: {action.PackageId}");
                         }
 
-#endregion
+                        #endregion
 
-#region Process any children items
+                        #region Process any children items
 
                         // If there are children items
                         if (action.ChildrenItems != null && action.ChildrenItems.Count > 0)
@@ -645,7 +635,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
             {
                 foreach (var wh in action.Webhooks)
                 {
-                    var provisioningWebhook = new OfficeDevPnP.Core.Framework.Provisioning.Model.ProvisioningWebhook
+                    var provisioningWebhook = new PnP.Framework.Provisioning.Model.ProvisioningWebhook
                     {
                         Kind = ProvisioningTemplateWebhookKind.ExceptionOccurred,
                         Url = wh.Url,
@@ -681,7 +671,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
         private static void AddProvisioningWebhook(ProvisioningHierarchy hierarchy,
             Infrastructure.DomainModel.Provisioning.ProvisioningWebhook webhook, ProvisioningTemplateWebhookKind kind)
         {
-            hierarchy.ProvisioningWebhooks.Add(new OfficeDevPnP.Core.Framework.Provisioning.Model.ProvisioningWebhook
+            hierarchy.ProvisioningWebhooks.Add(new PnP.Framework.Provisioning.Model.ProvisioningWebhook
             {
                 Kind = kind,
                 Url = webhook.Url,
@@ -821,7 +811,7 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                 var provisionedSiteUrl = provisionedSite.Item2;
 
                 // Connect to the provisioned site
-                using (var provisionedSiteContext = authManager.GetAzureADAccessTokenAuthenticatedContext(provisionedSiteUrl, spoAccessToken))
+                using (var provisionedSiteContext = authManager.GetAccessTokenContext(provisionedSiteUrl, spoAccessToken))
                 {
                     // Retrieve the Site ID
                     var provisionedSiteId = provisionedSiteContext.Site.EnsureProperty(s => s.Id);
@@ -879,6 +869,20 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
             if (logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
             {
                 logger.LogInformation(message, args);
+            }
+        }
+
+        private static async Task ProcessPostAction(Dictionary<string, string> accessTokens, string targetSiteUrl, ProvisioningPostAction postAction)
+        {
+            // Try to get the type of the Post-Action class
+            var postActionType = Type.GetType($"{postAction.TypeName}, {postAction.AssemblyName}", true);
+            var postActionItem = Activator.CreateInstance(postActionType) as IProvisioningPostAction;
+
+            // If we've got the object instance
+            if (postActionItem != null)
+            {
+                // Validate the Pre-Requirement
+                await postActionItem.Execute(accessTokens, targetSiteUrl, postAction.Configuration);
             }
         }
     }

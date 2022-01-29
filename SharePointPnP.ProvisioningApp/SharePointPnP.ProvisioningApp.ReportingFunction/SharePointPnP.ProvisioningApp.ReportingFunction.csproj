@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <AzureFunctionsVersion>v1</AzureFunctionsVersion>
-    <Configurations>Debug;Release;Site.Dev;Tenant.Dev;Dev;3Sharp</Configurations>
+    <Configurations>Debug;Release;Site.Dev;Tenant.Dev;Dev;3Sharp;Site.PnPFx;Tenant.PnPFx;PnPFx</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.licenseheader" Link="SharePointPnP.ProvisioningApp.DomainModel.licenseheader" />
