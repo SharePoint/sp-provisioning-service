@@ -474,6 +474,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\mslookbook-prod.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-test.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Api - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Api - PnPFx.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Api - Prod.pubxml" />

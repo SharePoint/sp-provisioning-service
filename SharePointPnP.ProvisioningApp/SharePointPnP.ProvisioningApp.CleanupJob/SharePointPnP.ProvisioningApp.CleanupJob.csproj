@@ -290,6 +290,8 @@
     <None Include="App-Test.config" />
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\mslookbook-prod.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-test.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - Prod.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />

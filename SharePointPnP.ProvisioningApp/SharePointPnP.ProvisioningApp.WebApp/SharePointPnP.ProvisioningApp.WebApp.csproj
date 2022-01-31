@@ -599,6 +599,12 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <None Include="Properties\PublishProfiles\mslookbook-dev-Site.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-dev-Tenant.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-prod-Site.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-prod-Tenant.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-test-Site.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-test-Tenant.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Dev.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Site - Test.pubxml" />

@@ -576,6 +576,9 @@
     <None Include="App.config" />
     <EmbeddedResource Include="known-exceptions.json" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\mslookbook-dev.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-prod.pubxml" />
+    <None Include="Properties\PublishProfiles\mslookbook-test.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Prod.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp - Web - PnPFx.pubxml" />
     <None Include="Properties\PublishProfiles\sppnpprovisioningapp-dev - Dev.pubxml" />
