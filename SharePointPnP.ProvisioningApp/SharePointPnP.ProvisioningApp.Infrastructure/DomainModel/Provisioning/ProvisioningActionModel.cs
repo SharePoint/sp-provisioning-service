@@ -3,7 +3,7 @@
 // Licensed under the MIT license.
 //
 using Newtonsoft.Json;
-using OfficeDevPnP.Core.Framework.Provisioning.Model;
+using PnP.Framework.Provisioning.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -180,6 +180,8 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning
 
         [JsonIgnore]
         public List<String> PreRequirementIssues { get; set; }
+
+        public string ProvisioningPostActionsJson { get; set; }
 
         public Dictionary<string, string> AccessTokens { get; set; }
     }

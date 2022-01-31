@@ -51,6 +51,8 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         public TemplateSettingsMetadataDisplayInfo displayInfo { get; set; }
 
         public TemplateSettingsPreRequirement[] preRequirements { get; set; }
+
+        public TemplateSettingsPostActions[] postActions { get; set; }
     }
 
     public class TemplateSettingsMetadataProperties
@@ -154,5 +156,26 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         /// The id of the document with the pre-requirement description
         /// </summary>
         public string preRequirementContent { get; set; }
+    }
+
+    /// <summary>
+    /// Defines a post-action
+    /// </summary>
+    public class TemplateSettingsPostActions
+    {
+        /// <summary>
+        /// The name of the assembly for the custom pre-check component
+        /// </summary>
+        public string assemblyName { get; set; }
+
+        /// <summary>
+        /// The name of the type for the custom pre-check component
+        /// </summary>
+        public string typeName { get; set; }
+
+        /// <summary>
+        /// The configuration for the custom pre-check component
+        /// </summary>
+        public string configuration { get; set; }
     }
 }

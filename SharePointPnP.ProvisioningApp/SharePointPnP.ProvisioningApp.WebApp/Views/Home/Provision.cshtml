@@ -71,171 +71,172 @@
                     @Html.HiddenFor(m => m.MatchingSiteBaseTemplateId)
                     @Html.HiddenFor(m => m.ReturnUrl)
                     @Html.HiddenFor(m => m.Source)
+                    @Html.HiddenFor(m => m.ProvisioningPostActionsJson)
 
-                <table>
-                    <tr>
-                        <th class="provisioning-local-header-box">
-                            <div class="provisioning-local-header">
-                                <!-- Pre-Requirements -->
-                                @if (Model.PreRequirementIssues != null && Model.PreRequirementIssues.Count > 0)
-                                {
-                                    <div class="title">Pre-requirements not fulfilled!</div>
-
-                                    @*<div>Issues #: @Model.PreRequirementIssues.Count</div>*@
-
-                                    <div class="normal-text">
-                                        @foreach (var preReqIssue in Model.PreRequirementIssues)
-                                        {
-                                            @Html.Raw(preReqIssue);
-                                        }
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="title">@(!String.IsNullOrEmpty(Model.ProvisionPageTitle) ? Html.Raw(Model.ProvisionPageTitle) : Html.Raw("Great choice!"))</div>
-                                    <div class="subtitle">@(!String.IsNullOrEmpty(Model.ProvisionPageSubTitle) ? Html.Raw(Model.ProvisionPageSubTitle) : Html.Raw("We just need a bit of information before we start provisioning"))</div>
-                                    <p class="normal-text">
-                                        @(!String.IsNullOrEmpty(Model.ProvisionPageText) ? Html.Raw(Model.ProvisionPageText) : Html.Raw("The following settings are used for your example site. You can keep them as is, or change them to suit your needs."))
-                                    </p>
-                                }
-                            </div>
-                        </th>
-                        <td>
-                            <div class="hero-image aspect-ratio-wrapper">
-                                <div class="aspect-ratio-image-wrapper">
-                                    <img src="@Model.PackageImagePreviewUrl"
-                                         alt="@Model.DisplayName">
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    @if (Model.PreRequirementIssues == null || Model.PreRequirementIssues.Count == 0)
-                    {
+                    <table>
                         <tr>
-                            <th>
-                                @Html.LabelFor(m => m.NotificationEmail)
-                                <div class="pnp-field-description">Provide an email address to get notified when provisioning is complete</div>
+                            <th class="provisioning-local-header-box">
+                                <div class="provisioning-local-header">
+                                    <!-- Pre-Requirements -->
+                                    @if (Model.PreRequirementIssues != null && Model.PreRequirementIssues.Count > 0)
+                                    {
+                                        <div class="title">Pre-requirements not fulfilled!</div>
+
+                                        @*<div>Issues #: @Model.PreRequirementIssues.Count</div>*@
+
+                                        <div class="normal-text">
+                                            @foreach (var preReqIssue in Model.PreRequirementIssues)
+                                            {
+                                                @Html.Raw(preReqIssue);
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="title">@(!String.IsNullOrEmpty(Model.ProvisionPageTitle) ? Html.Raw(Model.ProvisionPageTitle) : Html.Raw("Great choice!"))</div>
+                                        <div class="subtitle">@(!String.IsNullOrEmpty(Model.ProvisionPageSubTitle) ? Html.Raw(Model.ProvisionPageSubTitle) : Html.Raw("We just need a bit of information before we start provisioning"))</div>
+                                        <p class="normal-text">
+                                            @(!String.IsNullOrEmpty(Model.ProvisionPageText) ? Html.Raw(Model.ProvisionPageText) : Html.Raw("The following settings are used for your example site. You can keep them as is, or change them to suit your needs."))
+                                        </p>
+                                    }
+                                </div>
                             </th>
                             <td>
-                                @Html.TextBoxFor(m => m.NotificationEmail, new { @class = "pnp-tb" })
+                                <div class="hero-image aspect-ratio-wrapper">
+                                    <div class="aspect-ratio-image-wrapper">
+                                        <img src="@Model.PackageImagePreviewUrl"
+                                             alt="@Model.DisplayName">
+                                    </div>
+                                </div>
                             </td>
                         </tr>
 
+                        @if (Model.PreRequirementIssues == null || Model.PreRequirementIssues.Count == 0)
                         {
-                            int i = 0;
-                            foreach (var parameter in Model.PackageProperties)
+                            <tr>
+                                <th>
+                                    @Html.LabelFor(m => m.NotificationEmail)
+                                    <div class="pnp-field-description">Provide an email address to get notified when provisioning is complete</div>
+                                </th>
+                                <td>
+                                    @Html.TextBoxFor(m => m.NotificationEmail, new { @class = "pnp-tb" })
+                                </td>
+                            </tr>
+
                             {
-                                if (Model.MetadataProperties.ContainsKey(parameter.Key))
+                                int i = 0;
+                                foreach (var parameter in Model.PackageProperties)
                                 {
-                                    <tr>
-                                        <th>
-                                            <input type="hidden" name="PackageProperties[@i].Key" value="@parameter.Key" />
-                                            <label class="ms-Label pnp-field-label" for="PackageProperties[@i].Key">@(Model.MetadataProperties[parameter.Key].Caption)</label>
-                                            <div class="pnp-field-description">@(Html.Raw(Model.MetadataProperties[parameter.Key].Description))</div>
-                                        </th>
-                                        <td>
-                                            @if (String.IsNullOrEmpty(Model.MetadataProperties[parameter.Key].Editor))
-                                            {
-                                                <input name="PackageProperties[@i].Value" value="@parameter.Value" class="pnp-tb" />
-                                            }
-                                            else
-                                            {
-                                                @Html.Partial($"EditorTemplates/{Model.MetadataProperties[parameter.Key].Editor}", new TemplateParameterModel { Index = i, ParameterKey = parameter.Key, ParameterValue = parameter.Value, MetadataProperty = Model.MetadataProperties[parameter.Key], SPORootSiteUrl = Model.SPORootSiteUrl })
-                                            }
-                                        </td>
-                                    </tr>
-                                    i++;
+                                    if (Model.MetadataProperties.ContainsKey(parameter.Key))
+                                    {
+                                        <tr>
+                                            <th>
+                                                <input type="hidden" name="PackageProperties[@i].Key" value="@parameter.Key" />
+                                                <label class="ms-Label pnp-field-label" for="PackageProperties[@i].Key">@(Model.MetadataProperties[parameter.Key].Caption)</label>
+                                                <div class="pnp-field-description">@(Html.Raw(Model.MetadataProperties[parameter.Key].Description))</div>
+                                            </th>
+                                            <td>
+                                                @if (String.IsNullOrEmpty(Model.MetadataProperties[parameter.Key].Editor))
+                                                {
+                                                    <input name="PackageProperties[@i].Value" value="@parameter.Value" class="pnp-tb" />
+                                                }
+                                                else
+                                                {
+                                                    @Html.Partial($"EditorTemplates/{Model.MetadataProperties[parameter.Key].Editor}", new TemplateParameterModel { Index = i, ParameterKey = parameter.Key, ParameterValue = parameter.Value, MetadataProperty = Model.MetadataProperties[parameter.Key], SPORootSiteUrl = Model.SPORootSiteUrl })
+                                                }
+                                            </td>
+                                        </tr>
+                                        i++;
+                                    }
                                 }
                             }
-                        }
 
-                        if ((Model.UserIsTenantAdmin || Model.UserIsSPOAdmin) &&
-                            Model.Themes != null && Model.Themes.Count > 0)
-                        {
-                            <tr>
-                                <th>
-                                    Theme
-                                    <div class="pnp-field-description">Would you like to apply a company custom theme to the target site(s)?</div>
-                                </th>
-                                <td>
-                                    @Html.EditorFor(m => m.ApplyTheme)
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    @*@Html.LabelFor(m => m.SelectedTheme)*@
-                                    <div class="pnp-field-description">If you have a custom theme, you can apply it to the example site(s) now or apply a theme and other branding options later</div>
-                                </th>
-                                <td>
-                                    @Html.DropDownListFor(m => m.SelectedTheme, GetAvailableThemes(), new { @class = "pnp-tb" })
-                                </td>
-                            </tr>
-                            @*<tr>
+                            if ((Model.UserIsTenantAdmin || Model.UserIsSPOAdmin) &&
+                                Model.Themes != null && Model.Themes.Count > 0)
+                            {
+                                <tr>
                                     <th>
-                                        Apply custom theme
-                                        <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
+                                        Theme
+                                        <div class="pnp-field-description">Would you like to apply a company custom theme to the target site(s)?</div>
                                     </th>
                                     <td>
-                                        @Html.EditorFor(m => m.ApplyCustomTheme)
+                                        @Html.EditorFor(m => m.ApplyTheme)
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>
-                                        @Html.LabelFor(m => m.ThemePrimaryColor)
-                                        <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
+                                        @*@Html.LabelFor(m => m.SelectedTheme)*@
+                                        <div class="pnp-field-description">If you have a custom theme, you can apply it to the example site(s) now or apply a theme and other branding options later</div>
                                     </th>
                                     <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
+                                        @Html.DropDownListFor(m => m.SelectedTheme, GetAvailableThemes(), new { @class = "pnp-tb" })
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemeBodyTextColor)
-                                        <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
-                                        <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
-                                    </th>
-                                    <td>
-                                        <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
-                                        @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
-                                    </td>
-                                </tr>*@
-                            @*
-                                <tr>
-                                    <th>
-                                        <label for="CustomLogoFile">Logo</label>
-                                    </th>
-                                    <td>
-                                        <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
-                                    </td>
-                                </tr>
-                            *@
-                        }
-                        @*<tr>
-                                <td colspan="2">
-                                    <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
-                                </td>
-                            </tr>*@
-                        <tr>
+                                @*<tr>
+                            <th>
+                                Apply custom theme
+                                <div class="pnp-field-description">Enable this flag to create and apply a custom Theme</div>
+                            </th>
                             <td>
-                            </td>
-                            <td class="provisioning-commands">
-                                <input type="button" id="cancelButton" class="pnp-btn-provision slb-button" value="Cancel" />
-                                <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="@(Model.ForceExistingSite ? "Add to your site" : "Provision")" />
+                                @Html.EditorFor(m => m.ApplyCustomTheme)
                             </td>
                         </tr>
-                    }
-                </table>
+                        <tr>
+                            <th>
+                                @Html.LabelFor(m => m.ThemePrimaryColor)
+                                <div class="pnp-field-description">Select the Primary Color for the custom Theme</div>
+                            </th>
+                            <td>
+                                <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemePrimaryColor)"></span>
+                                @Html.TextBoxFor(m => m.ThemePrimaryColor, new { @class = "pnp-tb" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                @Html.LabelFor(m => m.ThemeBodyTextColor)
+                                <div class="pnp-field-description">Select the Body Text Color for the custom Theme</div>
+                            </th>
+                            <td>
+                                <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyTextColor)"></span>
+                                @Html.TextBoxFor(m => m.ThemeBodyTextColor, new { @class = "pnp-tb" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                @Html.LabelFor(m => m.ThemeBodyBackgroundColor)
+                                <div class="pnp-field-description">Select the Body Background Color for the custom Theme</div>
+                            </th>
+                            <td>
+                                <span class="pnp-colorpreview" rel="@Html.IdFor(m => m.ThemeBodyBackgroundColor)"></span>
+                                @Html.TextBoxFor(m => m.ThemeBodyBackgroundColor, new { @class = "pnp-tb" })
+                            </td>
+                        </tr>*@
+                                @*
+                        <tr>
+                            <th>
+                                <label for="CustomLogoFile">Logo</label>
+                            </th>
+                            <td>
+                                <input type="file" name="CustomLogoFile" id="CustomLogoFile" class="pnp-tb" />
+                            </td>
+                        </tr>
+                                *@
+                            }
+                            @*<tr>
+                        <td colspan="2">
+                            <div class="sectionTitleDivider"><hr class="sectionTitleDivider" /></div>
+                        </td>
+                    </tr>*@
+                            <tr>
+                                <td>
+                                </td>
+                                <td class="provisioning-commands">
+                                    <input type="button" id="cancelButton" class="pnp-btn-provision slb-button" value="Cancel" />
+                                    <input type="button" id="provisionButton" class="pnp-btn-provision slb-primary-button" value="@(Model.ForceExistingSite ? "Add to your site" : "Provision")" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
                 }
             </div>
         </div>

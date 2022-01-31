@@ -2,38 +2,33 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 //
-using Microsoft.Azure;
-using Microsoft.Owin.Security.Cookies;
 using Microsoft.SharePoint.Client;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
-using OfficeDevPnP.Core;
-using OfficeDevPnP.Core.Framework.Provisioning.CanProvisionRules;
-using OfficeDevPnP.Core.Framework.Provisioning.Connectors;
-using OfficeDevPnP.Core.Framework.Provisioning.Model;
-using OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers;
-using OfficeDevPnP.Core.Framework.Provisioning.Providers;
-using OfficeDevPnP.Core.Framework.Provisioning.Providers.Xml;
+using PnP.Framework;
+using PnP.Framework.Provisioning.CanProvisionRules;
+using PnP.Framework.Provisioning.Connectors;
+using PnP.Framework.Provisioning.Model;
+using PnP.Framework.Provisioning.ObjectHandlers;
+using PnP.Framework.Provisioning.Providers;
+using PnP.Framework.Provisioning.Providers.Xml;
 using SharePointPnP.ProvisioningApp.DomainModel;
 using SharePointPnP.ProvisioningApp.Infrastructure;
 using SharePointPnP.ProvisioningApp.Infrastructure.DomainModel.Provisioning;
+using SharePointPnP.ProvisioningApp.Infrastructure.Security;
 using SharePointPnP.ProvisioningApp.WebApp.Models;
+using SharePointPnP.ProvisioningApp.WebApp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 using TenantAdmin = Microsoft.Online.SharePoint.TenantAdministration;
 
 namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
@@ -104,68 +99,63 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             {
                 if (IsValidUser())
                 {
-                    var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
-                    if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
+                    // Resolve current user's UPN and TenantId
+                    var (upn, tenantId) = AuthHelper.GetCurrentUserIdentityClaims(
+                        System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal);
+
+                    if (this.IsAllowedUpnTenant(upn))
                     {
-                        var issuerValue = issuer.Value.Substring(0, issuer.Value.Length - 1);
-                        var tenantId = issuerValue.Substring(issuerValue.LastIndexOf("/") + 1);
-                        var upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst(ClaimTypes.Upn)?.Value;
+                        #region Prepare model generic context data
 
-                        if (this.IsAllowedUpnTenant(upn))
+                        // Prepare the model data
+                        model.TenantId = tenantId;
+                        model.UserPrincipalName = upn;
+                        model.PackageId = packageId;
+                        model.ApplyTheme = false;
+                        model.ApplyCustomTheme = false;
+
+                        String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
+                        String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+
+                        var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                            AuthenticationConfig.GetGraphScopes());
+                        if (string.IsNullOrEmpty(graphAccessToken))
                         {
-                            #region Prepare model generic context data
-
-                            // Prepare the model data
-                            model.TenantId = tenantId;
-                            model.UserPrincipalName = upn;
-                            model.PackageId = packageId;
-                            model.ApplyTheme = false;
-                            model.ApplyCustomTheme = false;
-
-                            String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
-                            String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
-
-                            var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
-                            var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                tokenId, "https://graph.microsoft.com/");
-                            if (string.IsNullOrEmpty(graphAccessToken))
-                            {
-                                throw new ApplicationException($"Cannot retrieve a valid Access Token for user {model.UserPrincipalName.ToLower()} in tenant {model.TenantId}");
-                            }
-
-                            model.UserIsTenantAdmin = Utilities.UserIsTenantGlobalAdmin(graphAccessToken);
-                            model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
-                            model.NotificationEmail = upn;
-
-                            model.ReturnUrl = returnUrl;
-                            model.Source = source;
-
-                            #endregion
-
-                            // Determine the URL of the root SPO site for the current tenant
-                            var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
-                            SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
-
-                            // Store the SPO Root Site URL in the Model
-                            model.SPORootSiteUrl = rootSite.WebUrl;
-
-                            // If the current user is an admin, we can get the available Themes
-                            if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
-                            {
-                                await LoadThemesFromTenant(model, tokenId, rootSite, graphAccessToken);
-                            }
-
-                            LoadPackageDataIntoModel(packageId, model);
-
-                            if (model.ProvisioningPreRequirements != null)
-                            {
-                                await CheckPreRequirements(model, tokenId);
-                            }
+                            throw new ApplicationException($"Cannot retrieve a valid Microsoft Graph Access Token for user {model.UserPrincipalName.ToLower()} in tenant {model.TenantId}");
                         }
-                        else
+
+                        model.UserIsTenantAdmin = Utilities.UserIsTenantGlobalAdmin(graphAccessToken);
+                        model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
+                        model.NotificationEmail = upn;
+
+                        model.ReturnUrl = returnUrl;
+                        model.Source = source;
+
+                        #endregion
+
+                        // Determine the URL of the root SPO site for the current tenant
+                        var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
+                        SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
+
+                        // Store the SPO Root Site URL in the Model
+                        model.SPORootSiteUrl = rootSite.WebUrl;
+
+                        // If the current user is an admin, we can get the available Themes
+                        if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
                         {
-                            throw new ApplicationException("Invalid request, the current tenant is not allowed to use this solution!");
+                            await LoadThemesFromTenant(model, rootSite, graphAccessToken);
                         }
+
+                        LoadPackageDataIntoModel(packageId, model);
+
+                        if (model.ProvisioningPreRequirements != null)
+                        {
+                            await CheckPreRequirements(model);
+                        }
+                    }
+                    else
+                    {
+                        throw new ApplicationException("Invalid request, the current tenant is not allowed to use this solution!");
                     }
                 }
             }
@@ -186,6 +176,9 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             if (model != null && ModelState.IsValid)
             {
+                // Enrich the model with Access Tokens
+                model.AccessTokens = await PrepareAccessTokensAsync(model);
+
                 // Enqueue the provisioning request
                 await ProvisioningAppManager.EnqueueProvisioningRequest(
                     model,
@@ -206,6 +199,40 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return View("ProvisionQueued", model);
         }
 
+        private static async Task<Dictionary<string, string>> PrepareAccessTokensAsync(ProvisioningActionModel model)
+        {
+            // Prepare the variable to hold the result
+            var accessTokens = new Dictionary<string, string>();
+
+            // Retrieve the Microsoft Graph Access Token
+            var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                AuthenticationConfig.GetGraphScopes());
+
+            // Retrieve the SPO Access Token
+            var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                AuthenticationConfig.ClientId,
+                AuthenticationConfig.ClientSecret,
+                AuthenticationConfig.RedirectUri,
+                AuthenticationConfig.GetSpoScopes(model.SPORootSiteUrl));
+
+            // Retrieve the SPO URL for the Admin Site
+            var adminSiteUrl = model.SPORootSiteUrl.Replace(".sharepoint.com", "-admin.sharepoint.com");
+
+            // Retrieve the SPO Access Token
+            var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                AuthenticationConfig.ClientId,
+                AuthenticationConfig.ClientSecret,
+                AuthenticationConfig.RedirectUri,
+                AuthenticationConfig.GetSpoScopes(adminSiteUrl));
+
+            // Configure the resulting dictionary
+            accessTokens.Add(new Uri(AuthenticationConfig.GraphBaseUrl).Authority, graphAccessToken);
+            accessTokens.Add(new Uri(model.SPORootSiteUrl).Authority, spoAccessToken);
+            accessTokens.Add(new Uri(adminSiteUrl).Authority, spoAdminAccessToken);
+
+            return accessTokens;
+        }
+
         [HttpGet]
         public async Task<JsonResult> UrlIsAvailableInSPO(String url)
         {
@@ -214,45 +241,33 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             if (IsValidUser())
             {
-                var issuer = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("iss");
-                if (issuer != null && !String.IsNullOrEmpty(issuer.Value))
+                var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                    AuthenticationConfig.GetGraphScopes());
+
+                // Determine the URL of the root SPO site for the current tenant
+                var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
+                SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
+
+                var rootSiteUrl = rootSite.WebUrl;
+
+                // Retrieve the SPO Access Token
+                var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                    AuthenticationConfig.ClientId,
+                    AuthenticationConfig.ClientSecret,
+                    AuthenticationConfig.RedirectUri,
+                    AuthenticationConfig.GetSpoScopes(rootSiteUrl));
+
+                // Connect to SPO and check if the URL is available or not
+                AuthenticationManager authManager = new AuthenticationManager();
+                using (ClientContext spoContext = authManager.GetAccessTokenContext(rootSiteUrl, spoAccessToken))
                 {
-                    var issuerValue = issuer.Value.Substring(0, issuer.Value.Length - 1);
-                    var tenantId = issuerValue.Substring(issuerValue.LastIndexOf("/") + 1);
-                    var upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst(ClaimTypes.Upn)?.Value;
-
-                    String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
-                    String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
-
-                    var tokenId = $"{tenantId}-{upn.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
-                    var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                        tokenId, "https://graph.microsoft.com/");
-
-                    // Determine the URL of the root SPO site for the current tenant
-                    var rootSiteJson = HttpHelper.MakeGetRequestForString("https://graph.microsoft.com/v1.0/sites/root", graphAccessToken);
-                    SharePointSite rootSite = JsonConvert.DeserializeObject<SharePointSite>(rootSiteJson);
-
-                    var rootSiteUrl = rootSite.WebUrl;
-
-                    // Retrieve the SPO Access Token
-                    var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                        tokenId, rootSiteUrl,
-                        ConfigurationManager.AppSettings["ida:ClientId"],
-                        ConfigurationManager.AppSettings["ida:ClientSecret"],
-                        ConfigurationManager.AppSettings["ida:AppUrl"]);
-
-                    // Connect to SPO and check if the URL is available or not
-                    AuthenticationManager authManager = new AuthenticationManager();
-                    using (ClientContext spoContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
+                    var targetUrl = $"{rootSiteUrl.TrimEnd(new char[] { '/' })}{url}";
+                    siteUrlInUse = spoContext.WebExistsFullUrl(targetUrl);
+                    if (siteUrlInUse)
                     {
-                        var targetUrl = $"{rootSiteUrl.TrimEnd(new char[] { '/' })}{url}";
-                        siteUrlInUse = spoContext.WebExistsFullUrl(targetUrl);
-                        if (siteUrlInUse)
+                        using (ClientContext spoTargetSiteContext = authManager.GetAccessTokenContext(targetUrl, spoAccessToken))
                         {
-                            using (ClientContext spoTargetSiteContext = authManager.GetAzureADAccessTokenAuthenticatedContext(targetUrl, spoAccessToken))
-                            {
-                                baseTemplateId = spoTargetSiteContext.Web.GetBaseTemplateId();
-                            }
+                            baseTemplateId = spoTargetSiteContext.Web.GetBaseTemplateId();
                         }
                     }
                 }
@@ -314,7 +329,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             CategoriesMenuViewModel model = new CategoriesMenuViewModel();
 
             // Let's see if we need to filter the output categories
-            var slbHost = System.Configuration.ConfigurationManager.AppSettings["SPLBSiteHost"];
+            var slbHost = ConfigurationManager.AppSettings["SPLBSiteHost"];
             var testEnvironment = Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"]);
 
             string targetPlatform = null;
@@ -371,139 +386,139 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return PartialView("CategoriesMenu", model);
         }
 
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<ActionResult> ProvisionContentPack(ProvisionContentPackRequest provisionRequest)
-        {
-            var provisionResponse = new ProvisionContentPackResponse();
+        //[HttpPost]
+        //[AllowAnonymous]
+        //public async Task<ActionResult> ProvisionContentPack(ProvisionContentPackRequest provisionRequest)
+        //{
+        //    var provisionResponse = new ProvisionContentPackResponse();
 
-            // If the input paramenters are missing, raise a BadRequest response
-            if (provisionRequest == null)
-            {
-                return ThrowEmptyRequest();
-            }
+        //    // If the input paramenters are missing, raise a BadRequest response
+        //    if (provisionRequest == null)
+        //    {
+        //        return ThrowEmptyRequest();
+        //    }
 
-            // If the TenantId input argument is missing, raise a BadRequest response
-            if (String.IsNullOrEmpty(provisionRequest.TenantId))
-            {
-                return ThrowMissingArgument("TenantId");
-            }
+        //    // If the TenantId input argument is missing, raise a BadRequest response
+        //    if (String.IsNullOrEmpty(provisionRequest.TenantId))
+        //    {
+        //        return ThrowMissingArgument("TenantId");
+        //    }
 
-            // If the UserPrincipalName input argument is missing, raise a BadRequest response
-            if (String.IsNullOrEmpty(provisionRequest.UserPrincipalName))
-            {
-                return ThrowMissingArgument("UserPrincipalName");
-            }
+        //    // If the UserPrincipalName input argument is missing, raise a BadRequest response
+        //    if (String.IsNullOrEmpty(provisionRequest.UserPrincipalName))
+        //    {
+        //        return ThrowMissingArgument("UserPrincipalName");
+        //    }
 
-            // If the PackageId input argument is missing, raise a BadRequest response
-            if (String.IsNullOrEmpty(provisionRequest.PackageId))
-            {
-                return ThrowMissingArgument("PackageId");
-            }
+        //    // If the PackageId input argument is missing, raise a BadRequest response
+        //    if (String.IsNullOrEmpty(provisionRequest.PackageId))
+        //    {
+        //        return ThrowMissingArgument("PackageId");
+        //    }
 
-            if (provisionRequest != null &&
-                !String.IsNullOrEmpty(provisionRequest.TenantId) &&
-                !String.IsNullOrEmpty(provisionRequest.UserPrincipalName) &&
-                !String.IsNullOrEmpty(provisionRequest.PackageId))
-            {
-                try
-                {
-                    // Validate the Package ID
-                    var context = GetDataContext();
-                    DomainModel.Package package = null;
+        //    if (provisionRequest != null &&
+        //        !String.IsNullOrEmpty(provisionRequest.TenantId) &&
+        //        !String.IsNullOrEmpty(provisionRequest.UserPrincipalName) &&
+        //        !String.IsNullOrEmpty(provisionRequest.PackageId))
+        //    {
+        //        try
+        //        {
+        //            // Validate the Package ID
+        //            var context = GetDataContext();
+        //            DomainModel.Package package = null;
 
-                    // Get the package
-                    if (ProvisioningAppManager.IsTestingEnvironment)
-                    {
-                        // Process all packages in the test environment
-                        package = context.Packages.FirstOrDefault(p => p.Id == new Guid(provisionRequest.PackageId));
-                    }
-                    else
-                    {
-                        // Process not-preview packages in the production environment
-                        package = context.Packages.FirstOrDefault(p => p.Id == new Guid(provisionRequest.PackageId) && p.Preview == false);
-                    }
+        //            // Get the package
+        //            if (ProvisioningAppManager.IsTestingEnvironment)
+        //            {
+        //                // Process all packages in the test environment
+        //                package = context.Packages.FirstOrDefault(p => p.Id == new Guid(provisionRequest.PackageId));
+        //            }
+        //            else
+        //            {
+        //                // Process not-preview packages in the production environment
+        //                package = context.Packages.FirstOrDefault(p => p.Id == new Guid(provisionRequest.PackageId) && p.Preview == false);
+        //            }
 
-                    // If the package is not valid
-                    if (package == null)
-                    {
-                        // Throw an exception accordingly
-                        throw new ArgumentException("Invalid Package Id!");
-                    }
+        //            // If the package is not valid
+        //            if (package == null)
+        //            {
+        //                // Throw an exception accordingly
+        //                throw new ArgumentException("Invalid Package Id!");
+        //            }
 
-                    String provisioningScope = package.PackageType == PackageType.Tenant ? "tenant" : "site";
-                    String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
+        //            String provisioningScope = package.PackageType == PackageType.Tenant ? "tenant" : "site";
+        //            String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                    var tokenId = $"{provisionRequest.TenantId}-{provisionRequest.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
+        //            try
+        //            {
+        //                // Retrieve the refresh token and store it in the KeyVault
+        //                await ProvisioningAppManager.AccessTokenProvider.SetupSecurityFromAuthorizationCodeAsync(
+        //                    provisionRequest.AuthorizationCode,
+        //                    provisionRequest.TenantId,
+        //                    AuthenticationConfig.ClientId,
+        //                    AuthenticationConfig.ClientSecret,
+        //                    AuthenticationConfig.GraphBaseUrl,
+        //                    provisionRequest.RedirectUri);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // In case of any authorization exception, raise an Unauthorized exception
+        //                return ThrowUnauthorized(ex);
+        //            }
 
-                    try
-                    {
-                        // Retrieve the refresh token and store it in the KeyVault
-                        await ProvisioningAppManager.AccessTokenProvider.SetupSecurityFromAuthorizationCodeAsync(
-                            tokenId,
-                            provisionRequest.AuthorizationCode,
-                            provisionRequest.TenantId,
-                            ConfigurationManager.AppSettings["ida:ClientId"],
-                            ConfigurationManager.AppSettings["ida:ClientSecret"],
-                            "https://graph.microsoft.com/",
-                            provisionRequest.RedirectUri);
-                    }
-                    catch (Exception ex)
-                    {
-                        // In case of any authorization exception, raise an Unauthorized exception
-                        return ThrowUnauthorized(ex);
-                    }
+        //            // First of all, validate the provisioning request for pre-requirements
+        //            provisionResponse.CanProvisionResult = await CanProvisionInternal(
+        //                new CanProvisionModel
+        //                {
+        //                    PackageId = provisionRequest.PackageId,
+        //                    TenantId = provisionRequest.TenantId,
+        //                    UserPrincipalName = provisionRequest.UserPrincipalName,
+        //                    SPORootSiteUrl = provisionRequest.SPORootSiteUrl,
+        //                    UserIsSPOAdmin = true, // We assume that the request comes from an Admin
+        //                    UserIsTenantAdmin = true, // We assume that the request comes from an Admin
+        //                });
 
-                    // First of all, validate the provisioning request for pre-requirements
-                    provisionResponse.CanProvisionResult = await CanProvisionInternal(
-                        new CanProvisionModel
-                        {
-                            PackageId = provisionRequest.PackageId,
-                            TenantId = provisionRequest.TenantId,
-                            UserPrincipalName = provisionRequest.UserPrincipalName,
-                            SPORootSiteUrl = provisionRequest.SPORootSiteUrl,
-                            UserIsSPOAdmin = true, // We assume that the request comes from an Admin
-                            UserIsTenantAdmin = true, // We assume that the request comes from an Admin
-                        });
+        //            // If the package can be provisioned onto the target
+        //            if (provisionResponse.CanProvisionResult.CanProvision)
+        //            {
+        //                // Prepare the provisioning request
+        //                var request = new ProvisioningActionModel();
+        //                request.ActionType = ActionType.Tenant; // Do we want to support site/tenant or just one?
+        //                request.ApplyCustomTheme = false;
+        //                request.ApplyTheme = false; // Do we need to apply any special theme?
+        //                request.CorrelationId = Guid.NewGuid();
+        //                request.CustomLogo = null;
+        //                request.DisplayName = "Provision Content Pack";
+        //                request.PackageId = provisionRequest.PackageId;
+        //                request.TargetSiteAlreadyExists = false; // Do we want to check this?
+        //                request.TargetSiteBaseTemplateId = null;
+        //                request.TenantId = provisionRequest.TenantId;
+        //                request.UserIsSPOAdmin = true; // We don't use this in the job
+        //                request.UserIsTenantAdmin = true; // We don't use this in the job
+        //                request.UserPrincipalName = provisionRequest.UserPrincipalName.ToLower();
+        //                request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
+        //                request.PackageProperties = provisionRequest.Parameters;
 
-                    // If the package can be provisioned onto the target
-                    if (provisionResponse.CanProvisionResult.CanProvision)
-                    {
-                        // Prepare the provisioning request
-                        var request = new ProvisioningActionModel();
-                        request.ActionType = ActionType.Tenant; // Do we want to support site/tenant or just one?
-                        request.ApplyCustomTheme = false;
-                        request.ApplyTheme = false; // Do we need to apply any special theme?
-                        request.CorrelationId = Guid.NewGuid();
-                        request.CustomLogo = null;
-                        request.DisplayName = "Provision Content Pack";
-                        request.PackageId = provisionRequest.PackageId;
-                        request.TargetSiteAlreadyExists = false; // Do we want to check this?
-                        request.TargetSiteBaseTemplateId = null;
-                        request.TenantId = provisionRequest.TenantId;
-                        request.UserIsSPOAdmin = true; // We don't use this in the job
-                        request.UserIsTenantAdmin = true; // We don't use this in the job
-                        request.UserPrincipalName = provisionRequest.UserPrincipalName.ToLower();
-                        request.NotificationEmail = provisionRequest.UserPrincipalName.ToLower();
-                        request.PackageProperties = provisionRequest.Parameters;
+        //                // Configure the Access Tokens for the request
+        //                request.AccessTokens = await PrepareAccessTokensAsync(request);
 
-                        // Enqueue the provisioning request
-                        await ProvisioningAppManager.EnqueueProvisioningRequest(request);
+        //                // Enqueue the provisioning request
+        //                await ProvisioningAppManager.EnqueueProvisioningRequest(request);
 
-                        // Set the status of the provisioning request
-                        provisionResponse.ProvisioningStarted = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // In case of any other exception, raise an InternalServerError exception
-                    return ThrowInternalServerError(ex);
-                }
-            }
+        //                // Set the status of the provisioning request
+        //                provisionResponse.ProvisioningStarted = true;
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            // In case of any other exception, raise an InternalServerError exception
+        //            return ThrowInternalServerError(ex);
+        //        }
+        //    }
 
-            // Return to the requested URL
-            return Json(provisionResponse);
-        }
+        //    // Return to the requested URL
+        //    return Json(provisionResponse);
+        //}
 
         private void CheckBetaFlag()
         {
@@ -800,7 +815,14 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                                         configuration = "",
                                         preRequirementContent = "",
                                     }
-                                }
+                                },
+                    postActions = new[] {
+                                    new {
+                                        assemblyName = "",
+                                        typeName = "",
+                                        configuration = "",
+                                    }
+                                },
                 };
 
                 var metadataProperties = JsonConvert.DeserializeAnonymousType(package.PropertiesMetadata, metadata);
@@ -817,6 +839,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                 model.MetadataPropertiesJson = JsonConvert.SerializeObject(model.MetadataProperties);
 
+                // Configure the pre-requirements
                 if (metadataProperties.preRequirements != null && metadataProperties.preRequirements.Length > 0)
                 {
                     model.ProvisioningPreRequirements = metadataProperties
@@ -828,6 +851,19 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             Configuration = i.configuration,
                             PreRequirementContent = context.ContentPages.FirstOrDefault(cp => cp.Id == i.preRequirementContent)?.Content
                         }).ToList();
+                }
+
+                // Configure the post-actions
+                if (metadataProperties.postActions != null && metadataProperties.postActions.Length > 0)
+                {
+                    model.ProvisioningPostActionsJson = JsonConvert.SerializeObject(metadataProperties
+                        .postActions
+                        .Select(i => new ProvisioningPostAction
+                        {
+                            AssemblyName = i.assemblyName,
+                            TypeName = i.typeName,
+                            Configuration = i.configuration,
+                        }).ToList());
                 }
 
                 // Get the service description content
@@ -858,7 +894,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             }
         }
 
-        private async Task CheckPreRequirements(ProvisioningActionModel model, string tokenId)
+        private async Task CheckPreRequirements(ProvisioningActionModel model)
         {
             var issues = new List<string>();
 
@@ -882,7 +918,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 if (preReq != null)
                 {
                     // Validate the Pre-Requirement
-                    var requirementFullfilled = await preReq.Validate(canProvisionModel, tokenId, pr.Configuration);
+                    var requirementFullfilled = await preReq.Validate(canProvisionModel, pr.Configuration);
                     if (!requirementFullfilled)
                     {
                         // Collect any Pre-Requirement result
@@ -895,7 +931,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             model.PreRequirementIssues = issues;
         }
 
-        private static async Task LoadThemesFromTenant(ProvisioningActionModel model, string tokenId, SharePointSite rootSite, string graphAccessToken)
+        private static async Task LoadThemesFromTenant(ProvisioningActionModel model, SharePointSite rootSite, string graphAccessToken)
         {
 
             // Retrieve the SPO URL for the Admin Site
@@ -903,14 +939,14 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             // Retrieve the SPO Access Token
             var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                tokenId, adminSiteUrl,
-                ConfigurationManager.AppSettings["ida:ClientId"],
-                ConfigurationManager.AppSettings["ida:ClientSecret"],
-                ConfigurationManager.AppSettings["ida:AppUrl"]);
+                AuthenticationConfig.ClientId,
+                AuthenticationConfig.ClientSecret,
+                AuthenticationConfig.RedirectUri,
+                AuthenticationConfig.GetSpoScopes(adminSiteUrl));
 
             // Connect to SPO and retrieve the list of available Themes
             AuthenticationManager authManager = new AuthenticationManager();
-            using (ClientContext spoContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAccessToken))
+            using (ClientContext spoContext = authManager.GetAccessTokenContext(adminSiteUrl, spoAccessToken))
             {
                 TenantAdmin.Tenant tenant = new TenantAdmin.Tenant(spoContext);
                 var themes = tenant.GetAllTenantThemes();
@@ -957,9 +993,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 String provisioningScope = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"];
                 String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
-                var tokenId = $"{model.TenantId}-{model.UserPrincipalName.ToLower().GetHashCode()}-{provisioningScope}-{provisioningEnvironment}";
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                    tokenId, "https://graph.microsoft.com/");
+                    AuthenticationConfig.GetGraphScopes());
 
                 // Retrieve the provisioning package from the database and from the Blob Storage
                 var context = GetDataContext();
@@ -1014,10 +1049,10 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                         // Retrieve the SPO Access Token for SPO
                         var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                            tokenId, rootSiteUrl,
-                            ConfigurationManager.AppSettings["ida:ClientId"],
-                            ConfigurationManager.AppSettings["ida:ClientSecret"],
-                            ConfigurationManager.AppSettings["ida:AppUrl"]);
+                            AuthenticationConfig.ClientId,
+                            AuthenticationConfig.ClientSecret,
+                            AuthenticationConfig.RedirectUri,
+                            AuthenticationConfig.GetSpoScopes(rootSiteUrl));
 
                         // Store the SPO Access Token for any further context cloning
                         accessTokens.Add(new Uri(rootSiteUrl).Authority, spoAccessToken);
@@ -1034,12 +1069,16 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                             }
                             else
                             {
+                                var resourceUri = $"https://{r}";
+
                                 // Try to get a fresh new Access Token
                                 var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                    tokenId, $"https://{r}",
-                                    ConfigurationManager.AppSettings["ida:ClientId"],
-                                    ConfigurationManager.AppSettings["ida:ClientSecret"],
-                                    ConfigurationManager.AppSettings["ida:AppUrl"]);
+                                    AuthenticationConfig.ClientId,
+                                    AuthenticationConfig.ClientSecret,
+                                    AuthenticationConfig.RedirectUri,
+                                    resourceUri.Equals(AuthenticationConfig.GraphBaseUrl, StringComparison.InvariantCultureIgnoreCase) ?
+                                        AuthenticationConfig.GetGraphScopes() :
+                                        AuthenticationConfig.GetSpoScopes(resourceUri));
 
                                 accessTokens.Add(r, token);
 
@@ -1055,16 +1094,16 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                                 // Retrieve the SPO Access Token for the Admin Site
                                 var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                    tokenId, adminSiteUrl,
-                                    ConfigurationManager.AppSettings["ida:ClientId"],
-                                    ConfigurationManager.AppSettings["ida:ClientSecret"],
-                                    ConfigurationManager.AppSettings["ida:AppUrl"]);
+                                    AuthenticationConfig.ClientId,
+                                    AuthenticationConfig.ClientSecret,
+                                    AuthenticationConfig.RedirectUri,
+                                    AuthenticationConfig.GetSpoScopes(adminSiteUrl));
 
                                 // Store the SPO Admin Access Token for any further context cloning
                                 accessTokens.Add(new Uri(adminSiteUrl).Authority, spoAdminAccessToken);
 
                                 // Connect to SPO Admin Site and evaluate the CanProvision rules for the hierarchy
-                                using (var tenantContext = authManager.GetAzureADAccessTokenAuthenticatedContext(adminSiteUrl, spoAdminAccessToken))
+                                using (var tenantContext = authManager.GetAccessTokenContext(adminSiteUrl, spoAdminAccessToken))
                                 {
                                     using (var pnpTenantContext = PnPClientContext.ConvertFrom(tenantContext))
                                     {
@@ -1081,7 +1120,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                                 // Otherwise we run the Site level CanProvision rules
 
                                 // Connect to SPO Root Site and evaluate the CanProvision rules for the hierarchy
-                                using (var clientContext = authManager.GetAzureADAccessTokenAuthenticatedContext(rootSiteUrl, spoAccessToken))
+                                using (var clientContext = authManager.GetAccessTokenContext(rootSiteUrl, spoAccessToken))
                                 {
                                     using (var pnpContext = PnPClientContext.ConvertFrom(clientContext))
                                     {

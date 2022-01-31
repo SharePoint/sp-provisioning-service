@@ -26,7 +26,20 @@ namespace SharePointPnP.ProvisioningApp.WebJobServiceBus
                 {
                     sbOptions.ConnectionString = ConfigurationManager.ConnectionStrings["AzureWebJobsServiceBus"].ConnectionString;
                     sbOptions.MessageHandlerOptions.AutoComplete = true;
-                    sbOptions.MessageHandlerOptions.MaxConcurrentCalls = 16;
+
+                    int maxConcurrentCalls;
+                    if (!int.TryParse(ConfigurationManager.AppSettings["SB:MaxConcurrentCalls"], out maxConcurrentCalls))
+                    {
+                        maxConcurrentCalls = 32;
+                    }
+                    sbOptions.MessageHandlerOptions.MaxConcurrentCalls = maxConcurrentCalls;
+
+                    int maxAutoRenewDuration;
+                    if (!int.TryParse(ConfigurationManager.AppSettings["SB:MaxAutoRenewDuration"], out maxAutoRenewDuration))
+                    {
+                        maxAutoRenewDuration = 45;
+                    }
+                    sbOptions.MessageHandlerOptions.MaxAutoRenewDuration = TimeSpan.FromMinutes(maxAutoRenewDuration);
                 });
             });
 

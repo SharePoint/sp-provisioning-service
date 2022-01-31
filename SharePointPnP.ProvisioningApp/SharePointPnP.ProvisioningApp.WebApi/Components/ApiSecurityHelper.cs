@@ -3,6 +3,7 @@
 // Licensed under the MIT license.
 //
 using SharePointPnP.ProvisioningApp.DomainModel;
+using SharePointPnP.ProvisioningApp.Infrastructure.Security;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -27,10 +28,10 @@ namespace SharePointPnP.ProvisioningApp.WebApi.Components
         public static void CheckRequestAuthorization(Boolean allowAppOnly)
         {
             // Read the current audience from the configuration
-            var audience = ConfigurationManager.AppSettings["ida:Audience"];
+            var audience = AuthenticationConfig.Audience;
 
             // Read the permission scopes from the configuration
-            var scope = ConfigurationManager.AppSettings["ida:Scope"];
+            var scope = AuthenticationConfig.ApiScope;
 
             // If there isn't a current user identity, there is a security issue
             if (ClaimsPrincipal.Current == null || ClaimsPrincipal.Current.Identity == null)
