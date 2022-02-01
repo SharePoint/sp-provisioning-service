@@ -20,11 +20,13 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
         {
             String result = String.Empty;
 
-            if (System.Threading.Thread.CurrentPrincipal != null &&
-                System.Threading.Thread.CurrentPrincipal.Identity != null &&
-                System.Threading.Thread.CurrentPrincipal.Identity.IsAuthenticated)
+            if (System.Security.Claims.ClaimsPrincipal.Current != null)
             {
-                result = System.Threading.Thread.CurrentPrincipal.Identity.Name;
+                var claim = System.Security.Claims.ClaimsPrincipal.Current.FindFirst("preferred_username");
+                if (claim != null)
+                {
+                    result = claim.Value;
+                }
             }
 
             return (result);

@@ -101,7 +101,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 {
                     // Resolve current user's UPN and TenantId
                     var (upn, tenantId) = AuthHelper.GetCurrentUserIdentityClaims(
-                        System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal);
+                        System.Security.Claims.ClaimsPrincipal.Current);
 
                     if (this.IsAllowedUpnTenant(upn))
                     {
@@ -118,11 +118,8 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                         String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
                         var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                            MsalAppBuilder.BuildConfidentialClientApplication(),
                             AuthenticationConfig.GetGraphScopes());
-                        if (string.IsNullOrEmpty(graphAccessToken))
-                        {
-                            throw new ApplicationException($"Cannot retrieve a valid Microsoft Graph Access Token for user {model.UserPrincipalName.ToLower()} in tenant {model.TenantId}");
-                        }
 
                         model.UserIsTenantAdmin = Utilities.UserIsTenantGlobalAdmin(graphAccessToken);
                         model.UserIsSPOAdmin = Utilities.UserIsSPOAdmin(graphAccessToken);
@@ -139,6 +136,22 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                         // Store the SPO Root Site URL in the Model
                         model.SPORootSiteUrl = rootSite.WebUrl;
+
+                        // Try to get the Access Tokens
+                        var accessTokens = await PrepareAccessTokensAsync(model);
+
+                        // If we are missing any of the access tokens, we force a re-consent
+                        if (accessTokens != null &&
+                            accessTokens.Any(i => string.IsNullOrEmpty(i.Value)))
+                        {
+                            var consentUrl = string.Format(AuthenticationConfig.AdminConsentFormat,
+                                tenantId,
+                                AuthenticationConfig.ClientId,
+                                string.Empty,
+                                AuthenticationConfig.RedirectUri
+                                );
+                            return new RedirectResult(consentUrl);
+                        }
 
                         // If the current user is an admin, we can get the available Themes
                         if (model.UserIsTenantAdmin || model.UserIsSPOAdmin)
@@ -179,6 +192,19 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 // Enrich the model with Access Tokens
                 model.AccessTokens = await PrepareAccessTokensAsync(model);
 
+                // If we are missing any of the access tokens, we force a re-consent
+                if (model.AccessTokens != null &&
+                    model.AccessTokens.Any(i => string.IsNullOrEmpty(i.Value)))
+                {
+                    var consentUrl = string.Format(AuthenticationConfig.AdminConsentFormat,
+                        model.TenantId,
+                        AuthenticationConfig.ClientId,
+                        string.Empty,
+                        AuthenticationConfig.RedirectUri
+                        );
+                    return new RedirectResult(consentUrl);
+                }
+
                 // Enqueue the provisioning request
                 await ProvisioningAppManager.EnqueueProvisioningRequest(
                     model,
@@ -199,20 +225,18 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             return View("ProvisionQueued", model);
         }
 
-        private static async Task<Dictionary<string, string>> PrepareAccessTokensAsync(ProvisioningActionModel model)
-        {
+        private static async Task<Dictionary<string, string>> PrepareAccessTokensAsync(ProvisioningActionModel model)       {
             // Prepare the variable to hold the result
             var accessTokens = new Dictionary<string, string>();
 
             // Retrieve the Microsoft Graph Access Token
             var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                MsalAppBuilder.BuildConfidentialClientApplication(),
                 AuthenticationConfig.GetGraphScopes());
 
             // Retrieve the SPO Access Token
             var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                AuthenticationConfig.ClientId,
-                AuthenticationConfig.ClientSecret,
-                AuthenticationConfig.RedirectUri,
+                MsalAppBuilder.BuildConfidentialClientApplication(),
                 AuthenticationConfig.GetSpoScopes(model.SPORootSiteUrl));
 
             // Retrieve the SPO URL for the Admin Site
@@ -220,9 +244,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             // Retrieve the SPO Access Token
             var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                AuthenticationConfig.ClientId,
-                AuthenticationConfig.ClientSecret,
-                AuthenticationConfig.RedirectUri,
+                MsalAppBuilder.BuildConfidentialClientApplication(),
                 AuthenticationConfig.GetSpoScopes(adminSiteUrl));
 
             // Configure the resulting dictionary
@@ -242,6 +264,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
             if (IsValidUser())
             {
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                    MsalAppBuilder.BuildConfidentialClientApplication(),
                     AuthenticationConfig.GetGraphScopes());
 
                 // Determine the URL of the root SPO site for the current tenant
@@ -252,9 +275,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                 // Retrieve the SPO Access Token
                 var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                    AuthenticationConfig.ClientId,
-                    AuthenticationConfig.ClientSecret,
-                    AuthenticationConfig.RedirectUri,
+                    MsalAppBuilder.BuildConfidentialClientApplication(),
                     AuthenticationConfig.GetSpoScopes(rootSiteUrl));
 
                 // Connect to SPO and check if the URL is available or not
@@ -654,9 +675,9 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
         private static bool IsValidUser()
         {
-            return System.Threading.Thread.CurrentPrincipal != null &&
-                            System.Threading.Thread.CurrentPrincipal.Identity != null &&
-                            System.Threading.Thread.CurrentPrincipal.Identity.IsAuthenticated;
+            return System.Security.Claims.ClaimsPrincipal.Current != null &&
+                            System.Security.Claims.ClaimsPrincipal.Current.Identity != null &&
+                            System.Security.Claims.ClaimsPrincipal.Current.Identity.IsAuthenticated;
         }
 
         private static ProvisioningHierarchy GetHierarchyFromStorage(String packageLocalFolder, String packageFileName)
@@ -844,9 +865,9 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 {
                     model.ProvisioningPreRequirements = metadataProperties
                         .preRequirements
-                        .Select(i => new ProvisioningPreRequirement 
-                        { 
-                            AssemblyName = i.assemblyName, 
+                        .Select(i => new ProvisioningPreRequirement
+                        {
+                            AssemblyName = i.assemblyName,
                             TypeName = i.typeName,
                             Configuration = i.configuration,
                             PreRequirementContent = context.ContentPages.FirstOrDefault(cp => cp.Id == i.preRequirementContent)?.Content
@@ -939,9 +960,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
             // Retrieve the SPO Access Token
             var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                AuthenticationConfig.ClientId,
-                AuthenticationConfig.ClientSecret,
-                AuthenticationConfig.RedirectUri,
+                MsalAppBuilder.BuildConfidentialClientApplication(),
                 AuthenticationConfig.GetSpoScopes(adminSiteUrl));
 
             // Connect to SPO and retrieve the list of available Themes
@@ -994,6 +1013,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
                 String provisioningEnvironment = ConfigurationManager.AppSettings["SPPA:ProvisioningEnvironment"];
 
                 var graphAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
+                    MsalAppBuilder.BuildConfidentialClientApplication(),
                     AuthenticationConfig.GetGraphScopes());
 
                 // Retrieve the provisioning package from the database and from the Blob Storage
@@ -1049,9 +1069,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                         // Retrieve the SPO Access Token for SPO
                         var spoAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                            AuthenticationConfig.ClientId,
-                            AuthenticationConfig.ClientSecret,
-                            AuthenticationConfig.RedirectUri,
+                            MsalAppBuilder.BuildConfidentialClientApplication(),
                             AuthenticationConfig.GetSpoScopes(rootSiteUrl));
 
                         // Store the SPO Access Token for any further context cloning
@@ -1073,9 +1091,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                                 // Try to get a fresh new Access Token
                                 var token = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                    AuthenticationConfig.ClientId,
-                                    AuthenticationConfig.ClientSecret,
-                                    AuthenticationConfig.RedirectUri,
+                                    MsalAppBuilder.BuildConfidentialClientApplication(),
                                     resourceUri.Equals(AuthenticationConfig.GraphBaseUrl, StringComparison.InvariantCultureIgnoreCase) ?
                                         AuthenticationConfig.GetGraphScopes() :
                                         AuthenticationConfig.GetSpoScopes(resourceUri));
@@ -1094,9 +1110,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Controllers
 
                                 // Retrieve the SPO Access Token for the Admin Site
                                 var spoAdminAccessToken = await ProvisioningAppManager.AccessTokenProvider.GetAccessTokenAsync(
-                                    AuthenticationConfig.ClientId,
-                                    AuthenticationConfig.ClientSecret,
-                                    AuthenticationConfig.RedirectUri,
+                                    MsalAppBuilder.BuildConfidentialClientApplication(),
                                     AuthenticationConfig.GetSpoScopes(adminSiteUrl));
 
                                 // Store the SPO Admin Access Token for any further context cloning

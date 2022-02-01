@@ -25,6 +25,7 @@ SOFTWARE.
 using Microsoft.Identity.Client;
 using Microsoft.Owin;
 using Owin;
+using SharePointPnP.ProvisioningApp.Infrastructure.Security;
 using System;
 using System.Collections.Generic;
 using System.IO;

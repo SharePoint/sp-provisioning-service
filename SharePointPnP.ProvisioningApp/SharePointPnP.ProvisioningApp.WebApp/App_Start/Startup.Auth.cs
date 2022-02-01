@@ -16,6 +16,7 @@ using System.Web.Mvc;
 using SharePointPnP.ProvisioningApp.WebApp.Controllers;
 using SharePointPnP.ProvisioningApp.Infrastructure.Security;
 using SharePointPnP.ProvisioningApp.WebApp.Utils;
+using Microsoft.Owin.Host.SystemWeb;
 
 namespace SharePointPnP.ProvisioningApp.WebApp
 {
@@ -47,7 +48,7 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                     ClientId = AuthenticationConfig.ClientId,
                     RedirectUri = AuthenticationConfig.RedirectUri,
                     PostLogoutRedirectUri = AuthenticationConfig.RedirectUri,
-                    Scope = $"{AuthenticationConfig.BasicSignInScopes} {AuthenticationConfig.GraphScopes}",
+                    Scope = $"{AuthenticationConfig.BasicSignInScopes} .default",
                     TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
                         // instead of using the default validation (validating against a single issuer value, as we do in line of business apps), 
@@ -84,7 +85,10 @@ namespace SharePointPnP.ProvisioningApp.WebApp
                             //context.OwinContext.Response.Write(context.Exception.ToString());
                             return Task.FromResult(0);
                         }
-                    }
+                    },
+                    // Handling SameSite cookie according to https://docs.microsoft.com/en-us/aspnet/samesite/owin-samesite
+                    CookieManager = new SameSiteCookieManager(
+                                     new SystemWebCookieManager())
                 });
         }
     }

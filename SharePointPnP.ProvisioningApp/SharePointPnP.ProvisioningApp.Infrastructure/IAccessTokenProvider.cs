@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 //
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,14 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         /// <param name="scopes">The permission scopes to request</param>
         /// <returns></returns>
         Task<string> GetAccessTokenAsync(String clientId, String clientSecret, String appUri, string[] scopes);
+
+        /// <summary>
+        /// Allows to get the access token of a specific tenant for a specific set of scopes
+        /// </summary>
+        /// <param name="clientApp">The MSAL Confidential Client App</param>
+        /// <param name="scopes">The permission scopes to request</param>
+        /// <returns></returns>
+        Task<string> GetAccessTokenAsync(IConfidentialClientApplication clientApp, string[] scopes);
 
         /// <summary>
         /// Allows to get an app-only access token for a specific resource url

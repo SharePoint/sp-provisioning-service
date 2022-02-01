@@ -28,11 +28,11 @@ namespace SharePointPnP.ProvisioningApp.WebApp.Utils
                     issuerValue = issuerValue.Substring(0, issuerValue.LastIndexOf("/"));
                 }
                 tenantId = issuerValue.Substring(issuerValue.LastIndexOf("/") + 1);
-                upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst(ClaimTypes.Upn)?.Value;
+                upn = System.Security.Claims.ClaimsPrincipal.Current?.FindFirst(ClaimTypes.Upn)?.Value;
 
                 if (string.IsNullOrEmpty(upn))
                 {
-                    upn = (System.Threading.Thread.CurrentPrincipal as System.Security.Claims.ClaimsPrincipal)?.FindFirst("preferred_username")?.Value;
+                    upn = System.Security.Claims.ClaimsPrincipal.Current?.FindFirst("preferred_username")?.Value;
                 }
             }
 

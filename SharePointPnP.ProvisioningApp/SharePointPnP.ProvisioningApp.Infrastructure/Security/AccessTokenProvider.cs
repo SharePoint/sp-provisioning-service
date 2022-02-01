@@ -7,6 +7,7 @@ using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using Newtonsoft.Json;
+using SharePointPnP.ProvisioningApp.Infrastructure.Telemetry;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -53,7 +54,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Security
 
             return result;
         }, 
-            true);
+        true);
 
         private static string EnsureTrailingSlash(string value)
         {
@@ -87,6 +88,10 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Security
             {
                 // Retrieve the current user's account
                 var account = await clientApp.GetAccountAsync(GetAccountId(ClaimsPrincipal.Current));
+                if (account == null)
+                {
+                    throw new ApplicationException("Cannot retrieve a valid account for current principal");
+                }
 
                 // Now retrieve the requested Access Token
                 var authenticationResult = await clientApp.AcquireTokenSilent(scopes, account).ExecuteAsync().ConfigureAwait(false);
@@ -94,8 +99,33 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Security
                 // Return the retrieved Access Token
                 return authenticationResult.AccessToken;
             }
-            catch
+            catch (Exception ex)
             {
+                LogTokenException(scopes, ex);
+                return null;
+            }
+        }
+
+        public async Task<String> GetAccessTokenAsync(IConfidentialClientApplication clientApp, string[] scopes)
+        {
+            try
+            {
+                // Retrieve the current user's account
+                var account = await clientApp.GetAccountAsync(GetAccountId(ClaimsPrincipal.Current));
+                if (account == null)
+                {
+                    throw new ApplicationException("Cannot retrieve a valid account for current principal");
+                }
+
+                // Now retrieve the requested Access Token
+                var authenticationResult = await clientApp.AcquireTokenSilent(scopes, account).ExecuteAsync().ConfigureAwait(false);
+
+                // Return the retrieved Access Token
+                return authenticationResult.AccessToken;
+            }
+            catch (Exception ex)
+            {
+                LogTokenException(scopes, ex);
                 return null;
             }
         }
@@ -229,6 +259,16 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Security
         private static string FindFirstValue(ClaimsPrincipal claimsPrincipal, string type)
         {
             return claimsPrincipal.FindFirst(type)?.Value;
+        }
+
+        private void LogTokenException(string[] scopes, Exception ex)
+        {
+            TelemetryUtility telemetry = new TelemetryUtility(null);
+
+            var scopesString = string.Join(",", scopes);
+            var properties = new Dictionary<string, string>();
+            properties.Add("Scopes", scopesString);
+            telemetry.LogException(ex, $"{this.GetType().Name}.GetAccessTokenAsync", properties);
         }
     }
 }
