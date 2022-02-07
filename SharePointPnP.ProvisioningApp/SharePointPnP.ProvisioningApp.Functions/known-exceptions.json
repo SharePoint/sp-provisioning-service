@@ -1,0 +1,29 @@
+{
+  "knownExceptions": [
+    {
+      "exceptionType": "System.UnauthorizedAccessException",
+      "matchingText": "OfficeDevPnP.Core.ALM.AppManager",
+      "friendlyMessageResourceKey": "Missing_App_Catalog"
+    },
+    {
+      "exceptionType": "Microsoft.SharePoint.Client.ServerException",
+      "matchingText": "OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.Utilities.TenantHelper.ProcessWebApiPermissions",
+      "friendlyMessageResourceKey": "Missing_App_Catalog"
+    },
+    {
+      "exceptionType": "System.Exception",
+      "matchingText": "OfficeDevPnP.Core.ALM.AppManager",
+      "friendlyMessageResourceKey": "Missing_App_Catalog"
+    },
+    {
+      "exceptionType": "Microsoft.SharePoint.Client.ServerUnauthorizedAccessException",
+      "matchingText": "OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.ObjectHierarchySequenceTermGroups",
+      "friendlyMessageResourceKey": "Term_Store_Not_Admin"
+    },
+    {
+      "exceptionType": "Microsoft.Azure.KeyVault.Models.KeyVaultErrorException",
+      "matchingText": "'429'",
+      "friendlyMessageResourceKey": "Key_Vault_Throttling"
+    }
+  ]
+}

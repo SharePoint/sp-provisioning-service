@@ -26,7 +26,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
     public static class ProvisioningAppManager
     {
         private static readonly Lazy<IAccessTokenProvider> _accessTokenProvider = new Lazy<IAccessTokenProvider>(() => {
-            return (ProvisioningAppManager.CreateProviderInstance<IAccessTokenProvider>(ConfigurationManager.AppSettings["SPPA:AccessTokenProvider"]));
+            return (ProvisioningAppManager.CreateProviderInstance<IAccessTokenProvider>(ConfigurationManager.AppSettings["SPPA:AccessTokenProvider"] ?? Environment.GetEnvironmentVariable("SPPA:AccessTokenProvider")));
         });
 
         public static IAccessTokenProvider AccessTokenProvider
@@ -54,7 +54,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
         public static bool IsTestingEnvironment
         {
             // Default value: false
-            get { return (Boolean.Parse(ConfigurationManager.AppSettings["TestEnvironment"] ?? "false")); }
+            get { return (Boolean.Parse((ConfigurationManager.AppSettings["TestEnvironment"] ?? Environment.GetEnvironmentVariable("TestEnvironment")) ?? "false")); }
         }
 
         public static async Task EnqueueProvisioningRequest(ProvisioningActionModel model, String logoFileName = null, Stream logoFile = null)
@@ -71,8 +71,8 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
                 model.CustomLogo = $"{Guid.NewGuid()}-{logoFileName}";
 
                 // Get a reference to the blob storage account
-                var blobLogosConnectionString = ConfigurationManager.AppSettings["BlobLogosProvider:ConnectionString"];
-                var blobLogosContainerName = ConfigurationManager.AppSettings["BlobLogosProvider:ContainerName"];
+                var blobLogosConnectionString = ConfigurationManager.AppSettings["BlobLogosProvider:ConnectionString"] ?? Environment.GetEnvironmentVariable("BlobLogosProvider:ConnectionString");
+                var blobLogosContainerName = ConfigurationManager.AppSettings["BlobLogosProvider:ContainerName"] ?? Environment.GetEnvironmentVariable("BlobLogosProvider:ConnectionString");
 
                 CloudStorageAccount csaLogos;
                 if (!CloudStorageAccount.TryParse(blobLogosConnectionString, out csaLogos))

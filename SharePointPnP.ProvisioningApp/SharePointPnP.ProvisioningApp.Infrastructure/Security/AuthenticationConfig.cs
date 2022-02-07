@@ -18,35 +18,37 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Security
         public const string BasicSignInScopes = "openid profile email offline_access";
         public const string NameClaimType = "name";
 
+        private static string ProvisioningScope { get; } = ConfigurationManager.AppSettings["SPPA:ProvisioningScope"] ?? Environment.GetEnvironmentVariable("SPPA:ProvisioningScope");
+
         /// <summary>
         /// The Client ID is used by the application to uniquely identify itself to Azure AD.
         /// </summary>
-        public static string ClientId { get; } = ConfigurationManager.AppSettings[$"{ConfigurationManager.AppSettings["SPPA:ProvisioningScope"]}:ClientId"];
+        public static string ClientId { get; } = ConfigurationManager.AppSettings[$"{ProvisioningScope}:ClientId"] ?? Environment.GetEnvironmentVariable($"{ProvisioningScope}:ClientId");
 
         /// <summary>
         /// The ClientSecret is a credential used to authenticate the application to Azure AD.  Azure AD supports password and certificate credentials.
         /// </summary>
-        public static string ClientSecret { get; } = ConfigurationManager.AppSettings[$"{ConfigurationManager.AppSettings["SPPA:ProvisioningScope"]}:ClientSecret"];
+        public static string ClientSecret { get; } = ConfigurationManager.AppSettings[$"{ProvisioningScope}:ClientSecret"] ?? Environment.GetEnvironmentVariable($"{ProvisioningScope}:ClientSecret");
 
         /// <summary>
         /// The Redirect Uri is the URL where the user will be redirected after they sign in.
         /// </summary>
-        public static string RedirectUri { get; } = ConfigurationManager.AppSettings[$"{ConfigurationManager.AppSettings["SPPA:ProvisioningScope"]}:AppUrl"];
+        public static string RedirectUri { get; } = ConfigurationManager.AppSettings[$"{ProvisioningScope}:AppUrl"] ?? Environment.GetEnvironmentVariable($"{ProvisioningScope}:AppUrl");
 
         /// <summary>
         /// The AAD Instance for Azure Active Directory authentication
         /// </summary>
-        public static string AADInstance { get; } = ConfigurationManager.AppSettings["ida:AADInstance"];
+        public static string AADInstance { get; } = ConfigurationManager.AppSettings["ida:AADInstance"] ?? Environment.GetEnvironmentVariable("ida:AADInstance");
 
         /// <summary>
         /// The API Audience for API Authentication
         /// </summary>
-        public static string Audience { get; } = ConfigurationManager.AppSettings["ida:Audience"];
+        public static string Audience { get; } = ConfigurationManager.AppSettings["ida:Audience"] ?? Environment.GetEnvironmentVariable("ida:Audience");
 
         /// <summary>
         /// The API Permission Scope per API Authentication and Authorization
         /// </summary>
-        public static string ApiScope { get; } = ConfigurationManager.AppSettings["ida:Scope"];
+        public static string ApiScope { get; } = ConfigurationManager.AppSettings["ida:Scope"] ?? Environment.GetEnvironmentVariable("ida:Scope");
 
         /// <summary>
         /// The authority
@@ -56,12 +58,12 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Security
         /// <summary>
         /// String with list of Microsoft Graph permission scopes
         /// </summary>
-        public static string GraphScopes { get; } = ConfigurationManager.AppSettings[$"{ConfigurationManager.AppSettings["SPPA:ProvisioningScope"]}:GraphScopes"];
+        public static string GraphScopes { get; } = ConfigurationManager.AppSettings[$"{ProvisioningScope}:GraphScopes"] ?? Environment.GetEnvironmentVariable($"{ProvisioningScope}:GraphScopes");
 
         /// <summary>
         /// String with list of SharePoint Online permission scopes
         /// </summary>
-        public static string SPOScopes { get; } = ConfigurationManager.AppSettings[$"{ConfigurationManager.AppSettings["SPPA:ProvisioningScope"]}:SpoScopes"];
+        public static string SPOScopes { get; } = ConfigurationManager.AppSettings[$"{ProvisioningScope}:SpoScopes"] ?? Environment.GetEnvironmentVariable($"{ProvisioningScope}:SpoScopes");
 
         public static string[] GetGraphScopes()
         {

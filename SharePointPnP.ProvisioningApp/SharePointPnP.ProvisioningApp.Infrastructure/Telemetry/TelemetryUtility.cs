@@ -117,15 +117,18 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure.Telemetry
         {
             try
             {
-                // before exit, flush the remaining data
-                this.telemetryClient.Flush();
+                if (this.telemetryClient != null)
+                {
+                    // before exit, flush the remaining data
+                    this.telemetryClient.Flush();
 
-                // flush is not blocking so wait a bit
-                Task.Delay(500).Wait();
+                    // flush is not blocking so wait a bit
+                    Task.Delay(500).Wait();
+                }
             }
             catch
             {
-                // Eat all exceptions
+                // Eat all exceptions, we don't want this code to block anything
             }
         }
     }

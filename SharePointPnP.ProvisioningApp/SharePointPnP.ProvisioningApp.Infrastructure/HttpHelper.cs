@@ -328,8 +328,7 @@ namespace SharePointPnP.ProvisioningApp.Infrastructure
             {
                 throw new ApplicationException(
                     String.Format("Exception while invoking endpoint {0}.", requestUrl),
-                    new HttpException(
-                        (Int32)response.StatusCode,
+                    new System.Net.WebException(
                         response.Content.ReadAsStringAsync().Result));
             }
 

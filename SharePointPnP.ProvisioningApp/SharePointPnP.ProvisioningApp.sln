@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.PostActions", "SharePointPnP.ProvisioningApp.PostActions\SharePointPnP.ProvisioningApp.PostActions.csproj", "{B3F662F5-E673-446F-9A09-F2ADF03750F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePointPnP.ProvisioningApp.Functions", "SharePointPnP.ProvisioningApp.Functions\SharePointPnP.ProvisioningApp.Functions.csproj", "{9F68079A-6F62-4FD3-960A-35C027BD328C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		3Sharp|Any CPU = 3Sharp|Any CPU
@@ -567,6 +569,38 @@ Global
 		{B3F662F5-E673-446F-9A09-F2ADF03750F2}.Tenant|Any CPU.Build.0 = Debug|Any CPU
 		{B3F662F5-E673-446F-9A09-F2ADF03750F2}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{B3F662F5-E673-446F-9A09-F2ADF03750F2}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.3Sharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.3Sharp|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Dev|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.PnPFx|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.PnPFx|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site.Dev|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site.PnPFx|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site.PnPFx|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site.Prod|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site.Prod|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site.Test|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Site|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant.Dev|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant.PnPFx|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant.PnPFx|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant.Prod|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant.Prod|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant.Test|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Tenant|Any CPU.Build.0 = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F68079A-6F62-4FD3-960A-35C027BD328C}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

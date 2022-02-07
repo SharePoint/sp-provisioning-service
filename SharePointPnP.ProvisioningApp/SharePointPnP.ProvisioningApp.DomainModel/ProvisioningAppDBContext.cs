@@ -19,7 +19,10 @@ namespace SharePointPnP.ProvisioningApp.DomainModel
         }
 
         public ProvisioningAppDBContext(String connectionString = null) : 
-            base(!String.IsNullOrEmpty(connectionString) ? connectionString : "PnPProvisioningAppDBContext")
+            base(!String.IsNullOrEmpty(connectionString) ? connectionString :
+                Environment.GetEnvironmentVariable("SQLAZURECONNSTR_PnPProvisioningAppDBContext") ??
+                Environment.GetEnvironmentVariable("ConnectionStrings:PnPProvisioningAppDBContext") ?? 
+                "PnPProvisioningAppDBContext")
         {
             Configuration.LazyLoadingEnabled = false;
             Configuration.ProxyCreationEnabled = false;

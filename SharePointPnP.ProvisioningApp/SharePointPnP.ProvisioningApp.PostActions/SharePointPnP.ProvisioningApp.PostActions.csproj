@@ -184,11 +184,11 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PnP.Core, Version=1.4.86.0, Culture=neutral, PublicKeyToken=0d501f89f11b748c, processorArchitecture=MSIL">
-      <HintPath>..\packages\PnP.Core.1.4.86-nightly\lib\netstandard2.0\PnP.Core.dll</HintPath>
+    <Reference Include="PnP.Core, Version=1.5.0.0, Culture=neutral, PublicKeyToken=0d501f89f11b748c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PnP.Core.1.5.0\lib\netstandard2.0\PnP.Core.dll</HintPath>
     </Reference>
-    <Reference Include="PnP.Framework, Version=1.7.79.0, Culture=neutral, PublicKeyToken=0d501f89f11b748c, processorArchitecture=MSIL">
-      <HintPath>..\packages\PnP.Framework.1.7.79-nightly\lib\netstandard2.0\PnP.Framework.dll</HintPath>
+    <Reference Include="PnP.Framework, Version=1.8.0.0, Culture=neutral, PublicKeyToken=0d501f89f11b748c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PnP.Framework.1.8.0\lib\netstandard2.0\PnP.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Portable.Xaml, Version=0.26.0.0, Culture=neutral, PublicKeyToken=ba4456acace7dab7, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.Xaml.0.26.0\lib\netstandard2.0\Portable.Xaml.dll</HintPath>
