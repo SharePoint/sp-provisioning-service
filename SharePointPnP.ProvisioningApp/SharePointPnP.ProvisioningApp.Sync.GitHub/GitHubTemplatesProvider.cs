@@ -17,7 +17,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
 {
     public class GitHubTemplatesProvider : ITemplatesProvider, IAuthorProvider
     {
-
+        private const int RATE_LIMIT = 50;
         private readonly GitHubHelper _helper;
 
         public GitHubTemplatesProvider(Uri baseUrl, string repositoryPath, string personalAccessToken)
@@ -34,7 +34,7 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
         {
             var rateLimit = await _helper.GetRateLimitAsync();
 
-            if (rateLimit.rate.remaining < 0 || rateLimit.resources.core.remaining < 0)
+            if (rateLimit.rate.remaining < RATE_LIMIT || rateLimit.resources.core.remaining < RATE_LIMIT)
             {
                 throw new InvalidOperationException("Request limit exceeded!");
             }

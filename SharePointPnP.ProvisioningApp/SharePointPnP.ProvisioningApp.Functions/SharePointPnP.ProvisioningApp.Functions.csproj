@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SharePointPnP.ProvisioningApp.DomainModel\SharePointPnP.ProvisioningApp.DomainModel.csproj" />
     <ProjectReference Include="..\SharePointPnP.ProvisioningApp.Infrastructure\SharePointPnP.ProvisioningApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\SharePointPnP.ProvisioningApp.PostActions\SharePointPnP.ProvisioningApp.PostActions.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="FriendlyErrorMessages.Designer.cs">

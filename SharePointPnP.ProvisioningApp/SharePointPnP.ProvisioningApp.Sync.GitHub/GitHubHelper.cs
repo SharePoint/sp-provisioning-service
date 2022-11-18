@@ -23,6 +23,8 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
         private const string RATE_LIMIT_PATH = "rate_limit";
         private const string PATH = "path";
 
+        private const int MIN_RATE_LIMIT = 100;
+
         private readonly string _repositoryUrl;
         private readonly Uri _baseUrl;
         private readonly string _personalAccessToken;
@@ -162,6 +164,8 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
                         return JsonConvert.DeserializeObject<T>(json, settings);
                     }
 
+                    await ProcessThrottlingHeadersAsync(response);
+
                     // Exponential back-off
                     await Task.Delay(delay * retryCount);
                 }
@@ -172,6 +176,43 @@ namespace SharePointPnP.ProvisioningApp.Sync.GitHub
             }
 
             return default(T);
+        }
+
+        private async Task ProcessThrottlingHeadersAsync(HttpResponseMessage response)
+        {
+            int rateLimit = 0;
+            int rateLimitUsed = 0;
+            int rateLimitRemaining = 0;
+            DateTimeOffset rateLimitOffsetReset = DateTimeOffset.MinValue;
+            DateTime rateLimitReset = DateTime.MinValue;
+
+            if (response.Headers.TryGetValues("x-ratelimit-limit", out IEnumerable<string> rateLimitHeaders))
+            {
+                rateLimit = int.Parse(rateLimitHeaders.First());
+            }
+
+            if (response.Headers.TryGetValues("x-ratelimit-used", out IEnumerable<string> rateLimitUsedHeaders))
+            {
+                rateLimitUsed = int.Parse(rateLimitUsedHeaders.First());
+            }
+
+            if (response.Headers.TryGetValues("x-ratelimit-remaining", out IEnumerable<string> rateLimitRemainingHeaders))
+            {
+                rateLimitRemaining = int.Parse(rateLimitRemainingHeaders.First());
+            }
+
+            if (response.Headers.TryGetValues("x-ratelimit-reset", out IEnumerable<string> rateLimitResetHeaders))
+            {
+                rateLimitOffsetReset = DateTimeOffset.FromUnixTimeSeconds(long.Parse(rateLimitResetHeaders.First()));
+                rateLimitReset = rateLimitOffsetReset.DateTime;
+            }
+
+            // If the remaining rate limit is below the min rate
+            if (rateLimitRemaining < MIN_RATE_LIMIT)
+            {
+                // Wait for the throttling limits to reset
+                await Task.Delay(rateLimitOffsetReset.Millisecond);
+            }
         }
 
         /// <summary>

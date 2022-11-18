@@ -45,7 +45,7 @@ namespace SharePointPnP.ProvisioningApp.PostActions
                         PnPHttpClient.AuthenticateRequestAsync(request, clientContext).GetAwaiter().GetResult();
 
                         var ContentType = "application/json";
-                        var contentString = "{'primedLibraryName':'Sample Contract Library','packageName':'ContractsSitePackage.cmp'}";
+                        var contentString = "{'primedLibraryName':'Sample contracts library','packageName':'ContractsSitePackage.cmp'}";
                         request.Content = new StringContent(contentString, System.Text.Encoding.UTF8);
                         request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(ContentType);
 

@@ -4,5 +4,7 @@ export class ApplicationSettings {
     targetPlatformId: string;
     trackingUrl?: string;
     telemetryUrl?: string;
+    provisionTemplates?: boolean;
+    provisioningInstructionsUrl: string;
     isTestEnvironment?: boolean;
 }

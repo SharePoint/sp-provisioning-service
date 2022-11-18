@@ -9,6 +9,10 @@ namespace SharePoint.Portal.Web.Business.DependencyInjection
 
         public bool IsTestEnvironment { get; set; }
 
+        public bool ProvisionTemplates { get; set; }
+
+        public string ProvisioningInstructionsUrl { get; set; }
+
         public string PlatformId { get; set; }
 
         public string TrackingUrl { get; set; }

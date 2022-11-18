@@ -24,6 +24,8 @@ namespace SharePoint.Portal.Web.Controllers
                 globalOptions.ProvisioningPageBaseUrl,
                 TargetPlatformId = globalOptions.PlatformId,
                 IsTestEnvironment = globalOptions.IsTestEnvironment,
+                ProvisionTemplates = globalOptions.ProvisionTemplates,
+                ProvisioningInstructionsUrl = globalOptions.ProvisioningInstructionsUrl,
                 TrackingUrl = globalOptions.TrackingUrl,
                 TelemetryUrl = globalOptions.TelemetryUrl
             });

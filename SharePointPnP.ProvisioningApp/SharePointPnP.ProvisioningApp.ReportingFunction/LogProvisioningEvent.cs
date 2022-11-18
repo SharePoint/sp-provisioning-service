@@ -30,7 +30,7 @@ namespace SharePointPnP.ProvisioningApp.ReportingFunction
             {
                 // Read request data
                 string requestBody = await req.Content.ReadAsStringAsync();
-                ProvisioningEvent provisioningEvent = JsonConvert.DeserializeObject<ProvisioningEvent>(requestBody);
+                var provisioningEvent = JsonConvert.DeserializeObject<ProvisioningEvent>(requestBody);
 
                 var reportingConnectionString = ConfigurationManager.ConnectionStrings["PnPProvisioningReportingDBContext"].ConnectionString;
 

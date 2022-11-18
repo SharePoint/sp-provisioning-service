@@ -103,7 +103,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
                         previewImages,
                         detailItemCategories,
                         systemRequirements,
-                        telemetryUrl: data.settings.telemetryUrl + packageData.displayName
+                        telemetryUrl: data.settings.telemetryUrl + encodeURI(packageData.displayName.replace('+', ''))
                     };
 
                     this.titleService.setTitle(`${appConstants.getSiteTitle(data.settings.targetPlatformId)} - ${packageData.displayName}`);    

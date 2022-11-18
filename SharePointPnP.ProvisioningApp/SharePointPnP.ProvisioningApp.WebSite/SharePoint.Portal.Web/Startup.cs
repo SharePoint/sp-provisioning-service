@@ -51,6 +51,15 @@ namespace SharePoint.Portal.Web
                     }
 
                     options.IsTestEnvironment = isTestEnvironment;
+
+                    bool provisionTemplates;
+                    if (!bool.TryParse(Configuration["ProvisionTemplates"], out provisionTemplates))
+                    {
+                        provisionTemplates = false;
+                    }
+                    options.ProvisionTemplates = provisionTemplates;
+
+                    options.ProvisioningInstructionsUrl = Configuration["ProvisioningInstructionsUrl"];
                     options.ProvisioningPageBaseUrl = Configuration["ProvisioningPageBaseUrl"];
                     options.PlatformId = Configuration["PlatformId"];
                     options.TrackingUrl = Configuration["TrackingUrl"];
